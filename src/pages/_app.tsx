@@ -1,10 +1,17 @@
 // src/pages/_app.tsx
 import "../styles/globals.css";
 import type { AppType } from "next/app";
-import { trpc } from "../utils/trpc";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
-  return <Component {...pageProps} />;
+  return (
+    <>
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="description" content="" />
+      </head>
+      <Component className="bg-[url('/bg.png')]" {...pageProps} />;
+    </>
+  );
 };
 
-export default trpc.withTRPC(MyApp);
+export default MyApp;
