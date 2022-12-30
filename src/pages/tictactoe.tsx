@@ -73,7 +73,7 @@ const Home: NextPage = () => {
     });
   }
 
-  let interval = setInterval(check, 400);
+  const interval = setInterval(check, 400);
 
   return (
     <>
