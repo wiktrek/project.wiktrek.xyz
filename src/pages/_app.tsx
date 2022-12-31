@@ -1,15 +1,16 @@
 // src/pages/_app.tsx
 import "../styles/globals.css";
 import type { AppType } from "next/app";
+import Head from "next/head";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <>
-      <head>
+      <Head>
         <link rel="icon" href="/favicon.ico" />
         <meta name="description" content="" />
-      </head>
-      <Component className="bg-[url('/bg.png')]" {...pageProps} />;
+      </Head>
+      <Component {...pageProps} />
     </>
   );
 };

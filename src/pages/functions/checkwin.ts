@@ -31,6 +31,18 @@ function checkwin(
   if (two === "⭕" && five === "⭕" && eight === "⭕") return (win = "⭕ won");
   if (three === "⭕" && six === "⭕" && nine === "⭕") return (win = "⭕ won");
 
+  if (
+    one !== "" &&
+    two !== "" &&
+    three !== "" &&
+    four !== "" &&
+    five !== "" &&
+    six !== "" &&
+    seven !== "" &&
+    eight !== "" &&
+    nine !== ""
+  )
+    return (win = "🏳 Its a draw");
   return win;
 }
 export default checkwin;

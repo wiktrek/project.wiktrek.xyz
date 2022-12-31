@@ -82,38 +82,39 @@ const Home: NextPage = () => {
         <meta name="description" content="" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <main className="container mx-auto flex min-h-screen flex-col items-center justify-center p-4">
-        <div className="grid grid-cols-3">
-          <button className="ttt" onClick={Click} id="one">
-            {one}
-          </button>
-          <button className="ttt" onClick={Click} id="two">
-            {two}
-          </button>
-          <button className="ttt" onClick={Click} id="three">
-            {three}
-          </button>
-          <button className="ttt" onClick={Click} id="four">
-            {four}
-          </button>
-          <button className="ttt" onClick={Click} id="five">
-            {five}
-          </button>
-          <button className="ttt" onClick={Click} id="six">
-            {six}
-          </button>
-          <button className="ttt" onClick={Click} id="seven">
-            {seven}
-          </button>
-          <button className="ttt" onClick={Click} id="eight">
-            {eight}
-          </button>
-          <button className="ttt" onClick={Click} id="nine">
-            {nine}
-          </button>
+      <main className="h-screen w-screen bg-[url('/bg.png')] ">
+        <div className="mx-auto flex h-screen w-screen flex-col items-center justify-center ">
+          <div className="grid grid-cols-3">
+            <button className="ttt" onClick={Click} id="one">
+              {one}
+            </button>
+            <button className="ttt" onClick={Click} id="two">
+              {two}
+            </button>
+            <button className="ttt" onClick={Click} id="three">
+              {three}
+            </button>
+            <button className="ttt" onClick={Click} id="four">
+              {four}
+            </button>
+            <button className="ttt" onClick={Click} id="five">
+              {five}
+            </button>
+            <button className="ttt" onClick={Click} id="six">
+              {six}
+            </button>
+            <button className="ttt" onClick={Click} id="seven">
+              {seven}
+            </button>
+            <button className="ttt" onClick={Click} id="eight">
+              {eight}
+            </button>
+            <button className="ttt" onClick={Click} id="nine">
+              {nine}
+            </button>
+          </div>
+          <a className="text-white">{win.text}</a>
         </div>
-        <a>{win.text}</a>
       </main>
     </>
   );
