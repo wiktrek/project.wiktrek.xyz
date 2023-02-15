@@ -1,10 +1,10 @@
-import type { NextPage } from 'next';
-import Head from 'next/head';
-import Image from 'next/image';
-import Link from 'next/link';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalculator } from '@fortawesome/free-solid-svg-icons';
-import React from 'react';
+import type { NextPage } from "next";
+import Head from "next/head";
+import Image from "next/image";
+import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalculator } from "@fortawesome/free-solid-svg-icons";
+import React from "react";
 const Home: NextPage = () => {
   return (
     <>
@@ -12,7 +12,7 @@ const Home: NextPage = () => {
         <title>Projects - wiktrek.xyz</title>
         <meta name="description" content="wiktrek's projects" />
       </Head>
-      <div className="">
+      <div className=" items-center justify-center text-center">
         <div>
           <a>I will style this website in the future</a>
           <ul className="{styles.links}">
