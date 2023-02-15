@@ -16,10 +16,10 @@ const Rng: NextPage = () => {
       let max = document.querySelector("#max").value;
       if (low > max) return setResult("lower limit is higher than upper limit");
 
-      let random = Math.floor(Math.random() * (max - low + 1) + low);
+      const random = Math.floor(Math.random() * (max - low + 1) + low);
       return random;
     }
-    let num = getnum();
+    const num = getnum();
     console.log();
     if (num === 0) return getnum();
     setResult(`${num}`);
