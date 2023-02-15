@@ -4,7 +4,6 @@ import type { NextPage } from 'next';
 import { trpc } from '../../../../utils/trpc';
 import Link from 'next/link';
 import { useUser } from '@auth0/nextjs-auth0';
-import styles from '../../../../styles/pollq.module.scss';
 import { useEffect, useState } from 'react';
 import { map } from 'zod';
 import Head from 'next/head';
@@ -51,14 +50,14 @@ const QuestionPageContenet: React.FC<{
       <Head>
         <meta name="description" content={data.question.question} />
       </Head>
-      <div className={styles.container}>
+      <div className="">
         {isOwner && <p>This is your poll</p>}
-        <div className={styles.yourpoll}>
+        <div className="">
           <a>{data.question?.question}</a>
           {(data.question?.options as string[])?.map((option, index) => {
             if (isOwner || data.vote) {
               return (
-                <div className={styles.options} key={index}>
+                <div className=""key={index}>
                   <a>
                     {data?.votes?.[index]?._count ?? 0} {` `}
                     {getPercent(data?.votes?.[index]?._count)}- {` `}
@@ -68,7 +67,7 @@ const QuestionPageContenet: React.FC<{
               );
             }
             return (
-              <div className={styles.options} key={index}>
+              <div className="" key={index}>
                 <button
                   onClick={() => {
                     mutate({

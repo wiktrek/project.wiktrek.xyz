@@ -42,9 +42,9 @@ const Home: NextPage = () => {
       </Head>
       <div className="">
         <div className="">
-          <button onClick={checkwin}>rock</button>
-          <button onClick={checkwin}>paper</button>
-          <button onClick={checkwin}>scissors</button>
+          <button className="" onClick={checkwin}>rock</button>
+          <button className="" onClick={checkwin}>paper</button>
+          <button className="" onClick={checkwin}>scissors</button>
         </div>
         <p>
           {result}: server picked {pick}
