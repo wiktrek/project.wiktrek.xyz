@@ -1,19 +1,18 @@
-import { faShuttleSpace } from "@fortawesome/free-solid-svg-icons";
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import React, { useState } from "react";
 
 const Rng: NextPage = () => {
-  const [numerr, setNumerr] = useState(false);
   const [result, setResult] = useState("");
   async function rng(e: React.SyntheticEvent) {
     e.preventDefault();
     function getnum() {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore: Object is possibly 'null'.
-      let low = document.querySelector("#low").value;
+      const low = document.querySelector("#low").value;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore: Object is possibly 'null'.
-      let max = document.querySelector("#max").value;
+      const max = document.querySelector("#max").value;
       if (low > max) return setResult("lower limit is higher than upper limit");
 
       const random = Math.floor(Math.random() * (max - low + 1) + low);

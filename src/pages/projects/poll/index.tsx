@@ -1,19 +1,18 @@
-import type { GetServerSideProps, NextPage } from 'next';
-import Head from 'next/head';
-import Image from 'next/image';
-import Link from 'next/link';
-import React from 'react';
+import type { GetServerSideProps, NextPage } from "next";
+import Head from "next/head";
+import Link from "next/link";
+import React from "react";
 import {
   useUser,
   UserProvider,
   withPageAuthRequired,
-} from '@auth0/nextjs-auth0';
-import { trpc } from '../../../utils/trpc';
+} from "@auth0/nextjs-auth0";
+import { trpc } from "../../../utils/trpc";
 const Poll: NextPage = () => {
   const { user } = useUser();
 
   const { data, isLoading } = trpc.useQuery([
-    'questions.get-all-my',
+    "questions.get-all-my",
     { email: `${user?.name}` },
   ]);
   if (!user) return <a>No email</a>;

@@ -1,11 +1,9 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faTrash } from "@fortawesome/free-solid-svg-icons";
 const Home: NextPage = () => {
-  const [num, setNum] = useState(0);
   const [screen, setScreen] = useState("");
   const [screen2, setScreen2] = useState("");
   const [screen3, setScreen3] = useState("");
@@ -38,11 +36,11 @@ const Home: NextPage = () => {
       setScreen2(screen2.slice(0, screen2.length - 1));
     }
   }
-  function equals(e: React.SyntheticEvent) {
-    let a = parseFloat(screen);
-    let b = parseFloat(screen2);
+  function equals() {
+    const a = parseFloat(screen);
+    const b = parseFloat(screen2);
     console.log(`${a} ${b}`);
-    let c = x;
+    const c = x;
     console.log(c);
     if (c === "x") {
       setScreen(`${(a * b).toString()}`);

@@ -1,20 +1,20 @@
-import React from 'react';
-import { trpc } from '../../../utils/trpc';
-import { useUser } from '@auth0/nextjs-auth0';
-import { useFieldArray, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import React from "react";
+import { trpc } from "../../../utils/trpc";
+import { useUser } from "@auth0/nextjs-auth0";
+import { useFieldArray, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   CreateQuestionInputType,
   createQuestionValidator,
-} from '../../../shared/create-question-validator';
-import { useRouter } from 'next/router';
-import Head from 'next/head';
+} from "../../../shared/create-question-validator";
+import { useRouter } from "next/router";
+import Head from "next/head";
 
 const CreateQuestionForm = () => {
   const router = useRouter();
   const { user } = useUser();
 
-  const { mutate, isLoading } = trpc.useMutation('questions.create', {
+  const { mutate } = trpc.useMutation("questions.create", {
     onSuccess: (data) => {
       console.log(data);
       reset();
@@ -31,19 +31,18 @@ const CreateQuestionForm = () => {
   } = useForm<CreateQuestionInputType>({
     resolver: zodResolver(createQuestionValidator),
     defaultValues: {
-      options: [{ text: 'Yes' }, { text: 'No' }],
+      options: [{ text: "Yes" }, { text: "No" }],
     },
   });
-  const { fields, append, prepend, remove, swap, move, insert } =
-    useFieldArray<CreateQuestionInputType>({
-      name: 'options',
-      control,
-    });
-  watch('question');
-  watch('options');
+  const { fields, append, remove } = useFieldArray<CreateQuestionInputType>({
+    name: "options",
+    control,
+  });
+  watch("question");
+  watch("options");
   if (!user) return <a>not logged in</a>;
 
-  if (typeof user.name !== 'string') return <a>not logged in</a>;
+  if (typeof user.name !== "string") return <a>not logged in</a>;
   return (
     <>
       <div className="">
@@ -60,7 +59,7 @@ const CreateQuestionForm = () => {
           <label className="">
             <span>Question</span>
             <input
-              {...register('question')}
+              {...register("question")}
               type="text"
               className=""
               placeholder="How do magnets work?"
@@ -70,7 +69,7 @@ const CreateQuestionForm = () => {
             {fields.map((field, index) => {
               return (
                 <div key={field.id}>
-                  <section className={'section'} key={field.id}>
+                  <section className={"section"} key={field.id}>
                     <input
                       placeholder="options"
                       {...register(`options.${index}.text`, {
@@ -78,11 +77,7 @@ const CreateQuestionForm = () => {
                       })}
                       className="{styles.options}"
                     />
-                    <button
-                      id=""
-                      type="button"
-                      onClick={() => remove(index)}
-                    >
+                    <button id="" type="button" onClick={() => remove(index)}>
                       X
                     </button>
                   </section>
@@ -96,17 +91,13 @@ const CreateQuestionForm = () => {
               id=""
               type="button"
               value="add more options "
-              onClick={() => append({ text: '' })}
+              onClick={() => append({ text: "" })}
             >
               add more options
             </button>
           </div>
-          {errors.options && (
-            <p id="error">{`${errors.options?.message}`}</p>
-          )}
-          {errors.question && (
-            <p id="error">{`${errors.question?.message}`}</p>
-          )}
+          {errors.options && <p id="error">{`${errors.options?.message}`}</p>}
+          {errors.question && <p id="error">{`${errors.question?.message}`}</p>}
           <button type="submit" className="">
             Create question
           </button>

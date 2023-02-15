@@ -1,13 +1,13 @@
-import { useRouter } from 'next/router';
-import React from 'react';
-import type { NextPage } from 'next';
-import { trpc } from '../../../../utils/trpc';
-import Link from 'next/link';
-import { useUser } from '@auth0/nextjs-auth0';
-import { useEffect, useState } from 'react';
-import { map } from 'zod';
-import Head from 'next/head';
-const { v4: uuidv4 } = require('uuid');
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useRouter } from "next/router";
+import React from "react";
+import type { NextPage } from "next";
+import { trpc } from "../../../../utils/trpc";
+import { useUser } from "@auth0/nextjs-auth0";
+import { useEffect, useState } from "react";
+import Head from "next/head";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { v4: uuidv4 } = require("uuid");
 const QuestionPageContenet: React.FC<{
   id: string;
   token: string;
@@ -16,12 +16,13 @@ const QuestionPageContenet: React.FC<{
   const { user } = useUser();
   let isOwner = false;
   let totalVotes = 0;
-  const { data, isLoading, error } = trpc.useQuery([
-    'questions.get-by-id',
+  const { data, isLoading } = trpc.useQuery([
+    "questions.get-by-id",
     { id, token, email },
   ]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { mutate, data: voteResponse } = trpc.useMutation(
-    'questions.vote-on-question',
+    "questions.vote-on-question",
     {
       onSuccess: () => window.location.reload(),
     }
@@ -57,7 +58,7 @@ const QuestionPageContenet: React.FC<{
           {(data.question?.options as string[])?.map((option, index) => {
             if (isOwner || data.vote) {
               return (
-                <div className=""key={index}>
+                <div className="" key={index}>
                   <a>
                     {data?.votes?.[index]?._count ?? 0} {` `}
                     {getPercent(data?.votes?.[index]?._count)}- {` `}
@@ -71,6 +72,7 @@ const QuestionPageContenet: React.FC<{
                 <button
                   onClick={() => {
                     mutate({
+                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                       questionId: data.question!.id,
                       option: index,
                       token: token,
@@ -88,19 +90,19 @@ const QuestionPageContenet: React.FC<{
   );
 };
 const QuestionPage: NextPage = () => {
-  const [token, setToken] = useState('');
+  const [token, setToken] = useState("");
   const { query } = useRouter();
   const { id } = query;
   const { user } = useUser();
   useEffect(() => {
-    if (!localStorage.getItem('voterToken')) {
-      localStorage.setItem('voterToken', uuidv4());
+    if (!localStorage.getItem("voterToken")) {
+      localStorage.setItem("voterToken", uuidv4());
     }
-    setToken(`${localStorage.getItem('voterToken')}`);
+    setToken(`${localStorage.getItem("voterToken")}`);
     console.log(token);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  if (!id || typeof id !== 'string') {
+  if (!id || typeof id !== "string") {
     return <div>No ID</div>;
   }
   return (
