@@ -1,9 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalculator } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 const Home: NextPage = () => {
   return (
