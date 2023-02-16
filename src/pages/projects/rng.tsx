@@ -12,7 +12,7 @@ const Rng: NextPage = () => {
       const low = document.querySelector("#low").value;
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore: Object is possibly 'null'.
-      const max = document.querySelector("#max").value;
+      const max = Number(document.querySelector("#max").value) + 1;
       if (low > max) return setResult("lower limit is higher than upper limit");
 
       const random = Math.floor(Math.random() * (max - low + 1) + low);
@@ -30,16 +30,16 @@ const Rng: NextPage = () => {
         <title>Rng - wiktrek</title>
         <meta name="description" content="Random number generator" />
       </Head>
-      <div className="">
+      <div className="items-center justify-center text-center">
         <ul className="">
           <form onSubmit={rng}>
             <li>
               <label>lower limit</label>
-              <input type="number" name="low" id="low" />
+              <input className="text-black" type="number" name="low" id="low" />
             </li>
             <li>
               <label>upper limit</label>
-              <input type="number" name="max" id="max" />
+              <input className="text-black" type="number" name="max" id="max" />
             </li>
             <button type="submit">generate random number</button>
           </form>
