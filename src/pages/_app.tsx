@@ -6,7 +6,7 @@ import { UserProvider } from "@auth0/nextjs-auth0";
 import superjson from "superjson";
 import Head from "next/head";
 import React from "react";
-
+import Navbar from "./components/navbar";
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
@@ -20,6 +20,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <UserProvider>
+        <Navbar />
         <Component {...pageProps} />
       </UserProvider>
     </>
