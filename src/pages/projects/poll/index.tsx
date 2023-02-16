@@ -15,6 +15,11 @@ const Poll: NextPage = () => {
     "questions.get-all-my",
     { email: `${user?.name}` },
   ]);
+  const { mutate } = trpc.useMutation("questions.delete", {
+    onSuccess: (data) => {
+      console.log(data);
+    },
+  });
   if (!user) return <a>No email</a>;
   if (isLoading || !data) return <div>Loading...</div>;
 
@@ -25,17 +30,27 @@ const Poll: NextPage = () => {
           <title>Poll - wiktrek</title>
           <meta name="description" content="Polls" />
         </Head>
-        <div className="">
+        <div className="items-center justify-center text-center">
           <div className="">
             {data.map((question) => {
               return (
-                <div key={question.id} className="{styles.question}">
+                <div key={question.id} className="p-2">
                   <Link href={`/projects/poll/q/${question.id}`}>
                     <p>{question.question}</p>
                   </Link>
-                  <span>
+                  <span className=" text-sm">
                     Created at {new Date(question.createdAt).toDateString()}
                   </span>
+                  <button
+                    className="text-lg"
+                    onClick={() => {
+                      mutate({
+                        id: question.id,
+                      });
+                    }}
+                  >
+                    Delete
+                  </button>
                 </div>
               );
             })}

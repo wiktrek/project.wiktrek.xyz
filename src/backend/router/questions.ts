@@ -1,9 +1,9 @@
-import * as trpc from '@trpc/server';
-import { z } from 'zod';
-import { prisma } from '../../db/client';
+import * as trpc from "@trpc/server";
+import { z } from "zod";
+import { prisma } from "../../db/client";
 export const questionRouter = trpc
   .router()
-  .query('get-all-my', {
+  .query("get-all-my", {
     input: z.object({ email: z.string() }),
     async resolve({ input }) {
       return await prisma.pollQuestion.findMany({
@@ -13,7 +13,7 @@ export const questionRouter = trpc
       });
     },
   })
-  .query('get-by-id', {
+  .query("get-by-id", {
     input: z.object({ id: z.string(), token: z.string(), email: z.string() }),
     async resolve({ input }) {
       const question = await prisma.pollQuestion.findFirst({
@@ -37,7 +37,7 @@ export const questionRouter = trpc
       if (rest.vote || rest.isOwner) {
         const votes = await prisma.vote.groupBy({
           where: { questionId: input.id },
-          by: ['choice'],
+          by: ["choice"],
           _count: true,
         });
         return { ...rest, votes };
@@ -46,7 +46,7 @@ export const questionRouter = trpc
       return { ...rest, votes: undefined };
     },
   })
-  .mutation('vote-on-question', {
+  .mutation("vote-on-question", {
     input: z.object({
       questionId: z.string(),
       option: z.number().min(0).max(10),
@@ -62,7 +62,7 @@ export const questionRouter = trpc
       });
     },
   })
-  .mutation('create', {
+  .mutation("create", {
     input: z.object({
       question: z.string(),
       email: z.string(),
@@ -78,6 +78,18 @@ export const questionRouter = trpc
           ownerEmail: input.email,
           end: false,
           options: input.options,
+        },
+      });
+    },
+  })
+  .mutation("delete", {
+    input: z.object({
+      id: z.string(),
+    }),
+    async resolve({ input }) {
+      return await prisma.pollQuestion.delete({
+        where: {
+          id: input.id,
         },
       });
     },
