@@ -3,6 +3,16 @@ import Head from "next/head";
 import React, { useEffect } from "react";
 
 const Rng: NextPage = () => {
+  useEffect(() => {
+    const trailer = document.getElementById("trailer");
+    if (trailer !== null) {
+      window.onmousemove = (e) => {
+        const x = e.clientX - trailer.offsetWidth / 2,
+          y = e.clientY - trailer.offsetHeight / 2;
+        trailer.style.transform = `translate(${x}px,${y}px)`;
+      };
+    }
+  }, []);
   return (
     <>
       <Head>
