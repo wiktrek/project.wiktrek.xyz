@@ -51,41 +51,43 @@ const QuestionPageContenet: React.FC<{
       <Head>
         <meta name="description" content={data.question.question} />
       </Head>
-      <div className="">
-        {isOwner && <p>This is your poll</p>}
+      <main>
         <div className="">
-          <a>{data.question?.question}</a>
-          {(data.question?.options as string[])?.map((option, index) => {
-            if (isOwner || data.vote) {
+          {isOwner && <p>This is your poll</p>}
+          <div className="">
+            <a>{data.question?.question}</a>
+            {(data.question?.options as string[])?.map((option, index) => {
+              if (isOwner || data.vote) {
+                return (
+                  <div className="" key={index}>
+                    <a>
+                      {data?.votes?.[index]?._count ?? 0} {` `}
+                      {getPercent(data?.votes?.[index]?._count)}- {` `}
+                      {(option as any).text}
+                    </a>
+                  </div>
+                );
+              }
               return (
                 <div className="" key={index}>
-                  <a>
-                    {data?.votes?.[index]?._count ?? 0} {` `}
-                    {getPercent(data?.votes?.[index]?._count)}- {` `}
+                  <button
+                    onClick={() => {
+                      mutate({
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        questionId: data.question!.id,
+                        option: index,
+                        token: token,
+                      });
+                    }}
+                  >
                     {(option as any).text}
-                  </a>
+                  </button>
                 </div>
               );
-            }
-            return (
-              <div className="" key={index}>
-                <button
-                  onClick={() => {
-                    mutate({
-                      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                      questionId: data.question!.id,
-                      option: index,
-                      token: token,
-                    });
-                  }}
-                >
-                  {(option as any).text}
-                </button>
-              </div>
-            );
-          })}
+            })}
+          </div>
         </div>
-      </div>
+      </main>
     </>
   );
 };
@@ -107,7 +109,7 @@ const QuestionPage: NextPage = () => {
   }
   return (
     <>
-      <QuestionPageContenet id={id} token={token} email={`${user?.name}`} />;
+      <QuestionPageContenet id={id} token={token} email={`${user?.name}`} />
     </>
   );
 };

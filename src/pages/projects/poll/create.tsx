@@ -45,64 +45,69 @@ const CreateQuestionForm = () => {
   if (typeof user.name !== "string") return <a>not logged in</a>;
   return (
     <>
-      <div className="">
-        <form
-          onSubmit={handleSubmit((data) => {
-            mutate({
-              question: data.question,
-              email: `${user.name}`,
+      <main className="mx-auto flex  w-screen flex-col items-center justify-center text-center text-xl text-white">
+        <div className="">
+          <form
+            onSubmit={handleSubmit((data) => {
+              mutate({
+                question: data.question,
+                email: `${user.name}`,
 
-              options: data.options,
-            });
-          })}
-        >
-          <label className="">
-            <span>Question</span>
-            <input
-              {...register("question")}
-              type="text"
-              className=""
-              placeholder="How do magnets work?"
-            />
-          </label>
-          <label>
-            {fields.map((field, index) => {
-              return (
-                <div key={field.id}>
-                  <section className={"section"} key={field.id}>
-                    <input
-                      placeholder="options"
-                      {...register(`options.${index}.text`, {
-                        required: true,
-                      })}
-                      className="{styles.options}"
-                    />
-                    <button id="" type="button" onClick={() => remove(index)}>
-                      X
-                    </button>
-                  </section>
-                </div>
-              );
+                options: data.options,
+              });
             })}
-          </label>
+            className=""
+          >
+            <label className="grid">
+              <span>Question</span>
+              <input
+                {...register("question")}
+                type="text"
+                className="text-black"
+                placeholder="How do magnets work?"
+              />
+            </label>
+            <label>
+              {fields.map((field, index) => {
+                return (
+                  <div key={field.id}>
+                    <section className={"section"} key={field.id}>
+                      <input
+                        placeholder="options"
+                        {...register(`options.${index}.text`, {
+                          required: true,
+                        })}
+                        className="text-black"
+                      />
+                      <button id="" type="button" onClick={() => remove(index)}>
+                        X
+                      </button>
+                    </section>
+                  </div>
+                );
+              })}
+            </label>
 
-          <div>
-            <button
-              id=""
-              type="button"
-              value="add more options "
-              onClick={() => append({ text: "" })}
-            >
-              add more options
+            <div>
+              <button
+                id=""
+                type="button"
+                value="add more options "
+                onClick={() => append({ text: "" })}
+              >
+                add more options
+              </button>
+            </div>
+            {errors.options && <p id="error">{`${errors.options?.message}`}</p>}
+            {errors.question && (
+              <p id="error">{`${errors.question?.message}`}</p>
+            )}
+            <button type="submit" className="">
+              Create question
             </button>
-          </div>
-          {errors.options && <p id="error">{`${errors.options?.message}`}</p>}
-          {errors.question && <p id="error">{`${errors.question?.message}`}</p>}
-          <button type="submit" className="">
-            Create question
-          </button>
-        </form>
-      </div>
+          </form>
+        </div>
+      </main>
     </>
   );
 };
