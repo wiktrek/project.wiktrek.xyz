@@ -40,9 +40,9 @@ const QuestionPageContenet: React.FC<{
     });
   };
   const getPercent = (voteCount: any) => {
-    if (voteCount !== undefined && totalVotes > 0)
+    if ((voteCount !== undefined && totalVotes) > 0)
       return `${((voteCount / totalVotes) * 100).toFixed()}%`;
-    else if (voteCount == undefined) return ``;
+    else if (voteCount == undefined) return `0%`;
   };
   if (data && data != undefined) getTotalVotes(data.votes);
   if (user?.name === data.question?.ownerEmail) isOwner = true;
@@ -51,7 +51,7 @@ const QuestionPageContenet: React.FC<{
       <Head>
         <meta name="description" content={data.question.question} />
       </Head>
-      <main>
+      <main className="mx-auto flex  w-screen flex-col items-center justify-center text-center text-xl text-white">
         <div className="">
           {isOwner && <p>This is your poll</p>}
           <div className="">
@@ -61,9 +61,9 @@ const QuestionPageContenet: React.FC<{
                 return (
                   <div className="" key={index}>
                     <a>
+                      {getPercent(data?.votes?.[index]?._count)} {` `}
+                      {(option as any).text} -{" "}
                       {data?.votes?.[index]?._count ?? 0} {` `}
-                      {getPercent(data?.votes?.[index]?._count)}- {` `}
-                      {(option as any).text}
                     </a>
                   </div>
                 );
