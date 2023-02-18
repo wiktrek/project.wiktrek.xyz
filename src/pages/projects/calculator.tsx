@@ -87,119 +87,127 @@ const Home: NextPage = () => {
             </button>
             <button onClick={equals}>=</button>
           </div>
-          <div className="grid grid-cols-4 gap-1">
-            <button
-              onClick={addnum}
-              className="h-16 w-16 rounded bg-gray-500"
-              id="1"
-            >
-              1
-            </button>
-            <button
-              onClick={addnum}
-              className="h-16 w-16 rounded bg-gray-500"
-              id="2"
-            >
-              2
-            </button>
-            <button
-              onClick={addnum}
-              className="h-16 w-16 rounded bg-gray-500"
-              id="3"
-            >
-              3
-            </button>
-            <button
-              onClick={ok}
-              className="h-16 w-16 rounded bg-gray-500"
-              id="/"
-            >
-              /
-            </button>
-            <button
-              onClick={addnum}
-              className="h-16 w-16 rounded bg-gray-500"
-              id="4"
-            >
-              4
-            </button>
-            <button
-              onClick={addnum}
-              className="h-16 w-16 rounded bg-gray-500"
-              id="5"
-            >
-              5
-            </button>
-            <button
-              onClick={addnum}
-              className="h-16 w-16 rounded bg-gray-500"
-              id="6"
-            >
-              6
-            </button>
-            <button
-              onClick={ok}
-              className="h-16 w-16 rounded bg-gray-500"
-              id="x"
-            >
-              x
-            </button>
-            <button
-              onClick={addnum}
-              className="h-16 w-16 rounded bg-gray-500"
-              id="7"
-            >
-              7
-            </button>
-            <button
-              onClick={addnum}
-              className="h-16 w-16 rounded bg-gray-500"
-              id="8"
-            >
-              8
-            </button>
-            <button
-              onClick={addnum}
-              className="h-16 w-16 rounded bg-gray-500"
-              id="9"
-            >
-              9
-            </button>
-            <button
-              onClick={ok}
-              className="h-16 w-16 rounded bg-gray-500"
-              id="-"
-            >
-              -
-            </button>
-            <button
-              onClick={addnum}
-              className="h-16 w-16 rounded bg-gray-500"
-              id="0"
-            >
-              0
-            </button>
-            <button
-              onClick={addnum}
-              className="h-16 w-16 rounded bg-gray-500"
-              id="."
-            >
-              .
-            </button>
-            <button
-              onClick={clear}
-              className="h-16 w-16 rounded bg-gray-500"
-              id="clear"
-            >
-              <FontAwesomeIcon icon={faTrash} />
-            </button>
-            <button
-              onClick={ok}
-              className="bg-gray-500} h-16 w-16 rounded"
-              id="+"
-            >
-              +
-            </button>
+          <div className="grid grid-cols-1 gap-1">
+            <div>
+              <button
+                onClick={addnum}
+                className="h-16 w-16 rounded bg-gray-500"
+                id="1"
+              >
+                1
+              </button>
+              <button
+                onClick={addnum}
+                className="h-16 w-16 rounded bg-gray-500"
+                id="2"
+              >
+                2
+              </button>
+              <button
+                onClick={addnum}
+                className="h-16 w-16 rounded bg-gray-500"
+                id="3"
+              >
+                3
+              </button>
+              <button
+                onClick={ok}
+                className="h-16 w-16 rounded bg-gray-500"
+                id="/"
+              >
+                /
+              </button>
+            </div>
+            <div>
+              <button
+                onClick={addnum}
+                className="h-16 w-16 rounded bg-gray-500"
+                id="4"
+              >
+                4
+              </button>
+              <button
+                onClick={addnum}
+                className="h-16 w-16 rounded bg-gray-500"
+                id="5"
+              >
+                5
+              </button>
+              <button
+                onClick={addnum}
+                className="h-16 w-16 rounded bg-gray-500"
+                id="6"
+              >
+                6
+              </button>
+              <button
+                onClick={ok}
+                className="h-16 w-16 rounded bg-gray-500"
+                id="x"
+              >
+                x
+              </button>
+            </div>
+            <div>
+              <button
+                onClick={addnum}
+                className="h-16 w-16 rounded bg-gray-500"
+                id="7"
+              >
+                7
+              </button>
+              <button
+                onClick={addnum}
+                className="h-16 w-16 rounded bg-gray-500"
+                id="8"
+              >
+                8
+              </button>
+              <button
+                onClick={addnum}
+                className="h-16 w-16 rounded bg-gray-500"
+                id="9"
+              >
+                9
+              </button>
+              <button
+                onClick={ok}
+                className="h-16 w-16 rounded bg-gray-500"
+                id="-"
+              >
+                -
+              </button>
+            </div>
+            <div>
+              <button
+                onClick={addnum}
+                className="h-16 w-16 rounded bg-gray-500"
+                id="0"
+              >
+                0
+              </button>
+              <button
+                onClick={addnum}
+                className="h-16 w-16 rounded bg-gray-500"
+                id="."
+              >
+                .
+              </button>
+              <button
+                onClick={clear}
+                className="h-16 w-16 rounded bg-gray-500"
+                id="clear"
+              >
+                <FontAwesomeIcon icon={faTrash} />
+              </button>
+              <button
+                onClick={ok}
+                className="h-16 w-16 rounded bg-gray-500"
+                id="+"
+              >
+                +
+              </button>
+            </div>
           </div>
         </div>
       </div>

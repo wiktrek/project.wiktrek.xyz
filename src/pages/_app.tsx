@@ -7,6 +7,16 @@ import superjson from "superjson";
 import Head from "next/head";
 import React from "react";
 import Navbar from "./components/navbar";
+
+import { createGlobalStyle } from "styled-components";
+import { config, dom } from "@fortawesome/fontawesome-svg-core";
+
+config.autoAddCss = false;
+const GlobalStyles = createGlobalStyle`
+    ${dom.css()}
+    // Insert any other global styles you want here
+`;
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
@@ -20,6 +30,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <UserProvider>
+        <GlobalStyles />
         <Navbar />
         <Component {...pageProps} />
       </UserProvider>
