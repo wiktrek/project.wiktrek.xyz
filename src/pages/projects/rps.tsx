@@ -39,15 +39,15 @@ const Home: NextPage = () => {
         <title>Rock paper scissors - wiktrek</title>
         <meta name="description" content="Rock paper scissors" />
       </Head>
-      <div className="">
+      <div className="mx-auto flex  w-screen flex-col items-center justify-center text-center text-xl">
         <div className="">
-          <button className="" onClick={checkwin}>
+          <button className="h-8 w-16 rounded bg-slate-500" onClick={checkwin}>
             rock
           </button>
-          <button className="" onClick={checkwin}>
+          <button className="h-8 w-16 rounded bg-slate-500" onClick={checkwin}>
             paper
           </button>
-          <button className="" onClick={checkwin}>
+          <button className="h-8 w-16 rounded bg-slate-500" onClick={checkwin}>
             scissors
           </button>
         </div>
