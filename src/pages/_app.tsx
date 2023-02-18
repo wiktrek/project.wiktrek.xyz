@@ -14,7 +14,6 @@ import { config, dom } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false;
 const GlobalStyles = createGlobalStyle`
     ${dom.css()}
-    // Insert any other global styles you want here
 `;
 
 function MyApp({ Component, pageProps }: AppProps) {

@@ -66,7 +66,7 @@ const Home: NextPage = () => {
       setScreen3("");
       setCheck(false);
     }
-    if (screen === NaN.toString()) return setScreen("Erro");
+    if (screen === NaN.toString()) return setScreen("Error");
   }
   return (
     <>
@@ -74,20 +74,24 @@ const Home: NextPage = () => {
         <title>calculator - wiktrek</title>
         <meta name="description" content="calculator" />
       </Head>
-      <div className="items-center justify-center  text-center">
-        <div className="">
-          <div className="h-15 w-64 bg-gray-500">
-            <a>
+      <div className="mx-auto flex  w-screen flex-col items-center justify-center text-center text-xl">
+        <div className="grid grid-cols-1">
+          <div className=" w-64 rounded bg-gray-500 ">
+            <a className="">
               {screen}
               {screen3}
               {screen2}
             </a>
-            <button onClick={clearone}>
-              <FontAwesomeIcon icon={faArrowLeft} />
-            </button>
-            <button onClick={equals}>=</button>
+            <div className=" float-right">
+              <button onClick={clearone}>
+                <FontAwesomeIcon icon={faArrowLeft} />
+              </button>
+              <button onClick={equals} className="text-2xl">
+                =
+              </button>
+            </div>
           </div>
-          <div className="grid grid-cols-1 gap-1">
+          <div className="">
             <div>
               <button
                 onClick={addnum}
