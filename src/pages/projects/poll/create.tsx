@@ -63,7 +63,7 @@ const CreateQuestionForm = () => {
               <input
                 {...register("question")}
                 type="text"
-                className="text-black"
+                className="bg-transparent text-white"
                 placeholder="How do magnets work?"
               />
             </label>
@@ -77,7 +77,7 @@ const CreateQuestionForm = () => {
                         {...register(`options.${index}.text`, {
                           required: true,
                         })}
-                        className="text-black"
+                        className="bg-transparent text-white"
                       />
                       <button id="" type="button" onClick={() => remove(index)}>
                         X
