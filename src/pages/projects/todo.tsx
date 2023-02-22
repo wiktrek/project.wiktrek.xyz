@@ -1,12 +1,15 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import React from "react";
-import { useState } from "react";
-import Todo from "../components/todo";
+import React, { useEffect, useState } from "react";
 
+import Todo from "../components/todo";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { v4: uuidv4 } = require("uuid");
 const Home: NextPage = () => {
+  const [todos, setTodos] = useState([{}]);
   function removeTodo(e: React.SyntheticEvent) {
-    e.currentTarget.id;
+    setTodos();
+    console.log(e.currentTarget.id);
   }
   return (
     <>
@@ -18,7 +21,7 @@ const Home: NextPage = () => {
         <button>Add a task</button>
         <div>
           <Todo name="tidy your room" />
-          <input id="id" type="checkbox" onClick={removeTodo}></input>
+          <input id="1" type="checkbox" onClick={removeTodo}></input>
         </div>
       </div>
     </>
