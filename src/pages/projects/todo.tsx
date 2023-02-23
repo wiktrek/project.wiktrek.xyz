@@ -23,6 +23,9 @@ const Home: NextPage = () => {
     // todos.push({ name: name, id: e.currentTarget.id });
     console.log(todos);
   }
+  function addTodo(e: React.SyntheticEvent) {
+    return e;
+  }
   return (
     <>
       <Head>
