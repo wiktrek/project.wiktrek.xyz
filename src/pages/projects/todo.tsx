@@ -8,8 +8,9 @@ const { v4: uuidv4 } = require("uuid");
 const Home: NextPage = () => {
   const [todos, setTodos] = useState([{}]);
   function removeTodo(e: React.SyntheticEvent) {
-    setTodos();
-    console.log(e.currentTarget.id);
+    const name = e.currentTarget.id;
+    todos.push({ name: name });
+    console.log(todos);
   }
   return (
     <>
@@ -22,6 +23,10 @@ const Home: NextPage = () => {
         <div>
           <Todo name="tidy your room" />
           <input id="1" type="checkbox" onClick={removeTodo}></input>
+        </div>
+        <div>
+          <Todo name="tidy your room" />
+          <input id="3" type="checkbox" onClick={removeTodo}></input>
         </div>
       </div>
     </>
