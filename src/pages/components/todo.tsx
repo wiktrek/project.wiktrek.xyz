@@ -8,6 +8,7 @@ const Todo = (props: props) => {
     <>
       <div className="flex h-4 list-none items-center justify-between p-7 text-xl">
         <a>{props.name}</a>
+        <a>I will finish this in the future</a>
       </div>
     </>
   );
