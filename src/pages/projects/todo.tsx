@@ -24,7 +24,10 @@ const Home: NextPage = () => {
     console.log(todos);
   }
   function addTodo(e: React.SyntheticEvent) {
-    return e;
+    console.log(e.currentTarget.firstChild);
+    e.preventDefault();
+    // todos.push();
+    // return e;
   }
   return (
     <>
@@ -42,6 +45,12 @@ const Home: NextPage = () => {
           <Todo name="tidy your room" />
           <input id="3" type="checkbox" onClick={removeTodo}></input>
         </div>
+        <form onSubmit={addTodo} className="">
+          <input type="text" id="1"></input>
+          <label>Task Name</label>
+          <button>Add task</button>
+        </form>
+        <a>I will finish this in the future</a>
       </div>
     </>
   );
