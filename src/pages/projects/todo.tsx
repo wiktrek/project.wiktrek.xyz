@@ -24,7 +24,18 @@ const Home: NextPage = () => {
     console.log(todos);
   }
   function addTodo(e: React.SyntheticEvent) {
-    console.log(e.currentTarget.firstChild);
+    const input = document.getElementById("input");
+    if (!input) return;
+    const value = (input as HTMLInputElement).value;
+    console.log(value);
+    const todoarr = [{} as Todo];
+    todoarr.push({
+      name: value,
+      id: uuidv4(),
+    } as Todo);
+    todos.map((todo) => {
+      todoarr.push(todo);
+    });
     e.preventDefault();
     // todos.push();
     // return e;
@@ -36,17 +47,21 @@ const Home: NextPage = () => {
         <meta name="description" content="Rock paper scissors" />
       </Head>
       <div className="mx-auto flex  w-screen flex-col items-center justify-center text-center text-xl">
-        <button>Add a task</button>
-        <div>
-          <Todo name="tidy your room" />
-          <input id="1" type="checkbox" onClick={removeTodo}></input>
-        </div>
-        <div>
-          <Todo name="tidy your room" />
-          <input id="3" type="checkbox" onClick={removeTodo}></input>
-        </div>
+        {todos.map((task) => {
+          if (task.name === "")
+            return (
+              <>
+                <Todo name={task.name} />
+                <input
+                  id={task.id}
+                  type="checkbox"
+                  onClick={removeTodo}
+                ></input>
+              </>
+            );
+        })}
         <form onSubmit={addTodo} className="">
-          <input type="text" id="1"></input>
+          <input type="text" id="input" className="text-black"></input>
           <label>Task Name</label>
           <button>Add task</button>
         </form>
