@@ -34,7 +34,7 @@ const Home: NextPage = () => {
   }
 
   return (
-    <>
+    <> 
       <Head>
         <title>Rock paper scissors - wiktrek</title>
         <meta name="description" content="Rock paper scissors" />

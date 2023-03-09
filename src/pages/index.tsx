@@ -17,6 +17,9 @@ const Home: NextPage = () => {
               <a href="https://svelte.wiktrek.xyz">svelte</a>
             </li>
             <li>
+              <a href="https://rust.wiktrek.xyz">rust api</a>
+            </li>
+            <li>
               <a href="https://github.com/wiktrek/wiktrekbot">wiktrekbot</a>
             </li>
             <li>
