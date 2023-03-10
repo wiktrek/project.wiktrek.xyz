@@ -11,6 +11,10 @@ interface Todo {
 }
 const Home: NextPage = () => {
   const [todos, setTodos] = useState([{} as Todo]);
+  useEffect(() => {
+    setTodos(JSON.parse(localStorage.getItem("todos") || "{}"));
+  }, []);
+
   function removeTodo(e: React.SyntheticEvent) {
     const todoarr = [{} as Todo];
 
@@ -23,7 +27,7 @@ const Home: NextPage = () => {
     // todos.push({ name: name, id: e.currentTarget.id });
     console.log(todos);
   }
-  function addTodo(e: React.SyntheticEvent) {
+  function addTodo() {
     const input = document.getElementById("input");
     if (!input) return;
     const value = (input as HTMLInputElement).value;
@@ -36,7 +40,8 @@ const Home: NextPage = () => {
     todos.map((todo) => {
       todoarr.push(todo);
     });
-    e.preventDefault();
+    localStorage.setItem("todos", JSON.stringify(todos));
+    // e.preventDefault();
     // todos.push();
     // return e;
   }
