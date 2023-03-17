@@ -10,7 +10,9 @@ interface Todo {
   id: string;
 }
 const Home: NextPage = () => {
-  const [todos, setTodos] = useState([{} as Todo]);
+  const [todos, setTodos] = useState([
+    { name: "example", id: "1" } as Todo,
+  ] as Array<Todo>);
   useEffect(() => {
     setTodos(JSON.parse(localStorage.getItem("todos") || "{}"));
   }, []);
@@ -52,13 +54,13 @@ const Home: NextPage = () => {
         <meta name="description" content="Rock paper scissors" />
       </Head>
       <div className="mx-auto flex  w-screen flex-col items-center justify-center text-center text-xl">
-        {todos.map((task, index) => {
-          if (task.name !== "")
+        {todos.map((data, index) => {
+          if (data.name !== "")
             return (
               <div key={index}>
-                <Todo name={task.name} />
+                <Todo name={data.name} />
                 <input
-                  id={task.id}
+                  id={data.id}
                   type="checkbox"
                   onClick={removeTodo}
                 ></input>
