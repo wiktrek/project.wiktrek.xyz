@@ -52,17 +52,17 @@ const Home: NextPage = () => {
         <meta name="description" content="Rock paper scissors" />
       </Head>
       <div className="mx-auto flex  w-screen flex-col items-center justify-center text-center text-xl">
-        {todos.map((task) => {
-          if (task.name === "")
+        {todos.map((task, index) => {
+          if (task.name !== "")
             return (
-              <>
+              <div key={index}>
                 <Todo name={task.name} />
                 <input
                   id={task.id}
                   type="checkbox"
                   onClick={removeTodo}
                 ></input>
-              </>
+              </div>
             );
         })}
         <form onSubmit={addTodo} className="">
