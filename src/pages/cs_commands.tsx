@@ -6,11 +6,23 @@ import React, { useState } from "react";
 import commands_json from "./data/cs_commands.json";
 const Cs_commands: NextPage = () => {
   const [result, setResult] = useState("");
+  const [commandResult, setCommandResult] = useState([] as string[]);
+  const [copied, setCopied] = useState(false);
   function copy_command(e: React.SyntheticEvent) {
     const commands = e.currentTarget.id;
-    // copy(commands);
-    console.log(commands);
-    setResult("hide and seek: " + commands);
+    commands_json.commands.map((command) => {
+      if (command.id === commands) {
+        copy(command.command);
+        setResult(command.name + ":");
+        setCopied(true);
+        const array = command.command.split(";");
+        array.forEach((splitted) => {
+          const result = commandResult;
+          result.push(splitted);
+          setCommandResult(result);
+        });
+      }
+    });
   }
   return (
     <>
@@ -25,7 +37,11 @@ const Cs_commands: NextPage = () => {
               <button onClick={copy_command} id={command.id}>
                 {command.name}
               </button>
+              <p>{copied ? "copied commands!" : ""}</p>
               <p>{result}</p>
+              {commandResult.map((e) => {
+                return <p key="key">{e}</p>;
+              })}
             </div>
           );
         })}
