@@ -1,0 +1,9 @@
+{
+  "commands": [
+    {
+      "name": "hide and seek",
+      "command": "mp_roundtime_defuse 10;mp_roundtime_hostage 10;mp_roundtime 10;mp_restartgame 1;sv_airaccelerate 5000;sv_cheats 1;mp_drop_knife_enable 1;sv_cheats 1;mp_maxrounds 100;mp_autokick 0;mp_autoteambalance 0;mp_limitteams 100;sv_falldamage_scale 0;",
+      "id": "hns"
+    }
+  ]
+}
