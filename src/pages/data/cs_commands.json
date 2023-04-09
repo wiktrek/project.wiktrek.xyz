@@ -4,6 +4,26 @@
       "name": "hide and seek",
       "command": "mp_roundtime_defuse 10;mp_roundtime_hostage 10;mp_roundtime 10;mp_restartgame 1;sv_airaccelerate 5000;sv_cheats 1;mp_drop_knife_enable 1;sv_cheats 1;mp_maxrounds 100;mp_autokick 0;mp_autoteambalance 0;mp_limitteams 100;sv_falldamage_scale 0;",
       "id": "hns"
+    },
+    {
+      "name": "money",
+      "command": "impulse 101",
+      "id": "impulse"
+    },
+    {
+      "name": "buy time",
+      "command": "mp_buytime 9999",
+      "id": "buy_time"
+    },
+    {
+      "name": "buy time",
+      "command": "mp_buytime 9999; mp_buy_anywhere 1",
+      "id": "buy_time"
+    },
+    {
+      "name": "bh",
+      "command": "sv_autobunnyhopping 1;sv_enablebunnyhopping 1;sv_airaccelerate 5000",
+      "id": "bh"
     }
   ]
 }
