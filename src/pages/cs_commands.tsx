@@ -36,7 +36,7 @@ const Cs_commands: NextPage = () => {
     <>
       <Head>
         <title>csgo commands - wiktrek</title>
-        <meta name="description" content="Random number generator" />
+        <meta name="description" content="csgo commands" />
       </Head>
       <div className="items-center justify-center text-center">
         {commands_json.commands.map((command) => {
