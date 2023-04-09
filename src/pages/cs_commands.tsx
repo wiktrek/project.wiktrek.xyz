@@ -9,11 +9,14 @@ const Cs_commands: NextPage = () => {
   const [commandResult, setCommandResult] = useState([] as string[]);
   const [copied, setCopied] = useState(false);
   function copy_command(e: React.SyntheticEvent) {
+    setResult(" ");
+    setCommandResult([]);
+    setCopied(false);
     const commands = e.currentTarget.id;
     commands_json.commands.map((command) => {
       if (command.id === commands) {
         copy(command.command);
-        setResult(command.name + ":");
+        setResult(command.name);
         setCopied(true);
         const array = command.command.split(";");
         array.forEach((splitted) => {
@@ -38,23 +41,35 @@ const Cs_commands: NextPage = () => {
       <div className="items-center justify-center text-center">
         {commands_json.commands.map((command) => {
           return (
-            <div key="key">
-              <button onClick={copy_command} id={command.id}>
-                {command.name}
-              </button>
-              {copied ? (
-                <p>
-                  <button onClick={hide}>hide</button>
-                </p>
+            <>
+              {result === command.name ? (
+                <div key="key" className="text-xl">
+                  <button onClick={copy_command} id={command.id}>
+                    {result + ":"}
+                  </button>
+
+                  {copied ? (
+                    <p>
+                      <button onClick={hide}>hide</button>
+                    </p>
+                  ) : (
+                    ""
+                  )}
+                  <p className=" text-green-400">
+                    {copied ? "copied commands!" : ""}
+                  </p>
+                  {commandResult.map((e) => {
+                    return <p key="key">{e}</p>;
+                  })}
+                </div>
               ) : (
-                ""
+                <p className="text-xl">
+                  <button onClick={copy_command} id={command.id}>
+                    {command.name}
+                  </button>
+                </p>
               )}
-              <p>{copied ? "copied commands!" : ""}</p>
-              <p>{result}</p>
-              {commandResult.map((e) => {
-                return <p key="key">{e}</p>;
-              })}
-            </div>
+            </>
           );
         })}
       </div>
