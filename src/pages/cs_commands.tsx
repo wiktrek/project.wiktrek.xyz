@@ -24,6 +24,11 @@ const Cs_commands: NextPage = () => {
       }
     });
   }
+  function hide() {
+    setResult(" ");
+    setCommandResult([]);
+    setCopied(false);
+  }
   return (
     <>
       <Head>
@@ -37,6 +42,13 @@ const Cs_commands: NextPage = () => {
               <button onClick={copy_command} id={command.id}>
                 {command.name}
               </button>
+              {copied ? (
+                <p>
+                  <button onClick={hide}>hide</button>
+                </p>
+              ) : (
+                ""
+              )}
               <p>{copied ? "copied commands!" : ""}</p>
               <p>{result}</p>
               {commandResult.map((e) => {
