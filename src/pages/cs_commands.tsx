@@ -19,14 +19,16 @@ const Cs_commands: NextPage = () => {
         <meta name="description" content="Random number generator" />
       </Head>
       <div className="items-center justify-center text-center">
-        {
-          <div>
-            <button onClick={copy_command} id="id HERE">
-              hide and seek
-            </button>
-            <p>{result}</p>
-          </div>
-        }
+        {commands_json.commands.map((command) => {
+          return (
+            <div key="key">
+              <button onClick={copy_command} id={command.id}>
+                {command.name}
+              </button>
+              <p>{result}</p>
+            </div>
+          );
+        })}
       </div>
     </>
   );
