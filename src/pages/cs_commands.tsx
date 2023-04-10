@@ -56,7 +56,7 @@ const Cs_commands: NextPage = () => {
                     ""
                   )}
                   <p className=" text-green-400">
-                    {copied ? "copied commands!" : ""}
+                    {copied ? "commands copied!" : ""}
                   </p>
                   {commandResult.map((e) => {
                     return <p key="key">{e}</p>;
