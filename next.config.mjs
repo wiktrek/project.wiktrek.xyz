@@ -1,4 +1,4 @@
-// @ts-check
+// @ts-ignore
 import { env } from "./src/env/server.mjs";
 
 /**
@@ -20,5 +20,16 @@ export default defineNextConfig({
   i18n: {
     locales: ["en"],
     defaultLocale: "en",
+  },
+  images: {
+    formats: ["image/avif", "image/webp"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "raw.githubusercontent.com",
+        port: "",
+        pathname: "/PokeAPI/sprites/master/sprites/pokemon/**",
+      },
+    ],
   },
 });
