@@ -54,28 +54,25 @@ const Pokemon: NextPage = () => {
       }
     }
   }
-  //   axios
-  //     .get("https://pokeapi.co/api/v2/pokemon/snorlax")
-  //     .then(function (response) {
-  //       // handle success
-  //       console.log(response.data.height / 10);
-  //       console.log(response.data);
-  //       setPokemon(response.data.name);
-  //     });
-
   return (
     <>
       <Head>
         <title>Pokemon - wiktrek</title>
         <meta name="description" content="Random number generator" />
       </Head>
-      <div>
-        <button>button 1</button>
-        <img src={image} alt="image" width={100} height={100} />
-        <p>{pokemon}</p>
-        <button>button 2</button>
-        <img src={image2} alt="image2" />
-        <p>{pokemon2}</p>
+      <div className="text-center">
+        <a>Select which pokemon is taller</a>
+        <div className=" flex items-center justify-center text-center">
+          <div>
+            <img src={image} alt="image" width={200} height={200} />
+            <button>{pokemon}</button>
+          </div>
+          <div>
+            <img src={image2} alt="image2" width={200} height={200} />
+            <button>{pokemon2}</button>
+          </div>
+        </div>
+
         <button onClick={getRandomPokemon}>Get random pokemon</button>
       </div>
     </>
