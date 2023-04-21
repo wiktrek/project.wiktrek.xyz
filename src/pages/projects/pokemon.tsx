@@ -105,7 +105,7 @@ const Pokemon: NextPage = () => {
     <>
       <Head>
         <title>Pokemon - wiktrek</title>
-        <meta name="description" content="Random number generator" />
+        <meta name="description" content="Guess which pokemon is taller" />
       </Head>
       <div className="text-center text-2xl">
         <a>Select which pokemon is taller</a>
