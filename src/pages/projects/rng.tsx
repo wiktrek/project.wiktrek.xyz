@@ -18,6 +18,7 @@ const Rng: NextPage = () => {
       return random;
     }
     const num = getnum();
+    
     console.log();
     if (num === 0) return getnum();
     setResult(`${num}`);
