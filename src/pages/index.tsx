@@ -12,7 +12,10 @@ const Home: NextPage = () => {
       <div className=" items-center justify-center text-center">
         <div>
           <a>I will style this website in the future</a>
-          <ul className="{styles.links}">
+          <ul className="">
+            <li>
+              <Link href="/projects/pokemon">Link shortener</Link>
+            </li>
             <li>
               <a href="https://svelte.wiktrek.xyz">svelte</a>
             </li>
