@@ -14,7 +14,20 @@ const Home: NextPage = () => {
           <a>I will style this website in the future</a>
           <ul className="">
             <li>
-              <Link href="/projects/pokemon">Link shortener</Link>
+              <a href="https://github.com/wiktrek/better-code-editor">
+                better code editor
+              </a>
+            </li>
+            <li>
+              <Link href="/projects/poll">
+                <a>poll app</a>
+              </Link>
+            </li>
+            <li>
+              <Link href="/projects/url">Link shortener</Link>
+            </li>
+            <li>
+              <Link href="/projects/pokemon">pokemon</Link>
             </li>
             <li>
               <a href="https://svelte.wiktrek.xyz">svelte</a>
@@ -40,14 +53,7 @@ const Home: NextPage = () => {
             <li>
               <a href="https://three.wiktrek.xyz">three.js</a>
             </li>
-            <li>
-              <Link href="/projects/poll">
-                <a>poll app</a>
-              </Link>
-            </li>
-            <li>
-              <Link href="/projects/url">Link shortener</Link>
-            </li>
+
             <li>
               <Link href="/projects/calculator">
                 <a>calculator</a>
@@ -69,7 +75,6 @@ const Home: NextPage = () => {
               </Link>
             </li>
             <h1>future Projects</h1>
-
             <li>
               {/* <Link href="/projects"> */}
               <a> Wheel Spinner</a>
