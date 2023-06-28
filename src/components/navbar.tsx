@@ -7,9 +7,7 @@ const Navbar: NextPage = () => {
     <>
       <div className="flex h-4 list-none items-center justify-between p-7 text-xl">
         <li>
-          <a href="https://wiktrek.xyz" target="_blank" rel="noreferrer">
-            wiktrek.xyz
-          </a>
+          <a href="https://wiktrek.xyz">wiktrek.xyz</a>
         </li>
         <li>
           <Link href="/">Projects</Link>

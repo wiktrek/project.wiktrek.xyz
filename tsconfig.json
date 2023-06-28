@@ -21,6 +21,6 @@
     "**/*.tsx",
     "firebaseconfig.ts",
     "src/pages/api/auth/[nextauth].js"
-  ],
+, "app/api/auth/[...auth0]"  ],
   "exclude": ["node_modules"]
 }

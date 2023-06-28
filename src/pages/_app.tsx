@@ -6,7 +6,7 @@ import { UserProvider } from "@auth0/nextjs-auth0";
 import superjson from "superjson";
 import Head from "next/head";
 import React from "react";
-import Navbar from "./components/navbar";
+import Navbar from "../components/navbar";
 
 import { createGlobalStyle } from "styled-components";
 import { config, dom } from "@fortawesome/fontawesome-svg-core";
