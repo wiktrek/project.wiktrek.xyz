@@ -1,6 +1,7 @@
 import * as trpc from "@trpc/server";
 import { z } from "zod";
 import { publicProcedure, router } from "./index";
+import { db} from '../../db/client'
 // import { prisma } from "../../db/client";
 
 // export const questionRouter = trpc
@@ -99,7 +100,7 @@ import { publicProcedure, router } from "./index";
 export const questionRouter = router({
   GetAllMY: publicProcedure.input(z.object({ email: z.string()})).query(async(opts) => {
     const { input } = opts;
-    
+return db.query. 
 
   })
 })
