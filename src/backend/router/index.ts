@@ -1,5 +1,12 @@
-import * as trpc from "@trpc/server";
-import { questionRouter } from "./questions";
-export const appRouter = trpc.router().merge("questions.", questionRouter);
-// export type definition of API
+import { questionRouter } from "./questions"
+import { pollRouter } from "./polls"
+import { initTRPC } from '@trpc/server';
+const t = initTRPC.create();
+ 
+export const router = t.router;
+export const publicProcedure = t.procedure;
+const mergeRouters = t.mergeRouters;
+// import { db } from './db';
+export const appRouter = mergeRouters(pollRouter, questionRouter);
+
 export type AppRouter = typeof appRouter;

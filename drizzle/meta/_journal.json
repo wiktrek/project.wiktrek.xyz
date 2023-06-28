@@ -1,0 +1,13 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1687992503836,
+      "tag": "0000_whole_bulldozer",
+      "breakpoints": true
+    }
+  ]
+}
