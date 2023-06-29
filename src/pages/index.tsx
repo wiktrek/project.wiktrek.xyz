@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 const Home: NextPage = () => {
+
   return (
     <>
       <Head>
@@ -20,7 +21,7 @@ const Home: NextPage = () => {
             </li>
             <li>
               <Link href="/projects/poll">
-                <a>poll app</a>
+                poll app
               </Link>
             </li>
             <li>
@@ -55,23 +56,22 @@ const Home: NextPage = () => {
             </li>
 
             <li>
-              <Link href="/projects/calculator">
-                <a>calculator</a>
+              <Link href="/projects/calculator">calculator
               </Link>
             </li>
             <li>
               <Link href="/projects/rps">
-                <a>rock paper scissors</a>
+                rock paper scissors
               </Link>
             </li>
             <li>
               <Link href="/projects/rng">
-                <a>random number generator</a>
+                random number generator
               </Link>
             </li>
             <li>
               <Link href="/projects/mousetrailer">
-                <a>mouse trailer</a>
+                mouse trailer
               </Link>
             </li>
             <h1>future Projects</h1>

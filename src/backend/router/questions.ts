@@ -1,4 +1,4 @@
-import * as trpc from "@trpc/server";
+// import * as trpc from "@trpc/server";
 import { z } from "zod";
 import { publicProcedure, router } from "./index";
 import { db} from '../../db/client'
@@ -93,14 +93,11 @@ export const questionRouter = router({
         vote: myVote,
         isOwner: question?.ownerEmail === input.email,
       };
-
+``
       if (rest.vote || rest.isOwner) {
-        // const votes = await prisma.vote.groupBy({
-        //   where: { questionId: input.id },
-        //   by: ["choice"],
-        //   _count: true,
-        // });
+
         const votes = await db.select().from(vote).groupBy(sql`${vote.choice}`).having(sql`count(${vote.choice})`)
+        console.log(votes)
         return { ...rest, votes };
       }
 
