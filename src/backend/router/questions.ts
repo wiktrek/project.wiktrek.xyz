@@ -2,8 +2,8 @@ import * as trpc from "@trpc/server";
 import { z } from "zod";
 import { publicProcedure, router } from "./index";
 import { db} from '../../db/client'
-// import { prisma } from "../../db/client";
-
+import { sql } from 'drizzle-orm'
+import {vote} from '../../db/schema'
 // export const questionRouter = trpc
 //   .router()
 //   .query("get-all-my", {
@@ -14,39 +14,6 @@ import { db} from '../../db/client'
 //           ownerEmail: { equals: input.email },
 //         },
 //       })
-//     },
-//   })
-//   .query("get-by-id", {
-//     input: z.object({ id: z.string(), token: z.string(), email: z.string() }),
-//     async resolve({ input }) {
-//       const question = await prisma.pollQuestion.findFirst({
-//         where: {
-//           id: input.id,
-//         },
-//       });
-
-//       const myVote = await prisma.vote.findFirst({
-//         where: {
-//           questionId: input.id,
-//           voterToken: input.token,
-//         },
-//       });
-//       const rest = {
-//         question,
-//         vote: myVote,
-//         isOwner: question?.ownerEmail === input.email,
-//       };
-
-//       if (rest.vote || rest.isOwner) {
-//         const votes = await prisma.vote.groupBy({
-//           where: { questionId: input.id },
-//           by: ["choice"],
-//           _count: true,
-//         });
-//         return { ...rest, votes };
-//       }
-
-//       return { ...rest, votes: undefined };
 //     },
 //   })
 //   .mutation("vote-on-question", {
@@ -99,8 +66,44 @@ import { db} from '../../db/client'
 //   });
 export const questionRouter = router({
   GetAllMY: publicProcedure.input(z.object({ email: z.string()})).query(async(opts) => {
-    const { input } = opts;
-return db.query. 
+      const { input } = opts;
+      return await db.query.pollQuestion.findMany({
+          with: {
+          ownerEmail: input.email,
+        
+        }
+       }
+      )
+    }),
+    GetById: publicProcedure.input(z.object({ id: z.string(), token: z.string(), email: z.string()})).query( async(opts) => {
+      const { input } = opts;
+      const question = await db.query.pollQuestion.findFirst({
+        with: {
+          id: input.id,
+        }
+      })
+      const myVote = await db.query.vote.findFirst({
+        with: {
+          questionId: input.id,
+          voterToken: input.token,
+        },
+      })
+      const rest = {
+        question,
+        vote: myVote,
+        isOwner: question?.ownerEmail === input.email,
+      };
 
-  })
+      if (rest.vote || rest.isOwner) {
+        // const votes = await prisma.vote.groupBy({
+        //   where: { questionId: input.id },
+        //   by: ["choice"],
+        //   _count: true,
+        // });
+        const votes = await db.select().from(vote).groupBy(sql`${vote.choice}`).having(sql`count(${vote.choice})`)
+        return { ...rest, votes };
+      }
+
+      return { ...rest, votes: undefined };
+    })
 })
