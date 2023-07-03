@@ -3,7 +3,7 @@ import copy from "copy-to-clipboard";
 import type { NextPage } from "next";
 import Head from "next/head";
 import React, { useState } from "react";
-import commands_json from "./data/cs_commands.json";
+import commands_json from "../data/cs_commands.json";
 const Cs_commands: NextPage = () => {
   const [result, setResult] = useState("");
   const [commandResult, setCommandResult] = useState([] as string[]);

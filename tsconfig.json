@@ -13,14 +13,19 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true
+    "incremental": true,
+    "paths": {
+      "~/*": ["./src/*"]
+    }
   },
+
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     "firebaseconfig.ts",
-    "src/pages/api/auth/[nextauth].js"
-, "app/api/auth/[...auth0]"  ],
+    "src/pages/api/auth/[nextauth].js",
+    "app/api/auth/[...auth0]"
+  ],
   "exclude": ["node_modules"]
 }

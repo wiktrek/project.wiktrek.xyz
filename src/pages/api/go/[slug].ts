@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { trpc } from "../../../utils/trpc";
+// import { prisma } from "../../../db/client";
 
-import { prisma } from "../../../db/client";
-
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default async function slug(req: NextApiRequest, res: NextApiResponse) {
   const slug = req.query["slug"];
 
   if (!slug || typeof slug !== "string") {
@@ -13,14 +13,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const data = await prisma.shortLink.findFirst({
-    where: {
-      slug: {
-        equals: slug,
-      },
-    },
-  });
+  // const data = await prisma.shortLink.findFirst({
+  //   where: {
+  //     slug: {
+  //       equals: slug,
+  //     },
+  //   },
+  // });
 
+  const data = trpc.short.getSlug.useQuery({ slug: "wiktrek" });
+  // useQuery({ slug: "wiktrek" });
   if (!data) {
     res.statusCode = 404;
 
@@ -33,5 +35,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Cache-Control", "s-maxage=1000000000, stale-while-revalidate");
 
-  return res.redirect(data.url);
-};
+  return res.redirect(data.data?.s.url as string);
+}
