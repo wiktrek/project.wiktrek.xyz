@@ -1,15 +1,16 @@
-import { NextApiRequest, NextApiResponse } from "next";
+// import { NextApiRequest, NextApiResponse } from "next";
 import { trpc } from "../../utils/trpc";
 import { useRouter } from "next/router";
-
 export default function Page() {
   const router = useRouter();
-  const slug = router.query.slug;
+  const slug = router.query.slug as string;
+  console.log(slug);
   const { data } = trpc.short.getSlug.useQuery({
-    slug: "wiktrek",
+    slug: slug,
   });
   if (!data) return <p>Slug not found</p>;
-  return <p>Post: {data?.s?.url}</p>;
+  router.push(data?.s?.url as string);
+  return <p>redirecting...</p>;
 }
 
 // export default async function slug(req: NextApiRequest, res: NextApiResponse) {
