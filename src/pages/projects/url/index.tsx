@@ -44,42 +44,18 @@ const Home: NextPage = () => {
       if (rowId === null) return;
       console.log(rowId);
       removeMutation.mutate({ slug: rowId });
-      // axios
-      //   .post("/api/functions/delete", {
-      //     slug: rowId,
-      //   })
-      //   .then(function (response) {
-      //     setError(response.data);
-      //   })
-      //   .catch(function (error) {
-      //     console.log(error);
-      //   });
-      // setInterval(reload, 3000);
     }
     return;
   };
   const submitData = async (e: React.SyntheticEvent) => {
+    if (slug === "" || url === "") return;
+    console.log(slug, url, user?.name);
     e.preventDefault();
     createMutation.mutate({
        slug: slug,
        url: url, 
        email: user?.name as string
       })
-    // if (slug === "" || url === "") return;
-    // console.log(slug, url, user?.name);
-    // axios
-    //   .post("/api/functions/save", {
-    //     owner: user?.name,
-    //     url: url,
-    //     slug: slug,
-    //   })
-    //   .then(function (response) {
-    //     setError(response.data);
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //   });
-    // setInterval(reload, 3000);
   };
   if (isLoading) {
     return <h1>Loading...</h1>;
