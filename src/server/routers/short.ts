@@ -6,14 +6,14 @@ export const shortRouter = router({
     .input(z.object({ slug: z.string() }))
     .query(async ({ input }) => {
       const { slug } = input;
-      // const s = await db.query.shortLink.findFirst({
-      //     with: {
-      //         slug: slug,
-      //     }
-      // })
-      const s = {
-        url: "ez",
-      };
+      const s = await db.query.shortLink.findFirst({
+        with: {
+          slug: slug,
+        },
+      });
+      // const s = {
+      //   url: "ez",
+      // };
       return { s };
     }),
 });
