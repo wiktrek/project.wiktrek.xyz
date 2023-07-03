@@ -34,7 +34,6 @@ specifiers:
   next: 13.4.7
   postcss: ^8.4.24
   postgres: ^3.3.5
-  prettier: ^2.8.8
   prettier-plugin-tailwindcss: ^0.2.8
   react: 18.2.0
   react-dom: 18.2.0
@@ -75,8 +74,7 @@ dependencies:
   next: 13.4.7_biqbaboplfbrettd7655fr4n2y
   postcss: 8.4.24
   postgres: 3.3.5
-  prettier: 2.8.8
-  prettier-plugin-tailwindcss: 0.2.8_prettier@2.8.8
+  prettier-plugin-tailwindcss: 0.2.8
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-hook-form: 7.45.1_react@18.2.0
@@ -3659,7 +3657,7 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
-  /prettier-plugin-tailwindcss/0.2.8_prettier@2.8.8:
+  /prettier-plugin-tailwindcss/0.2.8:
     resolution: {integrity: sha512-KgPcEnJeIijlMjsA6WwYgRs5rh3/q76oInqtMXBA/EMcamrcYJpyhtRhyX1ayT9hnHlHTuO8sIifHF10WuSDKg==}
     engines: {node: '>=12.17.0'}
     peerDependencies:
@@ -3707,14 +3705,6 @@ packages:
         optional: true
       prettier-plugin-twig-melody:
         optional: true
-    dependencies:
-      prettier: 2.8.8
-    dev: false
-
-  /prettier/2.8.8:
-    resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
-    engines: {node: '>=10.13.0'}
-    hasBin: true
     dev: false
 
   /prop-types/15.8.1:

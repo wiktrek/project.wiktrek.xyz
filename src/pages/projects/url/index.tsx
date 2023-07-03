@@ -1,14 +1,13 @@
 /* eslint-disable */
 import { NextApiRequest, NextApiResponse } from "next";
 import React, { useState } from "react";
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
 import type { NextPage, GetServerSideProps } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import copy from "copy-to-clipboard";
-import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { trpc } from "~/utils/trpc";
 import {
   useUser,
   UserProvider,
@@ -16,16 +15,18 @@ import {
   getSession,
 } from "@auth0/nextjs-auth0";
 import Link from "next/link";
-interface Props {
-  link: any;
-  alllinks: any;
-}
-const prisma = new PrismaClient();
-const Home: NextPage<Props> = ({ link }) => {
+// const prisma = new PrismaClient();
+const Home: NextPage = () => {
   const { user, error, isLoading } = useUser();
   const [slug, setSlug] = useState("");
   const [url, setUrl] = useState("");
   const [newerror, setError] = useState("");
+
+  const removeMutation = trpc.short.removeSlug.useMutation();
+  const createMutation = trpc.short.createSlug.useMutation(); 
+  const { data } = trpc.short.getAllLinks.useQuery({
+    email: user?.name as string,
+  });
   const CopyUrl = async (event: React.SyntheticEvent) => {
     // @ts-ignore: Object is possibly 'null'.
     const rowId = event.currentTarget.parentNode.id;
@@ -42,37 +43,43 @@ const Home: NextPage<Props> = ({ link }) => {
     if (typeof rowId === "string") {
       if (rowId === null) return;
       console.log(rowId);
-      axios
-        .post("/api/functions/delete", {
-          slug: rowId,
-        })
-        .then(function (response) {
-          setError(response.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-      setInterval(reload, 3000);
+      removeMutation.mutate({ slug: rowId });
+      // axios
+      //   .post("/api/functions/delete", {
+      //     slug: rowId,
+      //   })
+      //   .then(function (response) {
+      //     setError(response.data);
+      //   })
+      //   .catch(function (error) {
+      //     console.log(error);
+      //   });
+      // setInterval(reload, 3000);
     }
     return;
   };
   const submitData = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    if (slug === "" || url === "") return;
-    console.log(slug, url, user?.name);
-    axios
-      .post("/api/functions/save", {
-        owner: user?.name,
-        url: url,
-        slug: slug,
+    createMutation.mutate({
+       slug: slug,
+       url: url, 
+       email: user?.name as string
       })
-      .then(function (response) {
-        setError(response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    setInterval(reload, 3000);
+    // if (slug === "" || url === "") return;
+    // console.log(slug, url, user?.name);
+    // axios
+    //   .post("/api/functions/save", {
+    //     owner: user?.name,
+    //     url: url,
+    //     slug: slug,
+    //   })
+    //   .then(function (response) {
+    //     setError(response.data);
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   });
+    // setInterval(reload, 3000);
   };
   if (isLoading) {
     return <h1>Loading...</h1>;
@@ -80,7 +87,7 @@ const Home: NextPage<Props> = ({ link }) => {
   return (
     <>
       <Head>
-        <title>Url shortener- wiktrek</title>
+        <title>Url shortener - wiktrek.xyz</title>
       </Head>
       <UserProvider>
         <main className="mx-auto flex  w-screen flex-col items-center justify-center text-center text-xl text-white">
@@ -112,7 +119,7 @@ const Home: NextPage<Props> = ({ link }) => {
           <div className="">
             <table className="">
               <tbody>
-                {link.map((item: any, index: any) => {
+                {data?.map((item: any, index: any) => {
                   return (
                     <>
                       <div className="" id={item.slug}>
@@ -138,21 +145,21 @@ const Home: NextPage<Props> = ({ link }) => {
   );
 };
 export const getServerSideProps: GetServerSideProps = withPageAuthRequired({
-  async getServerSideProps(ctx) {
-    const session = getSession(ctx.req, ctx.res);
-    if (!session) return <a>error</a>;
-    const shortLink = await prisma.shortLink.findMany({
-      where: {
-        owner: session.user.name,
-      },
-    });
-    var link = JSON.parse(JSON.stringify(shortLink));
-    console.log(link);
-    return {
-      props: {
-        link,
-      },
-    };
-  },
+  // async getServerSideProps(ctx) {
+  //   const session = getSession(ctx.req, ctx.res);
+  //   if (!session) return <a>error</a>;
+  //   const shortLink = await prisma.shortLink.findMany({
+  //     where: {
+  //       owner: session.user.name,
+  //     },
+  //   });
+  //   var link = JSON.parse(JSON.stringify(shortLink));
+  //   console.log(link);
+  //   return {
+  //     props: {
+  //       link,
+  //     },
+  //   };
+  // },
 });
 export default Home;

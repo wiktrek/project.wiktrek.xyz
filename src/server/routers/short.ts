@@ -17,4 +17,25 @@ export const shortRouter = router({
       // };
       return { s };
     }),
+  getAllLinks: procedure
+    .input(z.object({ email: z.string() }))
+    .query(async ({ input }) => {
+      const links = await db.query.shortLink.findMany({
+        where: eq(shortLink.owner, input.email),
+      });
+      return links;
+    }),
+  removeSlug: procedure
+    .input(z.object({ slug: z.string() }))
+    .mutation(async ({ input }) => {
+      const { slug } = input;
+      const deletedSlug = db.delete(shortLink).where(eq(shortLink.slug, slug));
+      return deletedSlug;
+    }),
+    createSlug: procedure.input(z.object({ slug: z.string(), url: z.string(), email: z.string() })).mutation(async ({ input }) => {
+      const { slug, url, email } = input;
+      const createdSlug = db.insert(shortLink).values({ owner: email, slug: slug, url: url });
+      return createdSlug;
+    })
+
 });
