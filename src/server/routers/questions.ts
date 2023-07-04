@@ -70,9 +70,8 @@ export const questionRouter = router({
     .query(async (opts) => {
       const { input } = opts;
       return await db.query.pollQuestion.findMany({
-        with: {
-          ownerEmail: input.email,
-        },
+        where: eq(pollQuestion.ownerEmail, input.email)
+        
       });
     }),
   getById: procedure

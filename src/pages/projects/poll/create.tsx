@@ -14,13 +14,21 @@ const CreateQuestionForm = () => {
   const router = useRouter();
   const { user } = useUser();
 
-  const { mutate } = trpc.useMutation("questions.create", {
-    onSuccess: (data) => {
+  // const { mutate } = trpc.useMutation("questions.create", {
+  //   onSuccess: (data) => {
+  //     console.log(data);
+  //     reset();
+  //     router.push(`/projects/poll/q/${data.id}`);
+  //   },
+  // });
+  const createMutation = trpc.question.createQuestion.useMutation({
+    onSuccess(data) {
       console.log(data);
-      reset();
-      router.push(`/projects/poll/q/${data.id}`);
-    },
+      reset();  
+      router.push(`/projects/poll/q/${data.insertId}`);
+    }
   });
+
   const {
     register,
     handleSubmit,
@@ -49,10 +57,9 @@ const CreateQuestionForm = () => {
         <div className="">
           <form
             onSubmit={handleSubmit((data) => {
-              mutate({
+              createMutation.mutate({
                 question: data.question,
                 email: `${user.name}`,
-
                 options: data.options,
               });
             })}

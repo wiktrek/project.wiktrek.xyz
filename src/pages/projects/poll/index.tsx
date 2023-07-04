@@ -11,15 +11,18 @@ import { trpc } from "../../../utils/trpc";
 const Poll: NextPage = () => {
   const { user } = useUser();
 
-  const { data, isLoading } = trpc.useQuery([
-    "questions.get-all-my",
-    { email: `${user?.name}` },
-  ]);
-  const { mutate } = trpc.useMutation("questions.delete", {
-    onSuccess: (data) => {
-      console.log(data);
-    },
-  });
+  // const { data, isLoading } = trpc.useQuery([
+  //   "questions.get-all-my",
+  //   { email: `${user?.name}` },
+  // ]);
+  const { data, isLoading } = trpc.question.getAllMY.useQuery({ email: `${user?.name}` });
+  const deleteMutation = trpc.question.deleteQuestion.useMutation()
+  
+  // trpc.useMutation("questions.delete", {
+  //   onSuccess: (data) => {
+  //     console.log(data);
+  //   },
+  // });
   if (!user) return <a>No email</a>;
   if (isLoading || !data) return <div>Loading...</div>;
 
@@ -44,7 +47,7 @@ const Poll: NextPage = () => {
                   <button
                     className="text-lg"
                     onClick={() => {
-                      mutate({
+                      deleteMutation.mutate({
                         id: question.id,
                       });
                     }}
