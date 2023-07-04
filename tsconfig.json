@@ -26,6 +26,6 @@
     "firebaseconfig.ts",
     "src/pages/api/auth/[nextauth].js",
     "app/api/auth/[...auth0]"
-  ],
+, "drizzle.config.js"  ],
   "exclude": ["node_modules"]
 }
