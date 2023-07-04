@@ -1,8 +1,8 @@
 // import * as trpc from "@trpc/server";
 import { z } from "zod";
 import { procedure, router } from "../trpc";
-import { db } from "../../db/client";
-import { vote } from "../../db/schema";
+import { db, pollQuestion } from "../../db/client";
+import { vote, pollQuestion } from "~/db/client";
 
 import { eq } from "drizzle-orm";
 // export const questionRouter = trpc
@@ -66,7 +66,7 @@ import { eq } from "drizzle-orm";
 //     },
 //   });
 export const questionRouter = router({
-  GetAllMY: procedure
+  getAllMY: procedure
     .input(z.object({ email: z.string() }))
     .query(async (opts) => {
       const { input } = opts;
@@ -76,7 +76,7 @@ export const questionRouter = router({
         },
       });
     }),
-  GetById: procedure
+  getById: procedure
     .input(z.object({ id: z.string(), token: z.string(), email: z.string() }))
     .query(async (opts) => {
       const { input } = opts;
@@ -98,24 +98,40 @@ export const questionRouter = router({
       };
       ``;
       if (rest.vote || rest.isOwner) {
-        // old code:
-        // i need to rewrite it
-        // const votes = await prisma.vote.groupBy({
-        //   where: { questionId: input.id },
-        //   by: ["choice"], // choice: number
-        //   _count: true,
-        // });
-        // const votes =
-        // console.log(votes)
         const votes = db
           .select()
           .from(vote)
           .where(eq(vote.questionId, input.id))
           .groupBy(vote.choice);
 
+
+        console.log(votes);
         return { ...rest, votes };
       }
 
       return { ...rest, votes: undefined };
     }),
+    voteOn: procedure.input(z.object({
+      questionId: z.string(),
+      option: z.number().min(0).max(10),
+      token: z.string(),
+    })).mutation(({ input }) => {
+      const { questionId, option, token } = input
+      const createdVote = db.insert(vote).values({
+        questionId: questionId, 
+        choice: option, 
+        voterToken: token 
+      })
+      console.log(createdVote)
+      return createdVote
+    }),
+
+    deleteQuestion: procedure.input(z.object({
+      id: z.string()
+    })).mutation(({ input }) => {
+      const { id } = input
+      console.log(id)
+      const deletedQuestion = db.delete(pollQuestion).where(eq(pollQuestion.id, id));
+      return deletedQuestion
+    })
 });
