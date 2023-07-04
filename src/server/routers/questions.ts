@@ -3,7 +3,7 @@ import { z } from "zod";
 import { procedure, router } from "../trpc";
 import { db,vote, pollQuestion  } from "../../db/client";
 
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 // export const questionRouter = trpc
 //   .router()
 //   .query("get-all-my", {
@@ -75,42 +75,32 @@ export const questionRouter = router({
       });
     }),
   getById: procedure
-    .input(z.object({ id: z.string(), token: z.string(), email: z.string() }))
-    .query(async (opts) => {
-      const { input } = opts;
+    .input(z.object({ id: z.number(), token: z.string(), email: z.string() }))
+    .query(async ({ input}) => {
+      const { id, token, email } = input;
       const question = await db.query.pollQuestion.findFirst({
-        with: {
-          id: input.id,
-        },
+        where: eq(pollQuestion.id, id)
       });
-      const myVote = await db.query.vote.findFirst({
-        with: {
-          questionId: input.id,
-          voterToken: input.token,
-        },
-      });
+      const myVote = await db.select().from(vote).where(eq(vote.questionId, id)).where(eq(vote.voterToken, token)).limit(1)
       const rest = {
         question,
-        vote: myVote,
-        isOwner: question?.ownerEmail === input.email,
+        vote: myVote[0],
+        isOwner: question?.ownerEmail === email,
       };
-      ``;
       if (rest.vote || rest.isOwner) {
-        const votes = db
-          .select()
+        const votes = await db
+          .select({ count: sql<number>`count(${vote.choice})`})
           .from(vote)
-          .where(eq(vote.questionId, input.id))
-          .groupBy(vote.choice);
-
-
-        console.log(votes);
+          .where(eq(vote.questionId, id))
+          .groupBy(vote.choice)
+          
         return { ...rest, votes };
       }
 
       return { ...rest, votes: undefined };
     }),
     voteOn: procedure.input(z.object({
-      questionId: z.string(),
+      questionId: z.number(),
       option: z.number().min(0).max(10),
       token: z.string(),
     })).mutation(({ input }) => {
@@ -120,7 +110,6 @@ export const questionRouter = router({
         choice: option, 
         voterToken: token 
       })
-      console.log(createdVote)
       return createdVote
     }),
     createQuestion: procedure.input(z.object({ 
@@ -144,7 +133,6 @@ export const questionRouter = router({
       id: z.number()
     })).mutation(({ input }) => {
       const { id } = input
-      console.log(id)
       const deletedQuestion = db.delete(pollQuestion).where(eq(pollQuestion.id, id));
       return deletedQuestion
     })

@@ -34,7 +34,7 @@ export const shortLink = mysqlTable("ShortLink", {
 export const vote = mysqlTable("Vote", {
 	id: int("id").autoincrement().primaryKey().notNull(),
 	createdAt: datetime("createdAt", { mode: 'string', fsp: 3 }).default(sql`(CURRENT_TIMESTAMP(3))`).notNull(),
-	questionId: varchar("questionId", { length: 191 }).notNull(),
+	questionId: int("questionId").notNull(),
 	voterToken: varchar("voterToken", { length: 255 }).notNull(),
 	choice: int("choice").notNull(),
 },
