@@ -1,15 +1,15 @@
-import { mysqlTable, mysqlSchema, AnyMySqlColumn, index, varchar, datetime, json, tinyint, uniqueIndex, int } from "drizzle-orm/mysql-core"
+import { mysqlTable, mysqlSchema, AnyMySqlColumn, index, varchar, datetime, json, boolean, uniqueIndex, int } from "drizzle-orm/mysql-core"
 import { sql } from "drizzle-orm"
 
 
 export const pollQuestion = mysqlTable("PollQuestion", {
-	id: varchar("id", { length: 191 }).primaryKey().notNull(),
+	id:  int("id").autoincrement().primaryKey().notNull(),
 	createdAt: datetime("createdAt", { mode: 'string', fsp: 3 }).default(sql`(CURRENT_TIMESTAMP(3))`).notNull(),
 	endsAt: datetime("endsAt", { mode: 'string', fsp: 3 }),
 	question: varchar("question", { length: 5000 }).notNull(),
 	options: json("options").notNull(),
 	ownerEmail: varchar("ownerEmail", { length: 255 }).notNull(),
-	end: tinyint("end").notNull(),
+	end: boolean("end").notNull(),
 },
 (table) => {
 	return {

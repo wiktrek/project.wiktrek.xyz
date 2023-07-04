@@ -1,8 +1,7 @@
 // import * as trpc from "@trpc/server";
 import { z } from "zod";
 import { procedure, router } from "../trpc";
-import { db, pollQuestion } from "../../db/client";
-import { vote, pollQuestion } from "~/db/client";
+import { db,vote, pollQuestion  } from "../../db/client";
 
 import { eq } from "drizzle-orm";
 // export const questionRouter = trpc
@@ -133,10 +132,17 @@ export const questionRouter = router({
         .min(2)
         .max(200),
     })).mutation(({input}) => {
-      const {} = input
+      const { question, email, options} = input
+      const createdQuestion = db.insert(pollQuestion).values({
+          question: question,
+          ownerEmail: email,
+          end: false,
+          options: options,
+      })
+      return createdQuestion
     }),
     deleteQuestion: procedure.input(z.object({
-      id: z.string()
+      id: z.number()
     })).mutation(({ input }) => {
       const { id } = input
       console.log(id)
