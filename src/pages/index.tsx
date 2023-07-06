@@ -69,11 +69,6 @@ const Home: NextPage = () => {
                 random number generator
               </Link>
             </li>
-            <li>
-              <Link href="/projects/mousetrailer">
-                mouse trailer
-              </Link>
-            </li>
             <h1>future Projects</h1>
             <li>
               {/* <Link href="/projects"> */}
