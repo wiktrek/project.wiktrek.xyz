@@ -18,14 +18,14 @@ const Home: NextPage = () => {
   }, []);
 
   function removeTodo(e: React.SyntheticEvent) {
-    const todoarr = [{} as Todo];
+    const todo_arr = [{} as Todo];
 
     todos.map((todo) => {
       if (todo.id === e.currentTarget.id) return;
       if (todo.name === "") return;
-      todoarr.push(todo);
+      todo_arr.push(todo);
     });
-    setTodos(todoarr);
+    setTodos(todo_arr);
     // todos.push({ name: name, id: e.currentTarget.id });
     console.log(todos);
   }
@@ -34,13 +34,13 @@ const Home: NextPage = () => {
     if (!input) return;
     const value = (input as HTMLInputElement).value;
     console.log(value);
-    const todoarr = [{} as Todo];
-    todoarr.push({
+    const todo_arr = [{} as Todo];
+    todo_arr.push({
       name: value,
       id: uuidv4(),
     } as Todo);
     todos.map((todo) => {
-      todoarr.push(todo);
+      todo_arr.push(todo);
     });
     localStorage.setItem("todos", JSON.stringify(todos));
     // e.preventDefault();
