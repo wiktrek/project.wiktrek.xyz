@@ -24,7 +24,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           content="wiktrek, wiktrek.xyz, wiktrek website, wiktor, wiktorek, xyz, wiktrek xyz, wiktor, wiktorek, wiktorek website, wiktor website, wiktrek.com, wiktrek.pl, wiktrek.org"
         />
         <meta name="description" content="wiktrek's website" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.svg" />
       </Head>
       <UserProvider>
         <GlobalStyles />
