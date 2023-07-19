@@ -10,9 +10,8 @@ const Home: NextPage = () => {
         <title>Projects - wiktrek.xyz</title>
         <meta name="description" content="wiktrek's projects" />
       </Head>
-      <div className=" items-center justify-center text-center">
+      <div className=" items-center justify-center text-center text-[#0cabc0] text-2xl">
         <div>
-          <a>I will style this website in the future</a>
           <ul className="">
             <li>
               <a href="https://github.com/wiktrek/better-code-editor">
@@ -69,7 +68,7 @@ const Home: NextPage = () => {
                 random number generator
               </Link>
             </li>
-            <h1>future Projects</h1>
+            <h1 className="pt-4">future Projects</h1>
             <li>
               {/* <Link href="/projects"> */}
               <a> Wheel Spinner</a>

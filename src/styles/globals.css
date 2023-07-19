@@ -5,7 +5,7 @@
 }
 @layer base {
   body {
-    @apply bg-[url('/images/background.png')];
-    @apply text-white
+    @apply bg-[#161718];
+    @apply text-[#fbfdfe];
   }
 }
