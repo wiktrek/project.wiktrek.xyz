@@ -3,12 +3,12 @@ import { useRouter } from "next/router";
 import React from "react";
 import type { NextPage } from "next";
 import { trpc } from "../../../../utils/trpc";
-import { useUser } from "@auth0/nextjs-auth0";
 import { useEffect, useState } from "react";
 import Head from "next/head";
+import { useUser } from "@clerk/nextjs";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { v4: uuidv4 } = require("uuid");
-const QuestionPageContenet: React.FC<{
+const QuestionPageContent: React.FC<{
   id: number;
   token: string;
   email: string;
@@ -59,7 +59,7 @@ const QuestionPageContenet: React.FC<{
     else if (voteCount == undefined) return `0%`;
   };
   if (data && data != undefined) getTotalVotes(data.votes);
-  if (user?.name === data.question?.ownerEmail) isOwner = true;
+  if (user?.primaryEmailAddress?.emailAddress  === data.question?.ownerEmail) isOwner = true;
   return (
     <>
       <Head>
@@ -122,7 +122,7 @@ const QuestionPage: NextPage = () => {
   }
   return (
     <>
-      <QuestionPageContenet id={id} token={token} email={`${user?.name}`} />
+      <QuestionPageContent id={id} token={token} email={`${user?.primaryEmailAddress?.emailAddress}`} />
     </>
   );
 };
