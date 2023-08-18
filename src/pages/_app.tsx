@@ -1,11 +1,10 @@
 import "../styles/globals.css";
 import type { AppType }  from 'next/app';
-import { UserProvider } from "@auth0/nextjs-auth0";
 import { trpc } from '../utils/trpc';
 import Head from "next/head";
 import React from "react";
 import Navbar from "../components/navbar";
-
+import { ClerkProvider } from "@clerk/nextjs";
 import { createGlobalStyle } from "styled-components";
 import { config, dom } from "@fortawesome/fontawesome-svg-core";
 
@@ -26,13 +25,15 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <meta name="description" content="wiktrek's website" />
         <link rel="icon" href="/favicon.svg" />
       </Head>
-      <UserProvider>
+      <ClerkProvider>
         <GlobalStyles />
         <Navbar />
         <Component {...pageProps} />
-      </UserProvider>
+      </ClerkProvider>
+
     </>
   );
 }
 
 export default trpc.withTRPC(MyApp);
+

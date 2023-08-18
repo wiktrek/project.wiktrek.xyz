@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { UserButton } from "@clerk/nextjs";
 import React from "react";
 const Home: NextPage = () => {
 
@@ -11,6 +12,7 @@ const Home: NextPage = () => {
         <meta name="description" content="wiktrek's projects" />
       </Head>
       <div className=" items-center justify-center text-center text-[#0cabc0] text-2xl">
+      
         <div>
           <ul className="">
             <li>
@@ -82,3 +84,4 @@ const Home: NextPage = () => {
 };
 
 export default Home;
+

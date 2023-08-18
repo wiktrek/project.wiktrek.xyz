@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-
+import { authMiddleware } from "@clerk/nextjs";
 export function middleware(req: NextRequest) {
   if (req.nextUrl.pathname.startsWith("/q")) {
     const a = `https://project.wiktrek.xyz/projects/poll${req.nextUrl.pathname}`;
@@ -11,3 +11,9 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(a);
   }
 }
+export default authMiddleware({});
+ 
+export const config = {
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+};
+ 
