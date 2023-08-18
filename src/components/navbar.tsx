@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Link from "next/link";
 import React from "react";
-import { UserButton } from "@clerk/nextjs";
+
 const Navbar: NextPage = () => {
   return (
     <>
