@@ -4,7 +4,7 @@ import Link from "next/link";
 import React from "react";
 import { useUser } from "@clerk/nextjs";
 import { trpc } from "../../../utils/trpc";
-import { buildClerkProps, getAuth } from "@clerk/nextjs/dist/types/server";
+import { buildClerkProps, getAuth } from "@clerk/nextjs/server";
 const Poll: NextPage = () => {
   const { user } = useUser();
   const { data, isLoading } = trpc.question.getAllMY.useQuery({ email: `${user?.primaryEmailAddress?.emailAddress}` });
