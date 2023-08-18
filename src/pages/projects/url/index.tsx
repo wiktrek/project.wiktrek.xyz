@@ -1,32 +1,28 @@
 /* eslint-disable */
 import { NextApiRequest, NextApiResponse } from "next";
 import React, { useState } from "react";
-// import { PrismaClient } from "@prisma/client";
+import { getAuth, buildClerkProps } from "@clerk/nextjs/server";
 import type { NextPage, GetServerSideProps } from "next";
 import Head from "next/head";
 import copy from "copy-to-clipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { trpc } from "~/utils/trpc";
-import {
-  useUser,
-  UserProvider,
-  withPageAuthRequired,
-  getSession,
-} from "@auth0/nextjs-auth0";
+import { useAuth, useUser } from "@clerk/nextjs";
+
 import Link from "next/link";
-// const prisma = new PrismaClient();
 const Home: NextPage = () => {
-  const { user, error, isLoading } = useUser();
+    const { isLoaded, isSignedIn, user } = useUser();
   const [slug, setSlug] = useState("");
   const [url, setUrl] = useState("");
-  const [newerror, setError] = useState("");
+  const [newError, setError] = useState("");
 
   const removeMutation = trpc.short.removeSlug.useMutation();
   const createMutation = trpc.short.createSlug.useMutation(); 
   const { data } = trpc.short.getAllLinks.useQuery({
-    email: user?.name as string,
+  email: user?.primaryEmailAddress?.emailAddress as string
   });
+console.log(slug, url, user?.primaryEmailAddress?.emailAddress);
   const CopyUrl = async (event: React.SyntheticEvent) => {
     // @ts-ignore: Object is possibly 'null'.
     const rowId = event.currentTarget.parentNode.id;
@@ -36,7 +32,7 @@ const Home: NextPage = () => {
     window.location.reload();
   }
 
-  const Deletefunction = async (event: React.SyntheticEvent) => {
+  const DeleteFunction = async (event: React.SyntheticEvent) => {
     // @ts-ignore: Object is possibly 'null'.
     const rowId = event.currentTarget.parentNode.id;
 
@@ -45,27 +41,27 @@ const Home: NextPage = () => {
       console.log(rowId);
       removeMutation.mutate({ slug: rowId });
     }
-    return;
+    return reload();
   };
   const submitData = async (e: React.SyntheticEvent) => {
     if (slug === "" || url === "") return;
-    console.log(slug, url, user?.name);
+    console.log(slug, url, user);
     e.preventDefault();
     createMutation.mutate({
        slug: slug,
        url: url, 
-       email: user?.name as string
+       email: user?.primaryEmailAddress?.emailAddress as string
       })
+      reload()
   };
-  if (isLoading) {
-    return <h1>Loading...</h1>;
+  if (!isLoaded || !user) {
+    return <h1>Loading... If it doesn't load try logging in again</h1>;
   }
   return (
     <>
       <Head>
         <title>Url shortener - wiktrek.xyz</title>
       </Head>
-      <UserProvider>
         <main className="mx-auto flex  w-screen flex-col items-center justify-center text-center text-xl text-white">
           <div>
             <h1>create new short url</h1>
@@ -86,11 +82,11 @@ const Home: NextPage = () => {
                 placeholder="url"
                 value={url}
               />
-              <button type="submit" className="formbutton">
+              <button type="submit" className="">
                 Submit
               </button>
             </form>
-            <a>{newerror}</a>
+            <a>{newError}</a>
           </div>
           <div className="">
             <table className="">
@@ -105,7 +101,7 @@ const Home: NextPage = () => {
                         <button onClick={CopyUrl}>
                           <FontAwesomeIcon icon={faClipboard} />
                         </button>
-                        <button onClick={Deletefunction} data-slug={item.slug}>
+                        <button onClick={DeleteFunction} data-slug={item.slug}>
                           <FontAwesomeIcon icon={faTrash} />
                         </button>
                       </div>
@@ -116,26 +112,20 @@ const Home: NextPage = () => {
             </table>
           </div>
         </main>
-      </UserProvider>
     </>
   );
 };
-export const getServerSideProps: GetServerSideProps = withPageAuthRequired({
-  // async getServerSideProps(ctx) {
-  //   const session = getSession(ctx.req, ctx.res);
-  //   if (!session) return <a>error</a>;
-  //   const shortLink = await prisma.shortLink.findMany({
-  //     where: {
-  //       owner: session.user.name,
-  //     },
-  //   });
-  //   var link = JSON.parse(JSON.stringify(shortLink));
-  //   console.log(link);
-  //   return {
-  //     props: {
-  //       link,
-  //     },
-  //   };
-  // },
-});
+
+ 
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { userId } = getAuth(ctx.req);
+ 
+  if (!userId) {
+    // handle user is not logged in.
+  }
+ 
+  // Load any data your application needs for the page using the userId
+  return { props: { ...buildClerkProps(ctx.req) } };
+};
+
 export default Home;

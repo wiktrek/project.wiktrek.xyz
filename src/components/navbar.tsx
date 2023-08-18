@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Link from "next/link";
 import React from "react";
-
+import { UserButton } from "@clerk/nextjs";
 const Navbar: NextPage = () => {
   return (
     <>
@@ -9,11 +9,18 @@ const Navbar: NextPage = () => {
         <li>
           <a href="https://wiktrek.xyz">wiktrek.xyz</a>
         </li>
+
         <li>
           <Link href="/">Projects</Link>
         </li>
       </div>
+      <div className=" right-0 absolute">
+        
+    <UserButton afterSignOutUrl="/"/>
+</div>
+
     </>
+    
   );
 };
 

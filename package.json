@@ -9,7 +9,6 @@
     "export": "next export"
   },
   "dependencies": {
-    "@auth0/nextjs-auth0": "^1.9.3",
     "@clerk/nextjs": "^4.23.2",
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",

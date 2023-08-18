@@ -2,33 +2,19 @@ import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
-import {
-  useUser,
-  UserProvider,
-  withPageAuthRequired,
-} from "@auth0/nextjs-auth0";
+import { useUser } from "@clerk/nextjs";
 import { trpc } from "../../../utils/trpc";
+import { buildClerkProps, getAuth } from "@clerk/nextjs/dist/types/server";
 const Poll: NextPage = () => {
   const { user } = useUser();
-
-  // const { data, isLoading } = trpc.useQuery([
-  //   "questions.get-all-my",
-  //   { email: `${user?.name}` },
-  // ]);
-  const { data, isLoading } = trpc.question.getAllMY.useQuery({ email: `${user?.name}` });
+  const { data, isLoading } = trpc.question.getAllMY.useQuery({ email: `${user?.primaryEmailAddress?.emailAddress}` });
   const deleteMutation = trpc.question.deleteQuestion.useMutation()
   
-  // trpc.useMutation("questions.delete", {
-  //   onSuccess: (data) => {
-  //     console.log(data);
-  //   },
-  // });
   if (!user) return <a>No email</a>;
   if (isLoading || !data) return <div>Loading...</div>;
 
   return (
     <>
-      <UserProvider>
         <Head>
           <title>Poll - wiktrek</title>
           <meta name="description" content="Polls" />
@@ -62,9 +48,17 @@ const Poll: NextPage = () => {
             <button className="w">Create new poll</button>
           </Link>
         </div>
-      </UserProvider>
     </>
   );
 };
-export const getServerSideProps: GetServerSideProps = withPageAuthRequired({});
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { userId } = getAuth(ctx.req);
+ 
+  if (!userId) {
+    // handle user is not logged in.
+  }
+ 
+  // Load any data your application needs for the page using the userId
+  return { props: { ...buildClerkProps(ctx.req) } };
+};
 export default Poll;

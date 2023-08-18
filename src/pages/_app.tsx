@@ -25,7 +25,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <meta name="description" content="wiktrek's website" />
         <link rel="icon" href="/favicon.svg" />
       </Head>
-      <ClerkProvider>
+      <ClerkProvider {...pageProps}>
         <GlobalStyles />
         <Navbar />
         <Component {...pageProps} />

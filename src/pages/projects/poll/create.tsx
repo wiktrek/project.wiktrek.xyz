@@ -1,14 +1,16 @@
 import React from "react";
 import { trpc } from "../../../utils/trpc";
-import { useUser } from "@auth0/nextjs-auth0";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { getAuth, buildClerkProps } from "@clerk/nextjs/server";
+import { useUser } from "@clerk/nextjs";
 import {
   CreateQuestionInputType,
   createQuestionValidator,
 } from "../../../shared/create-question-validator";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import { GetServerSideProps } from "next";
 
 const CreateQuestionForm = () => {
   const router = useRouter();
@@ -50,7 +52,7 @@ const CreateQuestionForm = () => {
   watch("options");
   if (!user) return <a>not logged in</a>;
 
-  if (typeof user.name !== "string") return <a>not logged in</a>;
+  if (typeof user.primaryEmailAddress?.emailAddress !== "string") return <a>not logged in</a>;
   return (
     <>
       <main className="mx-auto flex  w-screen flex-col items-center justify-center text-center text-xl text-white">
@@ -59,7 +61,7 @@ const CreateQuestionForm = () => {
             onSubmit={handleSubmit((data) => {
               createMutation.mutate({
                 question: data.question,
-                email: `${user.name}`,
+                email: `${user.primaryEmailAddress?.emailAddress}`,
                 options: data.options,
               });
             })}
@@ -72,6 +74,7 @@ const CreateQuestionForm = () => {
                 type="text"
                 className="bg-transparent text-white"
                 placeholder="How do magnets work?"
+
               />
             </label>
             <label>
@@ -130,3 +133,13 @@ const QuestionCreator: React.FC = () => {
   );
 };
 export default QuestionCreator;
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { userId } = getAuth(ctx.req);
+ 
+  if (!userId) {
+    // handle user is not logged in.
+  }
+ 
+  // Load any data your application needs for the page using the userId
+  return { props: { ...buildClerkProps(ctx.req) } };
+};
