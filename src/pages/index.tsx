@@ -12,7 +12,10 @@ const Home: NextPage = () => {
         <meta name="description" content="wiktrek's projects" />
       </Head>
       <div className=" items-center justify-center text-center text-[#0cabc0] text-2xl">
-      
+            <div className=" right-0 absolute">
+        
+    <UserButton afterSignOutUrl="/"/>
+</div>
         <div>
           <ul className="">
             <li>

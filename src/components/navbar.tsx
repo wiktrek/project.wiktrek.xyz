@@ -14,10 +14,7 @@ const Navbar: NextPage = () => {
           <Link href="/">Projects</Link>
         </li>
       </div>
-      <div className=" right-0 absolute">
-        
-    <UserButton afterSignOutUrl="/"/>
-</div>
+
 
     </>
     
