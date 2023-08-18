@@ -9,10 +9,14 @@ const Poll: NextPage = () => {
   const { user } = useUser();
   const { data, isLoading } = trpc.question.getAllMY.useQuery({ email: `${user?.primaryEmailAddress?.emailAddress}` });
   const deleteMutation = trpc.question.deleteQuestion.useMutation()
-  
-  if (!user) return <a>No email</a>;
-  if (isLoading || !data) return <div>Loading...</div>;
-
+   
+  if (!user)
+  {
+    return <h1>Loading... If it {"doesn't"} load try  <Link href="/sign-in" className="text-[#0cabc0]">logging in again</Link></h1>;
+  }
+  if (!data || isLoading) {
+    return <a>Loading...</a>
+  }
   return (
     <>
         <Head>

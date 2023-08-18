@@ -54,8 +54,9 @@ console.log(slug, url, user?.primaryEmailAddress?.emailAddress);
       })
       reload()
   };
-  if (!isLoaded || !user) {
-    return <h1>Loading... If it doesn't load try logging in again</h1>;
+  if (!user)
+  {
+    return <h1>Loading... If it {"doesn't"} load try  <Link href="/sign-in" className="text-[#0cabc0]">logging in again</Link></h1>;
   }
   return (
     <>

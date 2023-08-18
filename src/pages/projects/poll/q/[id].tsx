@@ -71,11 +71,12 @@ const QuestionPageContent: React.FC<{
           <div className="">
             <a>{data.question?.question}</a>
             {(data.question?.options as string[])?.map((option, index) => {
+
               if (isOwner || data.vote) {
                 return (
                   <div className="" key={index}>
                     <a>
-                      {getPercent(data?.votes?.[index].count as number)} {` `}
+                      {getPercent(data?.votes?.[index]?.count ?? 0)} {` `}
                       {(option as any).text} -{" "}
                       {data?.votes?.[index]?.count ?? 0} {` `}
                     </a>

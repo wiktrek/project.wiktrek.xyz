@@ -11,6 +11,7 @@ import {
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { GetServerSideProps } from "next";
+import Link from "next/link";
 
 const CreateQuestionForm = () => {
   const router = useRouter();
@@ -50,9 +51,10 @@ const CreateQuestionForm = () => {
   });
   watch("question");
   watch("options");
-  if (!user) return <a>not logged in</a>;
-
-  if (typeof user.primaryEmailAddress?.emailAddress !== "string") return <a>not logged in</a>;
+  if (!user)
+  {
+    return <h1>Loading... If it {"doesn't"} load try  <Link href="/sign-in" className="text-[#0cabc0]">logging in again</Link></h1>;
+  }
   return (
     <>
       <main className="mx-auto flex  w-screen flex-col items-center justify-center text-center text-xl text-white">
