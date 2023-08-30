@@ -4,7 +4,9 @@ await import("./src/env.mjs");
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
-
+  experimental: {
+    esmExternals: false,
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
