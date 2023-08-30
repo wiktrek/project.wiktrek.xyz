@@ -45,20 +45,3 @@ export const shortLink = mysqlTable("ShortLink", {
 		slugIdx: index("ShortLink_slug_idx").on(table.slug),
 	}
 });
-
-export const discordUser = mysqlTable("discordUser", {
-	id: int("id").autoincrement().primaryKey().notNull(),
-	createdAt: datetime("createdAt", { mode: 'string', fsp: 3 }).default(sql`(CURRENT_TIMESTAMP(3))`).notNull(),
-	username: varchar("username", { length: 32 }).notNull(),
-	email: varchar("email", { length: 255}).notNull(),
-	guilds: varchar("guilds", { length: 255 }).notNull(),	
-	friends: varchar("friends", { length: 255}).notNull()
-});
-export const discordGuild = mysqlTable("discordGuild", {
-	id: int("id").autoincrement().primaryKey().notNull(),
-	createdAt: datetime("createdAt", { mode: 'string', fsp: 3 }).default(sql`(CURRENT_TIMESTAMP(3))`).notNull(),
-	name: varchar("name", { length: 32 }).notNull(),
-	owner: varchar("name", { length: 255}),
-	guilds: varchar("guilds", { length: 255 }).notNull(),	
-	friends: varchar("friends", { length: 255}).notNull()
-});
