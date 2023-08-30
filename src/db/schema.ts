@@ -17,6 +17,21 @@ export const pollQuestion = mysqlTable("PollQuestion", {
 	}
 });
 
+export const vote = mysqlTable("Vote", {
+	id: int("id").autoincrement().primaryKey().notNull(),
+	createdAt: datetime("createdAt", { mode: 'string', fsp: 3 }).default(sql`(CURRENT_TIMESTAMP(3))`).notNull(),
+	questionId: int("questionId").notNull(),
+	voterToken: varchar("voterToken", { length: 255 }).notNull(),
+	choice: int("choice").notNull(),
+},
+(table) => {
+	return {
+		voterTokenQuestionIdKey: uniqueIndex("Vote_voterToken_questionId_key").on(table.voterToken, table.questionId),
+		voterTokenIdx: index("Vote_voterToken_idx").on(table.voterToken),
+		questionIdIdx: index("Vote_questionId_idx").on(table.questionId),
+	}
+});
+
 export const shortLink = mysqlTable("ShortLink", {
 	id: int("id").autoincrement().primaryKey().notNull(),
 	createdAt: datetime("createdAt", { mode: 'string', fsp: 3 }).default(sql`(CURRENT_TIMESTAMP(3))`).notNull(),
@@ -31,17 +46,19 @@ export const shortLink = mysqlTable("ShortLink", {
 	}
 });
 
-export const vote = mysqlTable("Vote", {
+export const discordUser = mysqlTable("discordUser", {
 	id: int("id").autoincrement().primaryKey().notNull(),
 	createdAt: datetime("createdAt", { mode: 'string', fsp: 3 }).default(sql`(CURRENT_TIMESTAMP(3))`).notNull(),
-	questionId: int("questionId").notNull(),
-	voterToken: varchar("voterToken", { length: 255 }).notNull(),
-	choice: int("choice").notNull(),
-},
-(table) => {
-	return {
-		voterTokenQuestionIdKey: uniqueIndex("Vote_voterToken_questionId_key").on(table.voterToken, table.questionId),
-		voterTokenIdx: index("Vote_voterToken_idx").on(table.voterToken),
-		questionIdIdx: index("Vote_questionId_idx").on(table.questionId),
-	}
+	username: varchar("username", { length: 32 }).notNull(),
+	email: varchar("email", { length: 255}).notNull(),
+	guilds: varchar("guilds", { length: 255 }).notNull(),	
+	friends: varchar("friends", { length: 255}).notNull()
+});
+export const discordGuild = mysqlTable("discordGuild", {
+	id: int("id").autoincrement().primaryKey().notNull(),
+	createdAt: datetime("createdAt", { mode: 'string', fsp: 3 }).default(sql`(CURRENT_TIMESTAMP(3))`).notNull(),
+	name: varchar("name", { length: 32 }).notNull(),
+	owner: varchar("name", { length: 255}),
+	guilds: varchar("guilds", { length: 255 }).notNull(),	
+	friends: varchar("friends", { length: 255}).notNull()
 });
