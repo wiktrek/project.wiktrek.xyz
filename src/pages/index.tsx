@@ -32,9 +32,6 @@ const Home: NextPage = () => {
               <Link href="/projects/url">Link shortener</Link>
             </li>
             <li>
-              <Link href="/projects/discord">Discord clone</Link>
-            </li>
-            <li>
               <Link href="/projects/pokemon">pokemon</Link>
             </li>
             <li>
