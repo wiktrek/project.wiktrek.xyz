@@ -53,7 +53,7 @@ const CreateQuestionForm = () => {
   watch("options");
   if (!user)
   {
-    return <h1>Loading... If it {"doesn't"} load try  <Link href="/sign-in" className="text-[#0cabc0]">logging in again</Link></h1>;
+    return <h1>Loading... If it {"doesn't"} load try  <Link href="/sign-in" className="text-[#767dc1]">logging in again</Link></h1>;
   }
   return (
     <>
