@@ -53,7 +53,7 @@ const Home: NextPage = () => {
               <a href="https://info.wiktrek.xyz">info</a>
             </li>
             <li>
-              <a href="https://term.wiktrek.xyz">Terminal</a>
+              <Link href="/projects/term">Terminal</Link>
             </li>
             <li>
               <a href="https://three.wiktrek.xyz">three.js</a>
