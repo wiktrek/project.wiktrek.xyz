@@ -28,7 +28,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       <ClerkProvider {...pageProps}>
         <GlobalStyles />
         <Navbar />
-        <Component {...pageProps} />
+        <Component {...pageProps}/>
       </ClerkProvider>
 
     </>
