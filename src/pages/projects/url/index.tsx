@@ -26,7 +26,7 @@ console.log(slug, url, user?.primaryEmailAddress?.emailAddress);
   const CopyUrl = async (event: React.SyntheticEvent) => {
     // @ts-ignore: Object is possibly 'null'.
     const rowId = event.currentTarget.parentNode.id;
-    copy(`https://wiktrek.xyz/go/${rowId}`);
+    copy(`https://project.wiktrek.xyz/go/${rowId}`);
   };
   function reload() {
     window.location.reload();
