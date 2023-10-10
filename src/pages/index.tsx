@@ -37,7 +37,13 @@ const Home: NextPage = () => {
               <a href="https://svelte.wiktrek.xyz">svelte</a>
             </li>
             <li>
-              <a href="https://rust.wiktrek.xyz">rust api</a>
+              <a href="https://info.wiktrek.xyz">info</a>
+            </li>
+            <li>
+              <a href="https://github.com/wiktrek/password.rs">password manager</a>
+            </li>
+            <li>
+              <a href="https://github.com/wiktrek/rustapi">rust api</a>
             </li>
             <li>
               <a href="https://github.com/wiktrek/wiktrekbot">wiktrekbot</a>
@@ -49,15 +55,11 @@ const Home: NextPage = () => {
               <a href="https://github.com/wiktrek/electron">electron app</a>
             </li>
             <li>
-              <a href="https://info.wiktrek.xyz">info</a>
-            </li>
-            <li>
               <Link href="/projects/term">Terminal</Link>
             </li>
             <li>
               <a href="https://three.wiktrek.xyz">three.js</a>
             </li>
-
             <li>
               <Link href="/projects/calculator">calculator
               </Link>
