@@ -15,9 +15,10 @@ const GlobalStyles = createGlobalStyle`
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
-    <>
+    <div translate="no" lang="en">
       <Head>
         <title>wiktrek.xyz</title>
+        <meta name="google" content="notranslate" />
         <meta
           name="keywords"
           content="wiktrek, wiktrek.xyz, wiktrek website, wiktor, wiktorek, xyz, wiktrek xyz, wiktor, wiktorek, wiktorek website, wiktor website, wiktrek.com, wiktrek.pl, wiktrek.org"
@@ -30,8 +31,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <Navbar />
         <Component {...pageProps}/>
       </ClerkProvider>
-
-    </>
+    </div>
   );
 }
 
