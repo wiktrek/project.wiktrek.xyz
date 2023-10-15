@@ -1,5 +1,6 @@
 import { router } from "./trpc";
 import { questionRouter } from "./routers/questions";
+import { recipeRouter } from "./routers/recipe";
 import { shortRouter } from "./routers/short";
 /**
  * This is the primary router for your server.
@@ -8,6 +9,7 @@ import { shortRouter } from "./routers/short";
  */
 export const appRouter = router({
   question: questionRouter,
+  recipe: recipeRouter,
   short: shortRouter,
 });
 

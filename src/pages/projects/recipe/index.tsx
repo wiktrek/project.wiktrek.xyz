@@ -3,11 +3,11 @@ import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 import { useUser } from "@clerk/nextjs";
-import { trpc } from "../../../utils/trpc";
+import { trpc } from "~/utils/trpc";
 import { buildClerkProps, getAuth } from "@clerk/nextjs/server";
 const Recipe: NextPage = () => {
   const { user } = useUser();
-  const { data, isLoading } = trpc.question.getAllMY.useQuery({ email: `${user?.primaryEmailAddress?.emailAddress}` });
+  const { data, isLoading } = trpc.recipe.getAllMY.useQuery({ email: `${user?.primaryEmailAddress?.emailAddress}` });
   if (!user)
   {
     return <h1>Loading... If it {"doesn't"} load try  <Link href="/sign-in" className="text-[#767dc1]">logging in again</Link></h1>;
@@ -23,6 +23,11 @@ const Recipe: NextPage = () => {
         </Head>
         <div className="items-center justify-center text-center">
          <a>Recipe</a>
+         {data.map((e: { name: string }) => {
+          return (
+        <p key="e">{e.name}</p>)
+          
+})}
         </div>
     </>
   );

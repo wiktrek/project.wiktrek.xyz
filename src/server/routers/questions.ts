@@ -63,7 +63,7 @@ export const questionRouter = router({
       const createdQuestion = db.insert(pollQuestion).values({
           question: question,
           ownerEmail: email,
-          end: false,
+          end: 0,
           options: options,
       })
       return createdQuestion

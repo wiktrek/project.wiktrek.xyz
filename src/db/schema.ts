@@ -1,4 +1,4 @@
-import { mysqlTable, index, varchar, datetime, json, boolean, uniqueIndex, int } from "drizzle-orm/mysql-core"
+import { mysqlTable, index, varchar, datetime, json,  uniqueIndex, int, tinyint, primaryKey } from "drizzle-orm/mysql-core"
 import { sql } from "drizzle-orm"
 
 
@@ -9,11 +9,12 @@ export const pollQuestion = mysqlTable("PollQuestion", {
 	question: varchar("question", { length: 5000 }).notNull(),
 	options: json("options").notNull(),
 	ownerEmail: varchar("ownerEmail", { length: 255 }).notNull(),
-	end: boolean("end").notNull(),
+	end: tinyint("end").notNull(),
 },
 (table) => {
 	return {
 		ownerEmailIdx: index("PollQuestion_ownerEmail_idx").on(table.ownerEmail),
+		pollQuestionId: primaryKey(table.id),
 	}
 });
 
@@ -45,3 +46,17 @@ export const shortLink = mysqlTable("ShortLink", {
 		slugIdx: index("ShortLink_slug_idx").on(table.slug),
 	}
 });
+export const recipe = mysqlTable("Recipe", {
+	id: int("id").autoincrement().primaryKey().notNull(),
+	rating: int("rating").notNull(),
+	name: varchar("name", { length: 255}).notNull(),
+	description: varchar("description", { length: 255}),
+	ingredients: varchar("ingredients", { length: 255}).notNull(),
+	owner: varchar("owner", { length: 255}).notNull(),
+},
+	(table) => {
+	return {
+		idKey: uniqueIndex("Recipe_id_key").on(table.id),
+		ownerIdx: index("Recipe_owner_idx").on(table.owner),
+	}
+})

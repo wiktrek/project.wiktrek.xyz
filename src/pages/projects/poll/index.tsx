@@ -3,7 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 import { useUser } from "@clerk/nextjs";
-import { trpc } from "../../../utils/trpc";
+import { trpc } from "~/utils/trpc";
 import { buildClerkProps, getAuth } from "@clerk/nextjs/server";
 const Poll: NextPage = () => {
   const { user } = useUser();
