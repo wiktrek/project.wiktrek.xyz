@@ -16,14 +16,6 @@ import Link from "next/link";
 const CreateQuestionForm = () => {
   const router = useRouter();
   const { user } = useUser();
-
-  // const { mutate } = trpc.useMutation("questions.create", {
-  //   onSuccess: (data) => {
-  //     console.log(data);
-  //     reset();
-  //     router.push(`/projects/poll/q/${data.id}`);
-  //   },
-  // });
   const createMutation = trpc.question.createQuestion.useMutation({
     onSuccess(data) {
       console.log(data);
