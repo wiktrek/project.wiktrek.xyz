@@ -76,6 +76,10 @@ const Home: NextPage = () => {
             </li>
             <h1 className="pt-4">future Projects</h1>
             <li>
+
+              {/* <Link href="/projects/recipe"> */}
+              <a>Recipe</a>
+              { /* </Link> */}
               {/* <Link href="/projects"> */}
               <a> Wheel Spinner</a>
               {/* </Link> */}
