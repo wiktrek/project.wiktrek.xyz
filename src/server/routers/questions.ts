@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { procedure, router } from "../trpc";
-import { db,vote, pollQuestion  } from "../../db/client";
+import { db,vote, pollQuestion  } from "~/db/client";
 
 import { eq, sql } from "drizzle-orm";
 export const questionRouter = router({

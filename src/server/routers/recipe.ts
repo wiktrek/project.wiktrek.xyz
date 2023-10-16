@@ -19,6 +19,30 @@ export const recipeRouter = router({
         where: eq(recipe.id, input.id),
       });
     }),
+    createRecipe: procedure.input(z.object({
+      name: z.string(),
+      description: z.string(),
+      ingredients: z.string(),
+      email: z.string(),
+    })).mutation(({ input }) => {
+      const createdRecipe = db.insert(recipe).values({
+        name: input.name,
+        rating: 0,
+        description: input.description,
+        ingredients: input.ingredients,
+        owner: input.email,
+      })
+      return createdRecipe
+    }),
+    ChangeRating: procedure.input(z.object({
+      rating: z.number(),
+      id: z.number(),
+    })).mutation(({ input }) => {
+      const editedRecipe = db.update(recipe).set({
+        id: input.rating,
+      }).where(eq(recipe.id, input.id))
+      return editedRecipe
+    })
 });
 
 
