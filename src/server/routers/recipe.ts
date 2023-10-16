@@ -34,12 +34,12 @@ export const recipeRouter = router({
       })
       return createdRecipe
     }),
-    ChangeRating: procedure.input(z.object({
+    changeRating: procedure.input(z.object({
       rating: z.number(),
       id: z.number(),
     })).mutation(({ input }) => {
       const editedRecipe = db.update(recipe).set({
-        id: input.rating,
+        rating: input.rating,
       }).where(eq(recipe.id, input.id))
       return editedRecipe
     })
