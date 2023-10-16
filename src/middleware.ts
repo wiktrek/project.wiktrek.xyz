@@ -7,11 +7,14 @@ const projects = [
   "url"
 ]
 function middleware(req: NextRequest) {
-  if (req.nextUrl.pathname.startsWith("/q")) {
+  if (req.nextUrl.pathname.startsWith("/q/")) {
     const a = `https://project.wiktrek.xyz/projects/poll${req.nextUrl.pathname}`;
     return NextResponse.redirect(a);
   }
-
+  if (req.nextUrl.pathname.startsWith("/r/")) {
+    const a = `https://project.wiktrek.xyz/projects/recipe${req.nextUrl.pathname}`;
+    return NextResponse.redirect(a);
+  }
    for (let i = 0; i < projects.length; i++) {
     if (req.nextUrl.pathname === '/' + projects[i]) {
   const a = `https://project.wiktrek.xyz/projects/${projects[i]}`;
