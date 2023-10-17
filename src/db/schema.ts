@@ -47,12 +47,13 @@ export const shortLink = mysqlTable("ShortLink", {
 	}
 });
 export const recipe = mysqlTable("Recipe", {
-	id: int("id").autoincrement().primaryKey().notNull(),
+	id: int("id").autoincrement().notNull(),
 	rating: int("rating").notNull(),
-	name: varchar("name", { length: 255}).notNull(),
-	description: varchar("description", { length: 255}),
-	ingredients: varchar("ingredients", { length: 255}).notNull(),
-	owner: varchar("owner", { length: 255}).notNull(),
+	name: varchar("name", { length: 255 }).notNull(),
+	description: varchar("description", { length: 255 }),
+	ingredients: json("ingredients").notNull(),
+	directions: json("directions").notNull(),
+	owner: varchar("owner", { length: 255 }).notNull(),
 },
 	(table) => {
 	return {

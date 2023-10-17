@@ -22,14 +22,21 @@ export const recipeRouter = router({
     createRecipe: procedure.input(z.object({
       name: z.string(),
       description: z.string(),
-      ingredients: z.string(),
       email: z.string(),
+      directions: z.array(z.object({ step: z.string().min(1).max(200) }))
+        .min(2)
+        .max(200),
+      ingredients: z
+        .array(z.object({ text: z.string().min(1).max(200) }))
+        .min(2)
+        .max(200),
     })).mutation(({ input }) => {
       const createdRecipe = db.insert(recipe).values({
         name: input.name,
         rating: 0,
         description: input.description,
         ingredients: input.ingredients,
+        directions: input.directions,
         owner: input.email,
       })
       return createdRecipe
