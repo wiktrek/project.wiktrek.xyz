@@ -8,7 +8,7 @@ const recipeSchema = z.object({
       description: z.string(),
       email: z.string(),
       recipe: z.number(),
-      directions: z.array(z.object({ step: z.string().min(1).max(200), number: z.number() }))
+      directions: z.array(z.object({ name: z.string().min(1).max(200), number: z.number(), step: z.string().min(1).max(200)}))
         .min(1)
         .max(200),
       ingredients: z

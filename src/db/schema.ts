@@ -47,7 +47,7 @@ export const shortLink = mysqlTable("ShortLink", {
 	}
 });
 export const recipe = mysqlTable("Recipe", {
-	id: int("id").autoincrement().notNull(),
+	id: int("id").autoincrement().primaryKey().notNull(),
 	rating: int("rating").notNull(),
 	name: varchar("name", { length: 255 }).notNull(),
 	description: varchar("description", { length: 255 }),
