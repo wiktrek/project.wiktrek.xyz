@@ -3,6 +3,20 @@ import { procedure, router } from "../trpc";
 import { db, recipe  } from "~/db/client";
 
 import { eq,} from "drizzle-orm";
+const recipeSchema = z.object({
+      name: z.string(),
+      description: z.string(),
+      email: z.string(),
+      recipe: z.number(),
+      directions: z.array(z.object({ step: z.string().min(1).max(200), number: z.number() }))
+        .min(1)
+        .max(200),
+      ingredients: z
+        .array(z.object({ ingredient: z.string().min(1).max(200), amount: z.number() }))
+        .min(2)
+        .max(200)}
+        )
+export type recipeType = z.infer<typeof recipeSchema>
 export const recipeRouter = router({
   getAllMY: procedure
     .input(z.object({ email: z.string() }))
@@ -19,18 +33,8 @@ export const recipeRouter = router({
         where: eq(recipe.id, input.id),
       });
     }),
-    createRecipe: procedure.input(z.object({
-      name: z.string(),
-      description: z.string(),
-      email: z.string(),
-      directions: z.array(z.object({ step: z.string().min(1).max(200), number: z.number() }))
-        .min(1)
-        .max(200),
-      ingredients: z
-        .array(z.object({ ingredient: z.string().min(1).max(200) }))
-        .min(2)
-        .max(200),
-    })).mutation(({ input }) => {
+    createRecipe: procedure.input(recipeSchema)
+    .mutation(({ input }) => {
       const createdRecipe = db.insert(recipe).values({
         name: input.name,
         rating: 0,
