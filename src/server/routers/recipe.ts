@@ -23,11 +23,11 @@ export const recipeRouter = router({
       name: z.string(),
       description: z.string(),
       email: z.string(),
-      directions: z.array(z.object({ step: z.string().min(1).max(200) }))
-        .min(2)
+      directions: z.array(z.object({ step: z.string().min(1).max(200), number: z.number() }))
+        .min(1)
         .max(200),
       ingredients: z
-        .array(z.object({ text: z.string().min(1).max(200) }))
+        .array(z.object({ ingredient: z.string().min(1).max(200) }))
         .min(2)
         .max(200),
     })).mutation(({ input }) => {
