@@ -1,7 +1,9 @@
 import { z } from "zod";
 import { procedure, router } from "../trpc";
 import { db, recipe  } from "~/db/client";
-
+/* 
+  recipe router
+*/
 import { eq,} from "drizzle-orm";
 const recipeSchema = z.object({
       name: z.string(),

@@ -1,4 +1,4 @@
-import { mysqlTable, index, primaryKey, int, datetime, varchar, json, tinyint, unique } from "drizzle-orm/mysql-core"
+import { mysqlTable, mysqlSchema, AnyMySqlColumn, index, primaryKey, int, datetime, varchar, json, tinyint, unique } from "drizzle-orm/mysql-core"
 import { sql } from "drizzle-orm"
 
 
@@ -24,11 +24,12 @@ export const recipe = mysqlTable("Recipe", {
 	name: varchar("name", { length: 255 }).notNull(),
 	description: varchar("description", { length: 255 }),
 	ingredients: json("ingredients").notNull(),
-	directions: json("directions").notNull(),
 	owner: varchar("owner", { length: 255 }).notNull(),
+	directions: json("directions").notNull(),
 },
 (table) => {
 	return {
+		ownerIdx: index("Recipe_owner_idx").on(table.owner),
 		recipeId: primaryKey(table.id),
 		recipeIdKey: unique("Recipe_id_key").on(table.id),
 	}
@@ -36,7 +37,7 @@ export const recipe = mysqlTable("Recipe", {
 
 export const shortLink = mysqlTable("ShortLink", {
 	id: int("id").autoincrement().notNull(),
-	createdAt: datetime("createdAt", { mode: 'string', fsp: 3 }).default(sql`CURRENT_TIMESTAMP(3)`).notNull(),
+	createdAt: datetime("createdAt", { mode: 'string', fsp: 3 }).default(sql`now(3)`).notNull(),
 	owner: varchar("owner", { length: 191 }).notNull(),
 	url: varchar("url", { length: 255 }).notNull(),
 	slug: varchar("slug", { length: 191 }).notNull(),
@@ -51,7 +52,7 @@ export const shortLink = mysqlTable("ShortLink", {
 
 export const vote = mysqlTable("Vote", {
 	id: int("id").autoincrement().notNull(),
-	createdAt: datetime("createdAt", { mode: 'string', fsp: 3 }).default(sql`CURRENT_TIMESTAMP(3)`).notNull(),
+	createdAt: datetime("createdAt", { mode: 'string', fsp: 3 }).default(sql`now(3)`).notNull(),
 	questionId: int("questionId").notNull(),
 	voterToken: varchar("voterToken", { length: 255 }).notNull(),
 	choice: int("choice").notNull(),
