@@ -23,10 +23,12 @@ const Recipe: NextPage = () => {
         </Head>
         <div className="items-center justify-center text-center">
          <a>Recipe</a>
-         {data.map((e: { name: string }) => {
+         {data.map((e: { name: string, id: number }) => {
           return (
-        <p key="e">{e.name}</p>)
-          
+        <p key="e">
+          <Link href={`/projects/recipe/r/${e.id}`}>
+          {e.name}
+            </Link></p>)
 })}
         </div>
     </>
