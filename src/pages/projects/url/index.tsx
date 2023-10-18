@@ -56,7 +56,7 @@ console.log(slug, url, user?.primaryEmailAddress?.emailAddress);
   };
   if (!user)
   {
-    return <h1 className="text-3xl">Loading... If it {"doesn't"} load try  <Link href="/sign-in" className="text-[#767dc1] font-bold">logging in again</Link></h1>;
+    return <h1 className="text-3xl">Loading... If it {"doesn't"} load try  <Link href="/sign-in" className="text-primary-500 font-bold">logging in again</Link></h1>;
   }
   return (
     <>

@@ -11,7 +11,7 @@ const Home: NextPage = () => {
         <title>Projects - wiktrek.xyz</title>
         <meta name="description" content="wiktrek's projects" />
       </Head>
-      <div className=" items-center justify-center text-center text-[#767dc1] text-3xl font-medium">
+      <div className=" items-center justify-center text-center text-primary-500 text-3xl font-medium">
         <div className=" right-0 absolute">
           <UserButton afterSignOutUrl="/"/>
         </div>

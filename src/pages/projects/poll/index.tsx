@@ -12,7 +12,7 @@ const Poll: NextPage = () => {
    
   if (!user)
   {
-    return <h1>Loading... If it {"doesn't"} load try  <Link href="/sign-in" className="text-[#767dc1]">logging in again</Link></h1>;
+    return <h1>Loading... If it {"doesn't"} load try  <Link href="/sign-in" className="text-primary-500">logging in again</Link></h1>;
   }
   if (!data || isLoading) {
     return <a>Loading...</a>
@@ -23,7 +23,7 @@ const Poll: NextPage = () => {
           <title>Poll - wiktrek</title>
           <meta name="description" content="Polls" />
         </Head>
-        <div className="items-center justify-center text-center">
+        <div className="items-center justify-center text-center text-2xl">
           <div className="">
             {data.map((question) => {
               return (

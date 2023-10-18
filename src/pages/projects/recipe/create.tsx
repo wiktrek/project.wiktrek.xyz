@@ -10,7 +10,7 @@ const Recipe: NextPage = () => {
   const { data, isLoading } = trpc.recipe.getAllMY.useQuery({ email: `${user?.primaryEmailAddress?.emailAddress}` });
   if (!user)
   {
-    return <h1>Loading... If it {"doesn't"} load try  <Link href="/sign-in" className="text-[#767dc1]">logging in again</Link></h1>;
+    return <h1>Loading... If it {"doesn't"} load try  <Link href="/sign-in" className="text-primary-500">logging in again</Link></h1>;
   }
   if (!data || isLoading) {
     return <a>Loading...</a>
