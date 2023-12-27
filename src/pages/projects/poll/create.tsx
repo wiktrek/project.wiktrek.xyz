@@ -1,5 +1,5 @@
 import React from "react";
-import { trpc } from "../../../utils/trpc";
+import { trpc } from "~/utils/trpc";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getAuth, buildClerkProps } from "@clerk/nextjs/server";
@@ -7,12 +7,12 @@ import { useUser } from "@clerk/nextjs";
 import {
   CreateQuestionInputType,
   createQuestionValidator,
-} from "../../../shared/create-question-validator";
+} from "~/shared/create-question-validator";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
-
+import { Input } from "~/components/ui/input"
 const CreateQuestionForm = () => {
   const router = useRouter();
   const { user } = useUser();
@@ -61,12 +61,11 @@ const CreateQuestionForm = () => {
             })}
             className=""
           >
-            <label className="grid">
+            <label className="grid pb-2">
               <span>Question</span>
-              <input
+              <Input
                 {...register("question")}
                 type="text"
-                className="bg-transparent text-white"
                 placeholder="How do magnets work?"
 
               />
@@ -75,13 +74,12 @@ const CreateQuestionForm = () => {
               {fields.map((field, index) => {
                 return (
                   <div key={field.id}>
-                    <section className={"section"} key={field.id}>
-                      <input
-                        placeholder="options"
+                    <section className="flex pt-1" key={field.id}>
+                      <Input
+                        placeholder="Option"
                         {...register(`options.${index}.text`, {
                           required: true,
                         })}
-                        className="bg-transparent text-white"
                       />
                       <button id="" type="button" onClick={() => remove(index)}>
                         X

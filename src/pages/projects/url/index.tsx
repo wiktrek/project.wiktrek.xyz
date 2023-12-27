@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { trpc } from "~/utils/trpc";
 import { useAuth, useUser } from "@clerk/nextjs";
-
+import { Input } from "~/components/ui/input"
 import Link from "next/link";
 const Home: NextPage = () => {
     const { isLoaded, isSignedIn, user } = useUser();
@@ -68,19 +68,21 @@ console.log(slug, url, user?.primaryEmailAddress?.emailAddress);
             <h1>create new short url</h1>
             <Link href="/api/auth/logout">logout</Link>
             <form onSubmit={submitData}>
-              <input
-                className="text-black"
+              <div className="pb-1">
+              <Input
                 autoFocus
                 onChange={(e) => setSlug(e.target.value)}
                 placeholder="slug"
                 type="text"
                 value={slug}
               />
-              <input
-                className="text-black"
+              </div>
+
+              <Input
                 type="url"
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="url"
+                className=""
                 value={url}
               />
               <button type="submit" className="">
