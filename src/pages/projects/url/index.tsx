@@ -10,6 +10,7 @@ import { faClipboard, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { trpc } from "~/utils/trpc";
 import { useAuth, useUser } from "@clerk/nextjs";
 import { Input } from "~/components/ui/input"
+import { toast } from "sonner"
 import Link from "next/link";
 const Home: NextPage = () => {
     const { isLoaded, isSignedIn, user } = useUser();
@@ -52,7 +53,7 @@ console.log(slug, url, user?.primaryEmailAddress?.emailAddress);
        url: url, 
        email: user?.primaryEmailAddress?.emailAddress as string
       })
-      reload()
+  toast("Slug has been created.")
   };
   if (!user)
   {

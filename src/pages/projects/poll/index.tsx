@@ -5,6 +5,7 @@ import React from "react";
 import { useUser } from "@clerk/nextjs";
 import { trpc } from "~/utils/trpc";
 import { buildClerkProps, getAuth } from "@clerk/nextjs/server";
+import { toast } from "sonner"
 const Poll: NextPage = () => {
   const { user } = useUser();
   const { data, isLoading } = trpc.question.getAllMY.useQuery({ email: `${user?.primaryEmailAddress?.emailAddress}` });
@@ -40,6 +41,7 @@ const Poll: NextPage = () => {
                       deleteMutation.mutate({
                         id: question.id,
                       });
+            toast("Question has been deleted.")
                     }}
                   >
                     Delete

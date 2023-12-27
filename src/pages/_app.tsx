@@ -7,7 +7,7 @@ import Navbar from "../components/navbar";
 import { ClerkProvider } from "@clerk/nextjs";
 import { createGlobalStyle } from "styled-components";
 import { config, dom } from "@fortawesome/fontawesome-svg-core";
-
+import { Toaster } from "~/components/ui/sonner"
 config.autoAddCss = false;
 const GlobalStyles = createGlobalStyle`
     ${dom.css()}
@@ -30,6 +30,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         <GlobalStyles />
         <Navbar />
         <Component {...pageProps}/>
+        <Toaster />
       </ClerkProvider>
     </div>
   );

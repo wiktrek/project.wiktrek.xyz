@@ -13,6 +13,7 @@ import Head from "next/head";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { Input } from "~/components/ui/input"
+import { toast } from "sonner"
 const CreateQuestionForm = () => {
   const router = useRouter();
   const { user } = useUser();
@@ -21,7 +22,9 @@ const CreateQuestionForm = () => {
       console.log(data);
       reset();  
       router.push(`/projects/poll/q/${data.insertId}`);
+  toast("Question has been created.")
     }
+
   });
 
   const {
