@@ -8,6 +8,7 @@ import copy from "copy-to-clipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { trpc } from "~/utils/trpc";
+import { redirect } from 'next/navigation'
 import { useAuth, useUser } from "@clerk/nextjs";
 import { Input } from "~/components/ui/input"
 import { toast } from "sonner"
@@ -125,6 +126,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { userId } = getAuth(ctx.req);
  
   if (!userId) {
+      return {
+      redirect: {
+        destination: '/sign-in',
+        permanent: false,
+      },
+    }
     // handle user is not logged in.
   }
  

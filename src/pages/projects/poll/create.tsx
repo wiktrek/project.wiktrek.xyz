@@ -133,6 +133,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
  
   if (!userId) {
     // handle user is not logged in.
+      return {
+      redirect: {
+        destination: '/sign-in',
+        permanent: false,
+      },
+    }
   }
  
   // Load any data your application needs for the page using the userId
