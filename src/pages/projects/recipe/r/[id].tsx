@@ -4,7 +4,7 @@ import { useAuth, useUser } from "@clerk/nextjs";
 import { getAuth, buildClerkProps } from "@clerk/nextjs/server";
 // import { type recipeType } from "~/server/routers/recipe";
 import { useRouter } from "next/router";
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownLong, faUpLong } from "@fortawesome/free-solid-svg-icons";
 import { GetServerSideProps } from "next";
@@ -12,8 +12,11 @@ export default function Page() {
   const router = useRouter();
   const id = Number(router.query.id);
   const { data, isLoading } = trpc.recipe.getById.useQuery({id});
-  const [rating, setRating] = useState(data?.rating as number || 0);
+  const [rating, setRating] = useState(data?.rating|| 0);
   const ratingMutation = trpc.recipe.changeRating.useMutation();
+  useEffect(() => {
+    setRating(data?.rating as number)
+  }, [data?.rating])
   if (!data || isLoading) {
     return <a>Loading...</a>
   }
@@ -28,6 +31,8 @@ export default function Page() {
 });
 setRating(data.rating + 1)
   }
+
+
   function down() {
     if (!data || rating == data?.rating - 1) return
   ratingMutation.mutate({
@@ -41,8 +46,7 @@ setRating(data.rating - 1)
     <p>{data.name}</p>
     <p className="space-x-1">
       <a>
-        {rating}
-        
+        {rating} 
       </a>
       
 
