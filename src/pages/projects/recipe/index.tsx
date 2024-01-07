@@ -38,7 +38,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { userId } = getAuth(ctx.req);
  
   if (!userId) {
-    // handle user is not logged in.
+    
       return {
       redirect: {
         destination: '/sign-in',

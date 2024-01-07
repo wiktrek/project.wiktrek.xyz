@@ -132,7 +132,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         permanent: false,
       },
     }
-    // handle user is not logged in.
+    
   }
  
   // Load any data your application needs for the page using the userId

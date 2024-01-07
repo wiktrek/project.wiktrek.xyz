@@ -13,34 +13,29 @@ export default function Page() {
   const id = Number(router.query.id);
   const { data, isLoading } = trpc.recipe.getById.useQuery({id});
   const [rating, setRating] = useState(data?.rating|| 0);
+  const [error, setError] = useState("");
   const ratingMutation = trpc.recipe.changeRating.useMutation();
+  const { isSignedIn, user } = useUser()
   useEffect(() => {
     setRating(data?.rating as number)
   }, [data?.rating])
   if (!data || isLoading) {
     return <a>Loading...</a>
   }
-  
-  
-  console.log(data.ingredients)
-  function up() {
-  if (!data || rating == data?.rating + 1) return
+console.log(data.ingredients)
+function rate(value: number) {
+  if (value < -1 || value > 1) return
+   if (!isSignedIn) {
+return setError("You have to be signed in to rate the recipe");
+    }
+    if (!data || rating == data?.rating + value) return
   ratingMutation.mutate({
-    rating: data.rating + 1,
-    id: data.id,
-});
-setRating(data.rating + 1)
-  }
-
-
-  function down() {
-    if (!data || rating == data?.rating - 1) return
-  ratingMutation.mutate({
-    rating: data.rating - 1,
+    rating: data.rating + value,
     id: data.id,
 })
-setRating(data.rating - 1)
-  }
+
+setRating(data.rating + value)
+}
   return (
   <div className="justify-center items-center text-center text-2xl">
     <p>{data.name}</p>
@@ -50,13 +45,18 @@ setRating(data.rating - 1)
       </a>
       
 
-      <button onClick={up}>
+      <button onClick={() => {
+        rate(1)
+      }}>
        <FontAwesomeIcon icon={faUpLong} />
       </button>
-      <button onClick={down}>
+      <button onClick={() => {
+        rate(-1)
+      }}>
   <FontAwesomeIcon icon={faDownLong} />
       </button>
 </p>
+      <p className="text-red-700">{error}</p>
   
     <p>{data.description}</p>
     {(data?.ingredients as Array<never>).map((ingredient: { ingredient: string, amount: number}) => {
@@ -80,7 +80,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { userId } = getAuth(ctx.req);
  
   if (!userId) {
-    // handle user is not logged in.
+    
   }
  
   // Load any data your application needs for the page using the userId
