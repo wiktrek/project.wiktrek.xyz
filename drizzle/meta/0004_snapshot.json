@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "5b6f3ffe-29ed-4790-ba24-3a4ec65e6a2a",
-  "prevId": "9bca2bb0-d2cb-4e5c-bdcd-eac12411edb8",
+  "id": "89936756-8547-4d87-abc0-4d5237c461d2",
+  "prevId": "3d1785b3-d8ca-4e8d-859a-bc7156bcbd3f",
   "tables": {
     "Like": {
       "name": "Like",

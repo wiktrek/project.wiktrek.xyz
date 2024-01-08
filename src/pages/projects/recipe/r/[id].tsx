@@ -14,7 +14,7 @@ export default function Page() {
   const { data, isLoading } = trpc.recipe.getById.useQuery({id});
   const [rating, setRating] = useState(data?.rating|| 0);
   const [error, setError] = useState("");
-  const ratingMutation = trpc.recipe.changeRating.useMutation();
+  const ratingMutation = trpc.recipe.like.useMutation();
   const { isSignedIn, user } = useUser()
   useEffect(() => {
     setRating(data?.rating as number)
@@ -23,18 +23,21 @@ export default function Page() {
     return <a>Loading...</a>
   }
 console.log(data.ingredients)
-function rate(value: number) {
-  if (value < -1 || value > 1) return
+async function rate(value: boolean) {
    if (!isSignedIn) {
 return setError("You have to be signed in to rate the recipe");
     }
-    if (!data || rating == data?.rating + value) return
-  ratingMutation.mutate({
-    rating: data.rating + value,
+    if (!data || rating == data?.rating + (value ? 1 : -1)) return;
+const d = await ratingMutation.mutate({
+    email: user.primaryEmailAddress?.emailAddress as string,
     id: data.id,
-})
+    up: value,
+  })
+  console.log(d)
+setRating(data.rating + (value ? 1 : -1))
+  
+  
 
-setRating(data.rating + value)
 }
   return (
   <div className="justify-center items-center text-center text-2xl">
@@ -46,12 +49,12 @@ setRating(data.rating + value)
       
 
       <button onClick={() => {
-        rate(1)
+        rate(true)
       }}>
        <FontAwesomeIcon icon={faUpLong} />
       </button>
       <button onClick={() => {
-        rate(-1)
+        rate(false)
       }}>
   <FontAwesomeIcon icon={faDownLong} />
       </button>

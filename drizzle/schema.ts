@@ -1,6 +1,20 @@
-import { mysqlTable, mysqlSchema, AnyMySqlColumn, index, primaryKey, int, datetime, varchar, json, tinyint, unique } from "drizzle-orm/mysql-core"
+import { mysqlTable, mysqlSchema, AnyMySqlColumn, index, primaryKey, unique, int, varchar, datetime, json, tinyint } from "drizzle-orm/mysql-core"
 import { sql } from "drizzle-orm"
 
+
+export const like = mysqlTable("Like", {
+	id: int("id").autoincrement().notNull(),
+	owner: varchar("owner", { length: 255 }).notNull(),
+	recipeId: int("recipeId").notNull(),
+	up: tinyint("up").notNull(),
+},
+(table) => {
+	return {
+		ownerIdx: index("Like_owner_idx").on(table.owner),
+		likeId: primaryKey(table.id),
+		likeIdKey: unique("Like_id_key").on(table.id),
+	}
+});
 
 export const pollQuestion = mysqlTable("PollQuestion", {
 	id: int("id").autoincrement().notNull(),
@@ -59,8 +73,8 @@ export const vote = mysqlTable("Vote", {
 },
 (table) => {
 	return {
-		voterTokenIdx: index("Vote_voterToken_idx").on(table.voterToken),
 		questionIdIdx: index("Vote_questionId_idx").on(table.questionId),
+		voterTokenIdx: index("Vote_voterToken_idx").on(table.voterToken),
 		voteId: primaryKey(table.id),
 		voteVoterTokenQuestionIdKey: unique("Vote_voterToken_questionId_key").on(table.voterToken, table.questionId),
 	}

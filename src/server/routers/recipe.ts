@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { procedure, router } from "../trpc";
-import { db, recipe  } from "~/db/client";
+import { db, recipe, like} from "~/db/client";
 /* 
   recipe router
 */
-import { eq,} from "drizzle-orm";
+import { eq, and, not} from "drizzle-orm";
 const recipeSchema = z.object({
       name: z.string(),
       description: z.string(),
@@ -47,14 +47,49 @@ export const recipeRouter = router({
       })
       return createdRecipe
     }),
-    changeRating: procedure.input(z.object({
-      rating: z.number(),
-      id: z.number(),
-    })).mutation(({ input }) => {
-      const editedRecipe = db.update(recipe).set({
-        rating: input.rating,
-      }).where(eq(recipe.id, input.id))
-      return editedRecipe
+    like: procedure.input(z.object({ id: z.number(), email: z.string(), up: z.boolean() })).mutation(async ({input}) => {
+      const { up, email, id} = input;
+      const amount: number = (up ? 1 : -1);
+      console.log(amount, up);
+      const recipeData = await db.query.recipe.findFirst({
+        where: eq(recipe.id, id)
+      });
+      if (!recipeData) {
+        return false
+      }
+      const likeData = await db.query.like.findFirst({
+        where: and(eq(like.owner, email))
+      })
+      if (likeData?.up == (up ? 1 : 0)) return false
+       
+      if (!likeData) {
+      const createdLike = await db.insert(like).values({
+owner: email,
+recipeId: id,
+up: (up ? 1 : 0)
+      })
+      const editedRecipe = await db.update(recipe).set({
+        rating: recipeData.rating + amount
+      }).where(eq(recipe.id, id))
+      console.log(editedRecipe, createdLike);
+      return true
+      
+      } else {
+         const createdLike = await db.update(like).set({
+owner: email,
+recipeId: id,
+up: (up ? 1 : 0)
+      }).where(and(eq(like.owner, email), eq(like.up, up ? 1 : 0)))
+
+
+
+    await db.update(recipe).set({
+        rating: recipeData.rating + amount
+      }).where(eq(recipe.id, id))
+      console.log(createdLike);
+      return true
+      }
+
     })
 });
 
