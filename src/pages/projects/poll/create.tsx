@@ -48,7 +48,7 @@ const CreateQuestionForm = () => {
   watch("options");
   if (!user)
   {
-    return <h1>Loading... If it {"doesn't"} load try  <Link href="/sign-in" className="text-primary-500">logging in again</Link></h1>;
+    return <h1>Loading... If it {"doesn't"} load try  <Link href="/sign-in" className="text-ring">logging in again</Link></h1>;
   }
   return (
     <>
@@ -107,7 +107,7 @@ const CreateQuestionForm = () => {
             {errors.question && (
               <p id="error">{`${errors.question?.message}`}</p>
             )}
-            <button type="submit" className="">
+            <button type="submit" className="text-ring">
               Create question
             </button>
           </form>

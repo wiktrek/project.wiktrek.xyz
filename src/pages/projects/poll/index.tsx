@@ -13,7 +13,7 @@ const Poll: NextPage = () => {
    
   if (!user)
   {
-    return <h1>Loading... If it {"doesn't"} load try  <Link href="/sign-in" className="text-primary-500">logging in again</Link></h1>;
+    return <h1>Loading... If it {"doesn't"} load try  <Link href="/sign-in" className="text-ring">logging in again</Link></h1>;
   }
   if (!data || isLoading) {
     return <a>Loading...</a>
