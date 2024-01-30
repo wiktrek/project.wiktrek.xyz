@@ -11,7 +11,7 @@ const Home: NextPage = () => {
         <title>Projects - wiktrek.xyz</title>
         <meta name="description" content="wiktrek's projects" />
       </Head>
-      <div className=" items-center justify-center text-center text-ring text-3xl font-medium bg-background">
+      <div className=" items-center justify-center text-center text-ring text-3xl font-medium bg-background ">
         <div className=" right-0 absolute">
           <UserButton afterSignOutUrl="/"/>
         </div>
@@ -74,7 +74,10 @@ const Home: NextPage = () => {
                 random number generator
               </Link>
             </li>
+            <li>
             <h1 className="pt-4">future Projects</h1>
+            </li>
+            
             <li>
 
               {/* <Link href="/projects/recipe"> */}
