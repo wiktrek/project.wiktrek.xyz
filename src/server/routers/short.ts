@@ -8,13 +8,9 @@ export const shortRouter = router({
   getSlug: procedure
     .input(z.object({ slug: z.string() }))
     .query(async ({ input }) => {
-      const { slug } = input;
       const s = await db.query.shortLink.findFirst({
-        where: eq(shortLink.slug, slug),
+        where: eq(shortLink.slug, input.slug),
       });
-      // const s = {
-      //   url: "ez",
-      // };
       return { s };
     }),
   getAllLinks: procedure
