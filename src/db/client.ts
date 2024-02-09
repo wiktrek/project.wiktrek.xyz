@@ -1,12 +1,11 @@
-import { drizzle } from "drizzle-orm/planetscale-serverless";
-import { connect } from "@planetscale/database";
- import { pollQuestion, shortLink, vote, recipe, like} from './schema'
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { pollQuestion, shortLink, vote, recipe, like} from './schema'
 // create the connection
-const connection = connect({
- url: process.env.DATABASE_URL,
-});
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const sql = neon(process.env.DATABASE_URL!);
 export { pollQuestion, shortLink, vote, recipe,like}
-export const db = drizzle(connection, { schema: {
+export const db = drizzle(sql, { schema: {
   pollQuestion,
   shortLink,
   vote,

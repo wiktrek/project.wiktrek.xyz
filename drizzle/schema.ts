@@ -1,12 +1,11 @@
-import { mysqlTable, mysqlSchema, AnyMySqlColumn, index, primaryKey, unique, int, varchar, datetime, json, tinyint } from "drizzle-orm/mysql-core"
+import { pgTable, pgSchema, integer, index, primaryKey, unique, serial, varchar, timestamp, json, boolean} from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
-
-export const like = mysqlTable("Like", {
-	id: int("id").autoincrement().notNull(),
+export const like = pgTable("Like", {
+	id: serial("id").unique().notNull(),
 	owner: varchar("owner", { length: 255 }).notNull(),
-	recipeId: int("recipeId").notNull(),
-	up: tinyint("up").notNull(),
+	recipeId: integer("recipeId").notNull(),
+	up: boolean("up").notNull(),
 },
 (table) => {
 	return {
@@ -16,14 +15,14 @@ export const like = mysqlTable("Like", {
 	}
 });
 
-export const pollQuestion = mysqlTable("PollQuestion", {
-	id: int("id").autoincrement().notNull(),
-	createdAt: datetime("createdAt", { mode: 'string', fsp: 3 }).default(sql`now(3)`).notNull(),
-	endsAt: datetime("endsAt", { mode: 'string', fsp: 3 }),
+export const pollQuestion = pgTable("PollQuestion", {
+	id: serial("id").unique().notNull(),
+	createdAt: timestamp("createdAt", { mode: "string", withTimezone: true }).defaultNow(),
+	endsAt: timestamp("endsAt", { mode: "string", withTimezone: true }),
 	question: varchar("question", { length: 5000 }).notNull(),
 	options: json("options").notNull(),
 	ownerEmail: varchar("ownerEmail", { length: 255 }).notNull(),
-	end: tinyint("end").notNull(),
+	end: boolean("end").notNull(),
 },
 (table) => {
 	return {
@@ -32,9 +31,9 @@ export const pollQuestion = mysqlTable("PollQuestion", {
 	}
 });
 
-export const recipe = mysqlTable("Recipe", {
-	id: int("id").autoincrement().notNull(),
-	rating: int("rating").notNull(),
+export const recipe = pgTable("Recipe", {
+	id: serial("id").unique().notNull(),
+	rating: integer("rating").notNull(),
 	name: varchar("name", { length: 255 }).notNull(),
 	description: varchar("description", { length: 255 }),
 	ingredients: json("ingredients").notNull(),
@@ -49,9 +48,9 @@ export const recipe = mysqlTable("Recipe", {
 	}
 });
 
-export const shortLink = mysqlTable("ShortLink", {
-	id: int("id").autoincrement().notNull(),
-	createdAt: datetime("createdAt", { mode: 'string', fsp: 3 }).default(sql`now(3)`).notNull(),
+export const shortLink = pgTable("ShortLink", {
+	id: serial("id").unique().notNull(),
+	createdAt: timestamp("createdAt", {mode: "string", withTimezone: true }).defaultNow(),
 	owner: varchar("owner", { length: 191 }).notNull(),
 	url: varchar("url", { length: 255 }).notNull(),
 	slug: varchar("slug", { length: 191 }).notNull(),
@@ -64,12 +63,12 @@ export const shortLink = mysqlTable("ShortLink", {
 	}
 });
 
-export const vote = mysqlTable("Vote", {
-	id: int("id").autoincrement().notNull(),
-	createdAt: datetime("createdAt", { mode: 'string', fsp: 3 }).default(sql`now(3)`).notNull(),
-	questionId: int("questionId").notNull(),
+export const vote = pgTable("Vote", {
+	id: serial("id").unique().notNull(),
+	createdAt: timestamp("createdAt", {mode: "string", withTimezone: true }).defaultNow(),
+	questionId: integer("questionId").notNull(),
 	voterToken: varchar("voterToken", { length: 255 }).notNull(),
-	choice: int("choice").notNull(),
+	choice: integer("choice").notNull(),
 },
 (table) => {
 	return {

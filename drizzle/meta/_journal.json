@@ -1,40 +1,26 @@
 {
   "version": "5",
-  "dialect": "mysql",
+  "dialect": "pg",
   "entries": [
     {
       "idx": 0,
       "version": "5",
-      "when": 1704737280157,
-      "tag": "0000_watery_molly_hayes",
+      "when": 1707484716555,
+      "tag": "0000_stiff_night_thrasher",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "5",
-      "when": 1704737466166,
-      "tag": "0001_fantastic_baron_strucker",
+      "when": 1707484905464,
+      "tag": "0001_huge_thundra",
       "breakpoints": true
     },
     {
       "idx": 2,
       "version": "5",
-      "when": 1704737506159,
-      "tag": "0002_wealthy_kinsey_walden",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1704737526724,
-      "tag": "0003_jittery_northstar",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1704737538575,
-      "tag": "0004_aromatic_sauron",
+      "when": 1707485147518,
+      "tag": "0002_wild_cloak",
       "breakpoints": true
     }
   ]

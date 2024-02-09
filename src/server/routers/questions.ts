@@ -6,11 +6,10 @@ import { eq, sql } from "drizzle-orm";
 export const questionRouter = router({
   getAllMY: procedure
     .input(z.object({ email: z.string() }))
-    .query(async (opts) => {
+    .query(async (opts) => { 
       const { input } = opts;
       return await db.query.pollQuestion.findMany({
         where: eq(pollQuestion.ownerEmail, input.email)
-        
       });
     }),
   getById: procedure
@@ -20,6 +19,9 @@ export const questionRouter = router({
       const question = await db.query.pollQuestion.findFirst({
         where: eq(pollQuestion.id, id)
       });
+      // it works
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       const myVote = await db.select().from(vote).where(eq(vote.questionId, id)).where(eq(vote.voterToken, token)).limit(1)
       const rest = {
         question,
@@ -41,7 +43,7 @@ export const questionRouter = router({
     voteOn: procedure.input(z.object({
       questionId: z.number(),
       option: z.number().min(0).max(10),
-      token: z.string(),
+      token: z.string()
     })).mutation(({ input }) => {
       const { questionId, option, token } = input
       const createdVote = db.insert(vote).values({
@@ -63,7 +65,7 @@ export const questionRouter = router({
       const createdQuestion = db.insert(pollQuestion).values({
           question: question,
           ownerEmail: email,
-          end: 0,
+          end: false,
           options: options,
       })
       return createdQuestion

@@ -1,39 +1,36 @@
 {
+  "id": "a16d1700-ac7d-42d4-95e8-8624f15e3c42",
+  "prevId": "e172993a-24b3-4e79-b68b-b8725be3c780",
   "version": "5",
-  "dialect": "mysql",
-  "id": "5b6f3ffe-29ed-4790-ba24-3a4ec65e6a2a",
-  "prevId": "9bca2bb0-d2cb-4e5c-bdcd-eac12411edb8",
+  "dialect": "pg",
   "tables": {
     "Like": {
       "name": "Like",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "serial",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": true
+          "notNull": true
         },
         "owner": {
           "name": "owner",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "recipeId": {
           "name": "recipeId",
-          "type": "int",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "up": {
           "name": "up",
-          "type": "tinyint",
+          "type": "boolean",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         }
       },
       "indexes": {
@@ -47,16 +44,24 @@
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "Like_id": {
-          "name": "Like_id",
+        "Like_id_pk": {
+          "name": "Like_id_pk",
           "columns": [
             "id"
           ]
         }
       },
       "uniqueConstraints": {
+        "Like_id_unique": {
+          "name": "Like_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "id"
+          ]
+        },
         "Like_id_key": {
           "name": "Like_id_key",
+          "nullsNotDistinct": false,
           "columns": [
             "id"
           ]
@@ -65,56 +70,50 @@
     },
     "PollQuestion": {
       "name": "PollQuestion",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "serial",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": true
+          "notNull": true
         },
         "createdAt": {
           "name": "createdAt",
-          "type": "datetime(3)",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "now(3)"
+          "notNull": false,
+          "default": "now()"
         },
         "endsAt": {
           "name": "endsAt",
-          "type": "datetime(3)",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "question": {
           "name": "question",
           "type": "varchar(5000)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "options": {
           "name": "options",
           "type": "json",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "ownerEmail": {
           "name": "ownerEmail",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "end": {
           "name": "end",
-          "type": "tinyint",
+          "type": "boolean",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         }
       },
       "indexes": {
@@ -128,66 +127,68 @@
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "PollQuestion_id": {
-          "name": "PollQuestion_id",
+        "PollQuestion_id_pk": {
+          "name": "PollQuestion_id_pk",
           "columns": [
             "id"
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "PollQuestion_id_unique": {
+          "name": "PollQuestion_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "id"
+          ]
+        }
+      }
     },
     "Recipe": {
       "name": "Recipe",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "serial",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": true
+          "notNull": true
         },
         "rating": {
           "name": "rating",
-          "type": "int",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "name": {
           "name": "name",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "description": {
           "name": "description",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "ingredients": {
           "name": "ingredients",
           "type": "json",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "owner": {
           "name": "owner",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "directions": {
           "name": "directions",
           "type": "json",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         }
       },
       "indexes": {
@@ -201,16 +202,24 @@
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "Recipe_id": {
-          "name": "Recipe_id",
+        "Recipe_id_pk": {
+          "name": "Recipe_id_pk",
           "columns": [
             "id"
           ]
         }
       },
       "uniqueConstraints": {
+        "Recipe_id_unique": {
+          "name": "Recipe_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "id"
+          ]
+        },
         "Recipe_id_key": {
           "name": "Recipe_id_key",
+          "nullsNotDistinct": false,
           "columns": [
             "id"
           ]
@@ -219,42 +228,38 @@
     },
     "ShortLink": {
       "name": "ShortLink",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "serial",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": true
+          "notNull": true
         },
         "createdAt": {
           "name": "createdAt",
-          "type": "datetime(3)",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "now(3)"
+          "notNull": false,
+          "default": "now()"
         },
         "owner": {
           "name": "owner",
           "type": "varchar(191)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "url": {
           "name": "url",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "slug": {
           "name": "slug",
           "type": "varchar(191)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         }
       },
       "indexes": {
@@ -268,16 +273,24 @@
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "ShortLink_id": {
-          "name": "ShortLink_id",
+        "ShortLink_id_pk": {
+          "name": "ShortLink_id_pk",
           "columns": [
             "id"
           ]
         }
       },
       "uniqueConstraints": {
+        "ShortLink_id_unique": {
+          "name": "ShortLink_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "id"
+          ]
+        },
         "ShortLink_slug_key": {
           "name": "ShortLink_slug_key",
+          "nullsNotDistinct": false,
           "columns": [
             "slug"
           ]
@@ -286,42 +299,38 @@
     },
     "Vote": {
       "name": "Vote",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "serial",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": true
+          "notNull": true
         },
         "createdAt": {
           "name": "createdAt",
-          "type": "datetime(3)",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "now(3)"
+          "notNull": false,
+          "default": "now()"
         },
         "questionId": {
           "name": "questionId",
-          "type": "int",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "voterToken": {
           "name": "voterToken",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "choice": {
           "name": "choice",
-          "type": "int",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         }
       },
       "indexes": {
@@ -342,16 +351,24 @@
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "Vote_id": {
-          "name": "Vote_id",
+        "Vote_id_pk": {
+          "name": "Vote_id_pk",
           "columns": [
             "id"
           ]
         }
       },
       "uniqueConstraints": {
+        "Vote_id_unique": {
+          "name": "Vote_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "id"
+          ]
+        },
         "Vote_voterToken_questionId_key": {
           "name": "Vote_voterToken_questionId_key",
+          "nullsNotDistinct": false,
           "columns": [
             "voterToken",
             "questionId"
@@ -360,10 +377,11 @@
       }
     }
   },
+  "enums": {},
   "schemas": {},
   "_meta": {
+    "columns": {},
     "schemas": {},
-    "tables": {},
-    "columns": {}
+    "tables": {}
   }
 }
