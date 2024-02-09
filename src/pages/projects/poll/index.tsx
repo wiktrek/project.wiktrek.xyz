@@ -33,7 +33,8 @@ const Poll: NextPage = () => {
                     <p>{question.question}</p>
                   </Link>
                   <span className=" text-sm">
-                    Created at {new Date(question.createdAt).toDateString()}
+                  
+                    Created at {new Date(question.createdAt as string).toDateString()}
                   </span>
                   <button
                     className="text-lg"
