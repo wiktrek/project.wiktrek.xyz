@@ -60,14 +60,14 @@ export const questionRouter = router({
         .array(z.object({ text: z.string().min(1).max(200) }))
         .min(2)
         .max(200),
-    })).mutation(({input}) => {
+    })).mutation(async ({input}) => {
       const { question, email, options} = input
-      const createdQuestion = db.insert(pollQuestion).values({
+      const createdQuestion = await db.insert(pollQuestion).values({
           question: question,
           ownerEmail: email,
           end: false,
           options: options,
-      })
+      }).returning({ insertedId: pollQuestion.id });
       return createdQuestion
     }),
     deleteQuestion: procedure.input(z.object({

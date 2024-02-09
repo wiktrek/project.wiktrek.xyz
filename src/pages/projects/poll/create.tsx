@@ -20,8 +20,8 @@ const CreateQuestionForm = () => {
   const createMutation = trpc.question.createQuestion.useMutation({
     onSuccess(data) {
       console.log(data);
-      reset();  
-      router.push(`/projects/poll/q/${data.insertId}`);
+      reset(); 
+      router.push(`/projects/poll/q/${data[0].insertedId}`);
   toast("Question has been created.")
     }
 
