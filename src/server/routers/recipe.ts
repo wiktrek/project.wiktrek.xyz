@@ -60,13 +60,13 @@ export const recipeRouter = router({
       const likeData = await db.query.like.findFirst({
         where: and(eq(like.owner, email))
       })
-      if (likeData?.up == (up ? 1 : 0)) return false
+      if (likeData?.up == (up ? true : false)) return false
        
       if (!likeData) {
       const createdLike = await db.insert(like).values({
 owner: email,
 recipeId: id,
-up: (up ? 1 : 0)
+up: (up ? true : false)
       })
       const editedRecipe = await db.update(recipe).set({
         rating: recipeData.rating + amount
@@ -78,8 +78,8 @@ up: (up ? 1 : 0)
          const createdLike = await db.update(like).set({
 owner: email,
 recipeId: id,
-up: (up ? 1 : 0)
-      }).where(and(eq(like.owner, email), eq(like.up, up ? 1 : 0)))
+up: (up ? true : false)
+      }).where(and(eq(like.owner, email), eq(like.up, up ? true : false)))
 
 
 
