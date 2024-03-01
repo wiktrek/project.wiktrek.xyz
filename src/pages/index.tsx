@@ -57,9 +57,9 @@ const Home: NextPage = () => {
             <li>
               <Link href="/projects/term">Terminal</Link>
             </li>
-            <li>
+            {/* <li>
               <a href="https://three.wiktrek.xyz">three.js</a>
-            </li>
+            </li> */}
             <li>
               <Link href="/projects/calculator">calculator
               </Link>
