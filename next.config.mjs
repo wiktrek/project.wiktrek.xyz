@@ -1,3 +1,4 @@
+import MillionLint from '@million/lint';
 // @ts-ignore
 await import("./src/env.mjs");
 
@@ -5,23 +6,20 @@ await import("./src/env.mjs");
 const config = {
   reactStrictMode: true,
   experimental: {
-    esmExternals: false,
+    esmExternals: false
   },
   images: {
     formats: ["image/avif", "image/webp"],
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "raw.githubusercontent.com",
-        port: "",
-        pathname: "/PokeAPI/sprites/master/sprites/pokemon/**",
-      },
-    ],
+    remotePatterns: [{
+      protocol: "https",
+      hostname: "raw.githubusercontent.com",
+      port: "",
+      pathname: "/PokeAPI/sprites/master/sprites/pokemon/**"
+    }]
   },
   i18n: {
     locales: ["en"],
-    defaultLocale: "en",
-  },
+    defaultLocale: "en"
+  }
 };
-
-export default config;
+export default MillionLint.next()(config);
