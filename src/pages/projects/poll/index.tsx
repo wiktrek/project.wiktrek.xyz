@@ -6,6 +6,9 @@ import { useUser } from "@clerk/nextjs";
 import { trpc } from "~/utils/trpc";
 import { buildClerkProps, getAuth } from "@clerk/nextjs/server";
 import { toast } from "sonner"
+import copy from "copy-to-clipboard";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClipboard } from "@fortawesome/free-solid-svg-icons";
 const Poll: NextPage = () => {
   const { user } = useUser();
   const { data, isLoading } = trpc.question.getAllMY.useQuery({ email: `${user?.primaryEmailAddress?.emailAddress}` });
@@ -18,6 +21,11 @@ const Poll: NextPage = () => {
   if (!data || isLoading) {
     return <a>Loading...</a>
   }
+  const CopyUrl = async (event: React.SyntheticEvent) => {
+    const rowId = event.currentTarget.id;
+    copy(`https://wiktrek.xyz/q/${rowId}`);
+    toast("Link copied!")
+  };
   return (
     <>
         <Head>
@@ -29,24 +37,24 @@ const Poll: NextPage = () => {
             {data.map((question) => {
               return (
                 <div key={question.id} className="p-2">
+                  <ul className="inline-flex">
                   <Link href={`/projects/poll/q/${question.id}`}>
                     <p>{question.question}</p>
                   </Link>
-                  <span className=" text-sm">
-                  
-                    {/* Created at {new Date(question.createdAt as string).toDateString()} */}
-                  </span>
+                  <button className="pl-2 pr-1" onClick={CopyUrl} id={`${question.id}`}>
+                    <FontAwesomeIcon icon={faClipboard} />
+                  </button>
                   <button
                     className="text-lg"
                     onClick={() => {
                       deleteMutation.mutate({
                         id: question.id,
                       });
-            toast("Question has been deleted.")
                     }}
                   >
                     Delete
                   </button>
+                  </ul>
                 </div>
               );
             })}

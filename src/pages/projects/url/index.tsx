@@ -28,7 +28,8 @@ console.log(slug, url, user?.primaryEmailAddress?.emailAddress);
   const CopyUrl = async (event: React.SyntheticEvent) => {
     // @ts-ignore: Object is possibly 'null'.
     const rowId = event.currentTarget.parentNode.id;
-    copy(`https://project.wiktrek.xyz/go/${rowId}`);
+    copy(`https://wiktrek.xyz/go/${rowId}`);
+    toast("Link copied!")
   };
   function reload() {
     window.location.reload();
@@ -101,8 +102,7 @@ console.log(slug, url, user?.primaryEmailAddress?.emailAddress);
                       <div className="" id={item.slug}>
                         {index + 1 + " "}
                         {item.slug}
-                        {/* url: {item.url} */}
-                        <button onClick={CopyUrl}>
+                        <button className="px-1" onClick={CopyUrl}>
                           <FontAwesomeIcon icon={faClipboard} />
                         </button>
                         <button onClick={DeleteFunction} data-slug={item.slug}>
@@ -140,3 +140,4 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 
 export default Home;
+
