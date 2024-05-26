@@ -1,35 +1,34 @@
 import { z } from "zod";
-import { procedure, router } from "../trpc";
-import { db,vote, pollQuestion  } from "~/db/client";
+import { publicProcedure as procedure, createTRPCRouter as router } from "../trpc";
+import { vote, pollQuestion  } from "~/server/db/schema";
 
 import { eq, sql } from "drizzle-orm";
 export const questionRouter = router({
   getAllMY: procedure
     .input(z.object({ email: z.string() }))
-    .query(async (opts) => { 
-      const { input } = opts;
-      return await db.query.pollQuestion.findMany({
+    .query(async ({ctx, input}) => { 
+      return await ctx.db.query.pollQuestion.findMany({
         where: eq(pollQuestion.ownerEmail, input.email)
       });
     }),
   getById: procedure
     .input(z.object({ id: z.number(), token: z.string(), email: z.string() }))
-    .query(async ({ input}) => {
+    .query(async ({ ctx, input}) => {
       const { id, token, email } = input;
-      const question = await db.query.pollQuestion.findFirst({
+      const question = await ctx.db.query.pollQuestion.findFirst({
         where: eq(pollQuestion.id, id)
       });
       // it works
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
-      const myVote = await db.select().from(vote).where(eq(vote.questionId, id)).where(eq(vote.voterToken, token)).limit(1)
+      const myVote = await ctx.db.select().from(vote).where(eq(vote.questionId, id)).where(eq(vote.voterToken, token)).limit(1)
       const rest = {
         question,
         vote: myVote[0],
         isOwner: question?.ownerEmail === email,
       };
       if (rest.vote || rest.isOwner) {
-        const votes = await db
+        const votes = await ctx.db
           .select({ count: sql<number>`count(${vote.choice})`})
           .from(vote)
           .where(eq(vote.questionId, id))
@@ -44,9 +43,9 @@ export const questionRouter = router({
       questionId: z.number(),
       option: z.number().min(0).max(10),
       token: z.string()
-    })).mutation(({ input }) => {
+    })).mutation(({ ctx, input }) => {
       const { questionId, option, token } = input
-      const createdVote = db.insert(vote).values({
+      const createdVote = ctx.db.insert(vote).values({
         questionId: questionId, 
         choice: option, 
         voterToken: token 
@@ -60,9 +59,9 @@ export const questionRouter = router({
         .array(z.object({ text: z.string().min(1).max(200) }))
         .min(2)
         .max(200),
-    })).mutation(async ({input}) => {
+    })).mutation(async ({ctx, input}) => {
       const { question, email, options} = input
-      const createdQuestion = await db.insert(pollQuestion).values({
+      const createdQuestion = await ctx.db.insert(pollQuestion).values({
           question: question,
           ownerEmail: email,
           end: false,
@@ -72,9 +71,9 @@ export const questionRouter = router({
     }),
     deleteQuestion: procedure.input(z.object({
       id: z.number()
-    })).mutation(({ input }) => {
+    })).mutation(({ ctx, input }) => {
       const { id } = input
-      const deletedQuestion = db.delete(pollQuestion).where(eq(pollQuestion.id, id));
+      const deletedQuestion = ctx.db.delete(pollQuestion).where(eq(pollQuestion.id, id));
       return deletedQuestion
     })
 });
