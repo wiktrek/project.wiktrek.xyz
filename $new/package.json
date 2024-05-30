@@ -13,11 +13,14 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^5.1.2",
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@t3-oss/env-nextjs": "^0.10.1",
     "@tanstack/react-query": "^5.25.0",
     "@trpc/client": "next",
-    "@trpc/react-query": "next",
+    "@trpc/react-query": "11.0.0-rc.377",
     "@trpc/server": "next",
+    "copy-to-clipboard": "^3.3.3",
     "drizzle-orm": "^0.29.4",
     "geist": "^1.3.0",
     "next": "^14.2.1",
@@ -25,6 +28,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "server-only": "^0.0.1",
+    "sonner": "^1.4.41",
     "superjson": "^2.2.1",
     "zod": "^3.23.3"
   },

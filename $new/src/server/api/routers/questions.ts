@@ -18,34 +18,34 @@ export const questionRouter = router({
       const question = await ctx.db.query.pollQuestion.findFirst({
         where: eq(pollQuestion.id, id)
       });
-      // it works
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      const myVote = await ctx.db.select().from(vote).where(eq(vote.questionId, id)).where(eq(vote.voterToken, token)).limit(1)
-      const rest = {
-        question,
-        vote: myVote[0],
-        isOwner: question?.ownerEmail === email,
-      };
-      if (rest.vote || rest.isOwner) {
-        const votes = await ctx.db
-          .select({ count: sql<number>`count(${vote.choice})`})
-          .from(vote)
-          .where(eq(vote.questionId, id))
-          .groupBy(vote.choice)
+      // // it works
+      // // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // // @ts-expect-error
+      // const myVote = await ctx.db.select().from(vote).where(eq(vote.questionId, id)).where(eq(vote.voterToken, token)).limit(1)
+      // const rest = {
+      //   question,
+      //   vote: myVote[0],
+      //   isOwner: question?.ownerEmail === email,
+      // };
+      // if (rest.vote || rest.isOwner) {
+      //   const votes = await ctx.db
+      //     .select({ count: sql<number>`count(${vote.choice})`})
+      //     .from(vote)
+      //     .where(eq(vote.questionId, id))
+      //     .groupBy(vote.choice)
           
-        return { ...rest, votes };
-      }
+      //   return { ...rest, votes };
+      // }
 
-      return { ...rest, votes: undefined };
+      // return { ...rest, votes: undefined };
     }),
     voteOn: procedure.input(z.object({
       questionId: z.number(),
       option: z.number().min(0).max(10),
       token: z.string()
-    })).mutation(({ ctx, input }) => {
+    })).mutation(async ({ ctx, input }) => {
       const { questionId, option, token } = input
-      const createdVote = ctx.db.insert(vote).values({
+      const createdVote = await ctx.db.insert(vote).values({
         questionId: questionId, 
         choice: option, 
         voterToken: token 

@@ -1,29 +1,31 @@
-import type { GetServerSideProps, NextPage } from "next";
+import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
-import { useUser } from "@clerk/nextjs";
-import { trpc } from "~/utils/trpc";
-import { buildClerkProps, getAuth } from "@clerk/nextjs/server";
+import { api as trpc} from "~/trpc/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { toast } from "sonner"
 import copy from "copy-to-clipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClipboard } from "@fortawesome/free-solid-svg-icons";
-const Poll: NextPage = () => {
-  const { user } = useUser();
-  const { data, isLoading } = trpc.question.getAllMY.useQuery({ email: `${user?.primaryEmailAddress?.emailAddress}` });
-  const deleteMutation = trpc.question.deleteQuestion.useMutation()
-   
-  if (!user)
+import { IconDefinition, faClipboard } from "@fortawesome/free-solid-svg-icons";
+const Page: NextPage = async () => {
+  const { userId} = auth();
+  if (!userId)
   {
     return <h1>Loading... If it {"doesn't"} load try  <Link href="/sign-in" className="text-ring">logging in again</Link></h1>;
   }
-  if (!data || isLoading) {
+  const user = await currentUser()
+  const data = await trpc.question.getAllMY({ email: `${user?.primaryEmailAddress?.emailAddress}` });
+  const deleteMutation = trpc.question.deleteQuestion.useMutation()
+  if (!data) {
     return <a>Loading...</a>
-  }
+  }  
+  
   const CopyUrl = async (event: React.SyntheticEvent) => {
     const rowId = event.currentTarget.id;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     copy(`https://wiktrek.xyz/q/${rowId}`);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     toast("Link copied!")
   };
   return (
@@ -42,7 +44,7 @@ const Poll: NextPage = () => {
                     <p>{question.question}</p>
                   </Link>
                   <button className="pl-2 pr-1" onClick={CopyUrl} id={`${question.id}`}>
-                    <FontAwesomeIcon icon={faClipboard} />
+                    <FontAwesomeIcon icon={faClipboard}/>
                   </button>
                   <button
                     className="text-lg"
@@ -66,20 +68,4 @@ const Poll: NextPage = () => {
     </>
   );
 };
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { userId } = getAuth(ctx.req);
- 
-  if (!userId) {
-      return {
-      redirect: {
-        destination: '/sign-in',
-        permanent: false,
-      },
-    }
-    
-  }
- 
-  // Load any data your application needs for the page using the userId
-  return { props: { ...buildClerkProps(ctx.req) } };
-};
-export default Poll;
+export default Page;

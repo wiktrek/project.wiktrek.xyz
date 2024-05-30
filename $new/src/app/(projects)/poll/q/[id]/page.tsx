@@ -8,11 +8,12 @@ import Head from "next/head";
 import { useUser } from "@clerk/nextjs";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import { v4 as uuidv4 } from "uuid";
+
 const QuestionPageContent: React.FC<{
   id: number;
   token: string;
   email: string;
-}> = ({ id, token, email }) => {
+}> = async ({ id, token, email }) => {
   const { user } = useUser();
   let isOwner = false;
   let totalVotes = 0;
@@ -20,28 +21,23 @@ const QuestionPageContent: React.FC<{
   //   "questions.get-by-id",
   //   { id, token, email },
   // ]);
-  const { data, isLoading } = trpc.question.getById.useQuery({
+  const data = await trpc.question.getById({
     id, 
     token, 
     email
   })
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const voteOnMutation  = trpc.question.voteOn.useMutation({
-    onSuccess() { 
-      window.location.reload()
+  const mutation = trpc.question.voteOn.useMutation({
+    OnSuccess: () => {
+      console.log("WORKS!!!")
     }
-  }) 
+  });
   // const { mutate, data: voteResponse } = trpc.useMutation(
   //   "questions.vote-on-question",
   //   {
   //     onSuccess: () => window.location.reload(),
   //   }
   // );
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-  if (!data || !data?.question) {
+  if (!data?.question) {
     return <div>Question not found</div>;
   }
   const getTotalVotes = (votes: any) => {
