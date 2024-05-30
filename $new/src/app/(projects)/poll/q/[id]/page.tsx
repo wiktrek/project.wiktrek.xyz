@@ -2,12 +2,12 @@
 import { useRouter } from "next/router";
 import React from "react";
 import type { NextPage } from "next";
-import { trpc } from "../../../../utils/trpc";
+import { api as trpc} from "~/trpc/server"
 import { useEffect, useState } from "react";
 import Head from "next/head";
 import { useUser } from "@clerk/nextjs";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { v4: uuidv4 } = require("uuid");
+import { v4 as uuidv4 } from "uuid";
 const QuestionPageContent: React.FC<{
   id: number;
   token: string;
