@@ -21,11 +21,14 @@ export const questionRouter = router({
       // it works
       // const myVote = await ctx.db.select().from(vote).where(eq(vote.questionId, id)).where(eq(vote.voterToken, token)).limit(1)
       const myVote = await ctx.db.query.vote.findFirst({ where: and(eq(vote.questionId, id), eq(vote.voterToken, token)) });
+      console.log(myVote)
+      
       const rest = {
         question,
         vote: myVote,
         isOwner: question?.ownerEmail === email,
       };
+      console.log(rest.vote ?? rest.isOwner)
       if (rest.vote ?? rest.isOwner) {
         const votes = await ctx.db
           .select({ count: sql<number>`count(${vote.choice})`})
@@ -34,9 +37,9 @@ export const questionRouter = router({
           .groupBy(vote.choice)
           
         return { ...rest, votes };
+      } else {
+        return { ...rest, votes: undefined };
       }
-
-      return { ...rest, votes: undefined };
     }),
     voteOn: procedure.input(z.object({
       questionId: z.number(),

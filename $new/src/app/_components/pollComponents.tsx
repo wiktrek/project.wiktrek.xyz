@@ -1,5 +1,6 @@
 "use client"
 import { api } from "~/trpc/react"
+import { api as trpc} from "~/trpc/server"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "sonner"
@@ -12,6 +13,8 @@ import {
   type CreateQuestionInputType,
   createQuestionValidator,
 } from "~/shared/create-question-validator";
+import { useEffect, useState } from "react";
+import { v4 } from "uuid";
 
 export function DeletePoll(props: { id: number}) {
   const deleteMutation = api.question.deleteQuestion.useMutation()
@@ -131,7 +134,7 @@ export function FormComponent(props: { email: string}) {
         </form>
   )
 }
-export function VoteOn(props: { questionId: number, option: number, token: string}) {
+function VoteOn(props: { questionId: number, option: { text: string, index: number}, token: string}) {
   const { questionId, option, token } = props
   const voteOnMutation = api.question.voteOn.useMutation({
     onSuccess: () => {
@@ -145,12 +148,88 @@ export function VoteOn(props: { questionId: number, option: number, token: strin
         voteOnMutation.mutate({
          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           questionId,
-          option,
+          option: option.index,
           token,
         });
       }}
   >
-    {option}
+    {option.text}
   </button>
   )
 }
+
+export const QuestionPageContent: React.FC<{
+  email: string;
+  id: number;
+}> = ({ email, id }) => {
+  const [token, setToken] = useState<string>("");
+  useEffect(() => {
+  if (!localStorage.getItem("voterToken")) {
+      localStorage.setItem("voterToken", v4());
+    }
+    setToken(localStorage.getItem("voterToken")!)
+  }, [])
+  const { data }= api.question.getById.useQuery({
+    email,
+    token,
+    id
+  })
+  let isOwner = false;
+  let totalVotes = 0;
+  if (!data?.question || !data) {
+    return <div>Question not found</div>;
+  }
+  interface Choice {
+    count: number;
+  }
+  const getTotalVotes = (votes: Choice[]) => {
+    votes?.map((choice: { count: number }) => {
+      
+      totalVotes += Number(choice.count);
+    
+    });
+  };
+  const getPercent = (voteCount: number) => {
+    
+    if (
+      (voteCount !== undefined && totalVotes > 0) )
+      return `${((voteCount / totalVotes) * 100).toFixed()}%`;
+    else if (voteCount == undefined) return `0%`;
+  };
+  if (data && data != undefined) getTotalVotes(data.votes as Choice[]);
+  if (email  === data.question?.ownerEmail) isOwner = true;
+  console.log(data.vote)
+  return (
+    <>
+      {/* <Head>
+        <meta name="description" content={data.question.question} />
+      </Head> */}
+      <main className="mx-auto flex  w-screen flex-col items-center justify-center text-center text-xl text-white">
+        <div className="">
+          {isOwner && <p>This is your poll</p>}
+          <div className="">
+            <a>{data.question?.question}</a>
+            {(data.question?.options as {text: string}[])?.map((option, index) => {
+              if (isOwner || data.vote != undefined) {
+                return (
+                  <div className="" key={index}>
+                    <a>
+                      {getPercent(data?.votes?.[index]?.count ?? 0)} {` `}
+                      {option.text} -{" "}
+                      {data?.votes?.[index]?.count ?? 0} {` `}
+                    </a>
+                  </div>
+                );
+              }
+              return (
+                <div className="" key={index}>
+                  <VoteOn questionId={data?.question!.id} option={{index: index, text: option.text}} token={token}/>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </main>
+    </>
+  );
+};
