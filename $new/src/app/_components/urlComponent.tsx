@@ -1,72 +1,58 @@
-/* eslint-disable */
-import { NextApiRequest, NextApiResponse } from "next";
-import React, { useState } from "react";
-import { getAuth, buildClerkProps } from "@clerk/nextjs/server";
-import type { NextPage, GetServerSideProps } from "next";
-import Head from "next/head";
-import copy from "copy-to-clipboard";
+"use client"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState } from "react";
 import { faClipboard, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { trpc } from "~/utils/trpc";
-import { redirect } from 'next/navigation'
-import { useAuth, useUser } from "@clerk/nextjs";
-import { Input } from "~/components/ui/input"
+import { Input } from "~/app/_components/ui/input"
 import { toast } from "sonner"
+import copy from "copy-to-clipboard";
+import { api as trpc } from "~/trpc/react";
 import Link from "next/link";
-const Home: NextPage = () => {
-    const { isLoaded, isSignedIn, user } = useUser();
+export function UrlComponent(props: {email: string, data: {
+    slug: string,
+    url: string,
+    id: number,
+    owner: string,
+}[]
+}) {
+  const { email, data } = props;
   const [slug, setSlug] = useState("");
   const [url, setUrl] = useState("");
-  const [newError, setError] = useState("");
+//   const [newError, setError] = useState("");
 
   const removeMutation = trpc.short.removeSlug.useMutation();
   const createMutation = trpc.short.createSlug.useMutation(); 
-  const { data } = trpc.short.getAllLinks.useQuery({
-  email: user?.primaryEmailAddress?.emailAddress as string
-  });
-console.log(slug, url, user?.primaryEmailAddress?.emailAddress);
-  const CopyUrl = async (event: React.SyntheticEvent) => {
-    // @ts-ignore: Object is possibly 'null'.
-    const rowId = event.currentTarget.parentNode.id;
-    copy(`https://wiktrek.xyz/go/${rowId}`);
+
+console.log(slug, url, email);
+  const CopyUrl = (slug: string) => {
+    copy(`https://wiktrek.xyz/go/${slug}/`);
     toast("Link copied!")
   };
   function reload() {
     window.location.reload();
   }
 
-  const DeleteFunction = async (event: React.SyntheticEvent) => {
-    // @ts-ignore: Object is possibly 'null'.
-    const rowId = event.currentTarget.parentNode.id;
+  const DeleteFunction = (slug: string) => {
+      removeMutation.mutate({ slug });
 
-    if (typeof rowId === "string") {
-      if (rowId === null) return;
-      console.log(rowId);
-      removeMutation.mutate({ slug: rowId });
-    }
     return reload();
   };
   const submitData = async (e: React.SyntheticEvent) => {
     if (slug === "" || url === "") return;
-    console.log(slug, url, user);
+    // console.log(slug, url, user);
     e.preventDefault();
     createMutation.mutate({
        slug: slug,
        url: url, 
-       email: user?.primaryEmailAddress?.emailAddress as string
+       email: email
       })
   toast("Slug has been created.")
   };
-  if (!user)
+  if (!email)
   {
     return <h1 className="text-3xl">Loading... If it {"doesn't"} load try  <Link href="/sign-in" className="text-ring font-bold">logging in again</Link></h1>;
   }
-  return (
-    <>
-      <Head>
-        <title>Url shortener - wiktrek.xyz</title>
-      </Head>
-        <main className="mx-auto flex  w-screen flex-col items-center justify-center text-center text-xl text-white">
+return (
+  <>
           <div>
             <h1>create new short url</h1>
             <form onSubmit={submitData} className="">
@@ -91,21 +77,21 @@ console.log(slug, url, user?.primaryEmailAddress?.emailAddress);
                 Create
               </button>
             </form>
-            <a>{newError}</a>
+            {/* <a>{newError}</a> */}
           </div>
           <div className="">
             <table className="">
               <tbody>
-                {data?.map((item: any, index: any) => {
+                {data?.map((item: { slug: string}, index: number) => {
                   return (
                     <>
                       <div className="" id={item.slug}>
                         {index + 1 + " "}
                         {item.slug}
-                        <button className="px-1" onClick={CopyUrl}>
+                        <button className="px-1" onClick={() => {CopyUrl(item.slug)}}>
                           <FontAwesomeIcon icon={faClipboard} />
                         </button>
-                        <button onClick={DeleteFunction} data-slug={item.slug}>
+                        <button onClick={() => {DeleteFunction(item.slug)}} data-slug={item.slug}>
                           <FontAwesomeIcon icon={faTrash} />
                         </button>
                       </div>
@@ -116,28 +102,6 @@ console.log(slug, url, user?.primaryEmailAddress?.emailAddress);
             </table>
             <Link href="/api/auth/logout" className="text-ring font-semibold">logout</Link>
           </div>
-        </main>
-    </>
-  );
-};
-
- 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { userId } = getAuth(ctx.req);
- 
-  if (!userId) {
-      return {
-      redirect: {
-        destination: '/sign-in',
-        permanent: false,
-      },
-    }
-    
-  }
- 
-  // Load any data your application needs for the page using the userId
-  return { props: { ...buildClerkProps(ctx.req) } };
-};
-
-export default Home;
-
+          </>
+)
+}
