@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+"use client"
 import type { NextPage } from "next";
 import Head from "next/head";
 import React, { useState } from "react";
@@ -7,11 +8,12 @@ const Rng: NextPage = () => {
   const [result, setResult] = useState("");
   async function rng(e: React.SyntheticEvent) {
     e.preventDefault();
-    function getnum() {
+    function getnum(): number | void {
       // @ts-ignore: Object is possibly 'null'.
-      const low = document.querySelector("#low").value;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const low: number = document.querySelector("#low").value;
       // @ts-ignore: Object is possibly 'null'.
-      const max = Number(document.querySelector("#max").value) + 1;
+      const max: number = Number(document.querySelector("#max").value) + 1;
       if (low > max) return setResult("lower limit is higher than upper limit");
 
       const random = Math.floor(Math.random() * (max - low + 1) + low);
@@ -20,7 +22,7 @@ const Rng: NextPage = () => {
     const num = getnum();
     
     console.log();
-    if (num === 0) return getnum();
+    if (typeof num != "number") return getnum();
     setResult(`${num}`);
   }
 

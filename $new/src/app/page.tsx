@@ -23,15 +23,15 @@ const Home: NextPage = () => {
               </a>
             </li>
             <li>
-              <Link href="/projects/poll">
+              <Link href="/poll">
                 poll app
               </Link>
             </li>
             <li>
-              <Link href="/projects/url">Link shortener</Link>
+              <Link href="/url">Link shortener</Link>
             </li>
             <li>
-              <Link href="/projects/pokemon">pokemon</Link>
+              <Link href="/pokemon">pokemon</Link>
             </li>
             <li>
               <a href="https://svelte.wiktrek.xyz">svelte</a>
@@ -55,22 +55,22 @@ const Home: NextPage = () => {
               <a href="https://github.com/wiktrek/electron">electron app</a>
             </li>
             <li>
-              <Link href="/projects/term">Terminal</Link>
+              <Link href="/term">Terminal</Link>
             </li>
             {/* <li>
               <a href="https://three.wiktrek.xyz">three.js</a>
             </li> */}
             <li>
-              <Link href="/projects/calculator">calculator
+              <Link href="/calculator">calculator
               </Link>
             </li>
             <li>
-              <Link href="/projects/rps">
+              <Link href="/rps">
                 rock paper scissors
               </Link>
             </li>
             <li>
-              <Link href="/projects/rng">
+              <Link href="/rng">
                 random number generator
               </Link>
             </li>

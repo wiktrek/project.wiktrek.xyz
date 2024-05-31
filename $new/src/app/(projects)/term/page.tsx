@@ -1,6 +1,7 @@
+"use client"
 import type { NextPage } from "next";
 import Head from "next/head";
-import { SetStateAction, useState } from "react";
+import { type SetStateAction, useState } from "react";
 const Home: NextPage = () => {
   const [input, setInput] = useState("");
   const [response, setResponse] = useState(["Try 'help'"]);
@@ -86,7 +87,7 @@ const Home: NextPage = () => {
                 <a className="text-yellow-500">:$ ~ </a>
                 <a className="text-emerald-500">{r}</a>
                 {cmd.map((c) => {
-                  if (c.cmd !== r) return <p></p>;
+                  if (c.cmd !== r) return <p key={c.value}></p>;
                   if (c.link === true)
                     return (
                       <a
@@ -100,7 +101,7 @@ const Home: NextPage = () => {
                       </a>
                     );
                   if (c.cmd === "banner")
-                    return <pre className="text-yellow-500">{c.value}</pre>;
+                    return <pre className="text-yellow-500" key={c.value}>{c.value}</pre>;
                   console.log("test");
                   return (
                     <p key={index} className="text-yellow-500">
