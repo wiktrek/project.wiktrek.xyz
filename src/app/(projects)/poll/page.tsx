@@ -32,7 +32,7 @@ const Page: NextPage = async () => {
               return (
                 <div key={question.id} className="p-2">
                   <ul className="inline-flex">
-                  <Link href={`/projects/poll/q/${question.id}`}>
+                  <Link href={`/poll/q/${question.id}`}>
                     <p>{question.question}</p>
                   </Link>
 

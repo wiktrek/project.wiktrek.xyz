@@ -1,6 +1,5 @@
 "use client"
 import { api } from "~/trpc/react"
-import { api as trpc} from "~/trpc/server"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "sonner"
@@ -51,7 +50,7 @@ export function FormComponent(props: { email: string}) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       reset();
       if (!data[0]) return;
-      router.push(`/projects/poll/q/${data[0].insertedId}`);
+      router.push(`/poll/q/${data[0].insertedId}`);
     toast("Question has been created.")
     }
   });
