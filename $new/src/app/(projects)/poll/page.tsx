@@ -3,11 +3,12 @@ import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 import { api as trpc} from "~/trpc/server";
+import { api as mutation} from "~/trpc/react"
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { toast } from "sonner"
 import copy from "copy-to-clipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconDefinition, faClipboard } from "@fortawesome/free-solid-svg-icons";
+import { faClipboard } from "@fortawesome/free-solid-svg-icons";
 const Page: NextPage = async () => {
   const { userId} = auth();
   if (!userId)
@@ -16,7 +17,7 @@ const Page: NextPage = async () => {
   }
   const user = await currentUser()
   const data = await trpc.question.getAllMY({ email: `${user?.primaryEmailAddress?.emailAddress}` });
-  const deleteMutation = trpc.question.deleteQuestion.useMutation()
+  const deleteMutation = mutation.question.deleteQuestion.useMutation()
   if (!data) {
     return <a>Loading...</a>
   }  
