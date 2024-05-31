@@ -3,12 +3,10 @@ import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 import { api as trpc} from "~/trpc/server";
-import { api as mutation} from "~/trpc/react"
+import { DeletePoll } from "~/app/_components/pollComponents";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { toast } from "sonner"
-import copy from "copy-to-clipboard";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClipboard } from "@fortawesome/free-solid-svg-icons";
+
+
 const Page: NextPage = async () => {
   const { userId} = auth();
   if (!userId)
@@ -17,18 +15,11 @@ const Page: NextPage = async () => {
   }
   const user = await currentUser()
   const data = await trpc.question.getAllMY({ email: `${user?.primaryEmailAddress?.emailAddress}` });
-  const deleteMutation = mutation.question.deleteQuestion.useMutation()
   if (!data) {
     return <a>Loading...</a>
   }  
   
-  const CopyUrl = async (event: React.SyntheticEvent) => {
-    const rowId = event.currentTarget.id;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    copy(`https://wiktrek.xyz/q/${rowId}`);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    toast("Link copied!")
-  };
+
   return (
     <>
         <Head>
@@ -44,25 +35,14 @@ const Page: NextPage = async () => {
                   <Link href={`/projects/poll/q/${question.id}`}>
                     <p>{question.question}</p>
                   </Link>
-                  <button className="pl-2 pr-1" onClick={CopyUrl} id={`${question.id}`}>
-                    <FontAwesomeIcon icon={faClipboard}/>
-                  </button>
-                  <button
-                    className="text-lg"
-                    onClick={() => {
-                      deleteMutation.mutate({
-                        id: question.id,
-                      });
-                    }}
-                  >
-                    Delete
-                  </button>
+
+                  <DeletePoll id={question.id} />
                   </ul>
                 </div>
               );
             })}
           </div>
-          <Link href="/projects/poll/create">
+          <Link href="/poll/create">
             <button className="w">Create new poll</button>
           </Link>
         </div>

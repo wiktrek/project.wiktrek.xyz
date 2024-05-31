@@ -2,7 +2,7 @@ import { z } from "zod";
 import { publicProcedure as procedure, createTRPCRouter as router } from "../trpc";
 import { vote, pollQuestion  } from "~/server/db/schema";
 
-import { eq, sql } from "drizzle-orm";
+import { eq, sql, and } from "drizzle-orm";
 export const questionRouter = router({
   getAllMY: procedure
     .input(z.object({ email: z.string() }))
@@ -18,26 +18,25 @@ export const questionRouter = router({
       const question = await ctx.db.query.pollQuestion.findFirst({
         where: eq(pollQuestion.id, id)
       });
-      // // it works
-      // // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // // @ts-expect-error
+      // it works
       // const myVote = await ctx.db.select().from(vote).where(eq(vote.questionId, id)).where(eq(vote.voterToken, token)).limit(1)
-      // const rest = {
-      //   question,
-      //   vote: myVote[0],
-      //   isOwner: question?.ownerEmail === email,
-      // };
-      // if (rest.vote || rest.isOwner) {
-      //   const votes = await ctx.db
-      //     .select({ count: sql<number>`count(${vote.choice})`})
-      //     .from(vote)
-      //     .where(eq(vote.questionId, id))
-      //     .groupBy(vote.choice)
+      const myVote = await ctx.db.query.vote.findFirst({ where: and(eq(vote.questionId, id), eq(vote.voterToken, token)) });
+      const rest = {
+        question,
+        vote: myVote,
+        isOwner: question?.ownerEmail === email,
+      };
+      if (rest.vote ?? rest.isOwner) {
+        const votes = await ctx.db
+          .select({ count: sql<number>`count(${vote.choice})`})
+          .from(vote)
+          .where(eq(vote.questionId, id))
+          .groupBy(vote.choice)
           
-      //   return { ...rest, votes };
-      // }
+        return { ...rest, votes };
+      }
 
-      // return { ...rest, votes: undefined };
+      return { ...rest, votes: undefined };
     }),
     voteOn: procedure.input(z.object({
       questionId: z.number(),

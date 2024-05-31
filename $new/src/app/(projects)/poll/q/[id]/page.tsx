@@ -1,46 +1,52 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useRouter } from "next/router";
-import React from "react";
-import type { NextPage } from "next";
+import React, { useEffect, useState } from "react";
 import { api as trpc} from "~/trpc/server"
-import { useEffect, useState } from "react";
 import Head from "next/head";
 import { useUser } from "@clerk/nextjs";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+import { VoteOn} from "~/app/_components/pollComponents";
+import { User, currentUser } from "@clerk/nextjs/server";
 import { v4 as uuidv4 } from "uuid";
-
+// import { atomWithStorage } from 'jotai/utils'
+// import { useAtom } from "jotai";
+// const tokenAtom = atomWithStorage('voterToken', "no-token")
+interface Data {
+    votes: {
+        count: number;
+    }[];
+    question: {
+        id: number;
+        createdAt: string | null;
+        endsAt: string | null;
+        question: string;
+        options: unknown;
+        ownerEmail: string;
+        end: boolean;
+    };
+    vote: {
+        id: number;
+        createdAt: string | null;
+        questionId: number;
+        voterToken: string;
+        choice: number;
+    };
+    isOwner: boolean;
+};
 const QuestionPageContent: React.FC<{
   id: number;
-  token: string;
+  data: Data;
   email: string;
-}> = async ({ id, token, email }) => {
-  const { user } = useUser();
+  token: string;
+}> = async ({ id, email, data, token }) => {
   let isOwner = false;
   let totalVotes = 0;
-  // const { data, isLoading } = trpc.useQuery([
-  //   "questions.get-by-id",
-  //   { id, token, email },
-  // ]);
-  const data = await trpc.question.getById({
-    id, 
-    token, 
-    email
-  })
-  const mutation = trpc.question.voteOn.useMutation({
-    OnSuccess: () => {
-      console.log("WORKS!!!")
-    }
-  });
-  // const { mutate, data: voteResponse } = trpc.useMutation(
-  //   "questions.vote-on-question",
-  //   {
-  //     onSuccess: () => window.location.reload(),
-  //   }
-  // );
-  if (!data?.question) {
+
+  if (!data?.question || !data) {
     return <div>Question not found</div>;
   }
-  const getTotalVotes = (votes: any) => {
+  interface Choice {
+    count: number;
+  }
+  const getTotalVotes = (votes: Choice[]) => {
     votes?.map((choice: { count: number }) => {
       
       totalVotes += Number(choice.count);
@@ -54,8 +60,8 @@ const QuestionPageContent: React.FC<{
       return `${((voteCount / totalVotes) * 100).toFixed()}%`;
     else if (voteCount == undefined) return `0%`;
   };
-  if (data && data != undefined) getTotalVotes(data.votes);
-  if (user?.primaryEmailAddress?.emailAddress  === data.question?.ownerEmail) isOwner = true;
+  if (data && data != undefined) getTotalVotes(data.votes as Choice[]);
+  if (email  === data.question?.ownerEmail) isOwner = true;
   return (
     <>
       <Head>
@@ -66,14 +72,13 @@ const QuestionPageContent: React.FC<{
           {isOwner && <p>This is your poll</p>}
           <div className="">
             <a>{data.question?.question}</a>
-            {(data.question?.options as string[])?.map((option, index) => {
-
+            {(data.question?.options as {text: string}[])?.map((option, index) => {
               if (isOwner || data.vote) {
                 return (
                   <div className="" key={index}>
                     <a>
                       {getPercent(data?.votes?.[index]?.count ?? 0)} {` `}
-                      {(option as any).text} -{" "}
+                      {option.text} -{" "}
                       {data?.votes?.[index]?.count ?? 0} {` `}
                     </a>
                   </div>
@@ -81,18 +86,7 @@ const QuestionPageContent: React.FC<{
               }
               return (
                 <div className="" key={index}>
-                  <button
-                    onClick={() => {
-                      voteOnMutation.mutate({
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        questionId: data.question!.id,
-                        option: index,
-                        token: token,
-                      });
-                    }}
-                  >
-                    {(option as any).text}
-                  </button>
+                  <VoteOn questionId={data.question.id} option={index} token={token}/>
                 </div>
               );
             })}
@@ -102,25 +96,29 @@ const QuestionPageContent: React.FC<{
     </>
   );
 };
-const QuestionPage: NextPage = () => {
-  const [token, setToken] = useState("");
-  const { query } = useRouter();
-  const id  = Number(query.id);
-  const { user } = useUser();
-  useEffect(() => {
-    if (!localStorage.getItem("voterToken")) {
-      localStorage.setItem("voterToken", uuidv4());
-    }
-    setToken(`${localStorage.getItem("voterToken")}`);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+export default async function Page({ params }: { params: { id: string } }) {
+  const id = Number(params.id)
+  const user = await currentUser()
   if (!id || typeof id !== "number") {
     return <div>No ID</div>;
   }
+  const email = user!.primaryEmailAddress!.emailAddress
+  const token = "testtoken"
+  const data = await trpc.question.getById({
+    id, 
+    token,
+    email
+  })
   return (
     <>
-      <QuestionPageContent id={id} token={token} email={`${user?.primaryEmailAddress?.emailAddress}`} />
+      <QuestionPageContent id={id} email={email} data={data as Data} token={token}/>
     </>
   );
 };
-export default QuestionPage;
+// export function getVoterToken(): string {
+//     if (!localStorage.getItem("voterToken")) {
+//       localStorage.setItem("voterToken", uuidv4());
+//     }
+//     const token = `${localStorage.getItem("voterToken")}`;
+//     return token;
+// }
