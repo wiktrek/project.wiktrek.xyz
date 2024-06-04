@@ -3,6 +3,7 @@ import "~/styles/globals.css";
 import { GeistSans } from "geist/font/sans";
 import { TRPCReactProvider } from "~/trpc/react";
 import { ClerkProvider } from "@clerk/nextjs";
+import { CommandMenu } from "~/app/_components/commandMenu";
 
 export const metadata = {
   title: "projects - wiktrek.xyz",
@@ -18,6 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
+        <CommandMenu />
         <ClerkProvider>
             <TRPCReactProvider>{children}</TRPCReactProvider>
         </ClerkProvider>
