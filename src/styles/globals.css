@@ -24,12 +24,13 @@
     --input: 240 3.7% 15.9%;
     --ring: 346.8 77.2% 49.8%;
     --radius: 0.5rem;
+  color-scheme: dark;
   }
 }
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border scroll-smooth;
   }
   body {
     @apply bg-background text-foreground;
