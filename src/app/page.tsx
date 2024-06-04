@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 import React from "react";
+import {CommandMenu } from "~/app/_components/commandMenu"
 const Home: NextPage = () => {
 
   return (
@@ -11,6 +12,7 @@ const Home: NextPage = () => {
         <title>Projects - wiktrek.xyz</title>
         <meta name="description" content="wiktrek's projects" />
       </Head>
+      <CommandMenu />
       <div className=" items-center justify-center text-center text-ring text-3xl font-medium bg-background ">
         <div className=" right-0 absolute">
           <UserButton afterSignOutUrl="/"/>

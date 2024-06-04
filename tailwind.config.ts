@@ -1,9 +1,15 @@
-import { type Config } from "tailwindcss";
+import type { Config } from "tailwindcss"
 
-export default {
-  content: ["./src/**/*.tsx"],
+const config = {
+  content: [
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
+	],
+  prefix: "",
   theme: {
-  container: {
+    container: {
       center: true,
       padding: "2rem",
       screens: {
@@ -67,5 +73,7 @@ export default {
       },
     },
   },
-  plugins: [],
-} satisfies Config;
+  plugins: [require("tailwindcss-animate")],
+} satisfies Config
+
+export default config
