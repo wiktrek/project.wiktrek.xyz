@@ -18,6 +18,7 @@ const Wheel = (props: Props) => {
     
     function drawWheel(ctx: CanvasRenderingContext2D, startAngle: number,angle: number, fill: string, stroke: string) {
         ctx.beginPath();
+        ctx.moveTo(window.innerWidth / 4, window.innerHeight / 4);
         ctx.arc(window.innerWidth / 4, window.innerHeight /4, 200, startAngle, angle);
         ctx.fillStyle = fill;
         ctx.fill();
