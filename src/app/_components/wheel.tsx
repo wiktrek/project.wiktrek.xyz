@@ -4,12 +4,16 @@ interface Props {
 }
 const Wheel = (props: Props) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const colors = ["white", "red", "green", "yellow"]
     useEffect(() => {
         const canvas = canvasRef.current!
         const ctx = canvas.getContext("2d")!
         let angle = (2 / props.elements.length) * Math.PI
         drawWheel(ctx, 0, angle, "white", "black")
         drawWheel(ctx, angle, angle * 2, "red", "black")
+        props.elements.map((element, i) => {
+            drawWheel(ctx,angle * i, angle * (i + 1), colors[i]!, "black")
+        })
     })
     
     function drawWheel(ctx: CanvasRenderingContext2D, startAngle: number,angle: number, fill: string, stroke: string) {

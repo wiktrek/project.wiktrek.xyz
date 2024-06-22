@@ -18,7 +18,7 @@ const Page: NextPage = () => {
       </Head>
       <div className="mx-auto flex  w-screen flex-col items-center justify-center text-center text-xl">
         <a>wiktrek</a>
-        <Wheel elements={["wiktrek","Dev"]}/>
+        <Wheel elements={["wiktrek","Dev", "Other","fuck","eee"]}/>
       </div>
     </>
   );
