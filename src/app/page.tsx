@@ -83,9 +83,6 @@ const Home: NextPage = () => {
               {/* <Link href="/projects/recipe"> */}
               <a>Recipe</a>
               { /* </Link> */}
-              {/* <Link href="/projects"> */}
-              <a> Wheel Spinner</a>
-              {/* </Link> */}
             </li>
           </ul>
         </div>
