@@ -1,5 +1,8 @@
 import { z } from "zod";
-import { publicProcedure as procedure, createTRPCRouter as router } from "../trpc";
+import {
+  publicProcedure as procedure,
+  createTRPCRouter as router,
+} from "../trpc";
 import { shortLink } from "~/server/db/schema";
 import { eq } from "drizzle-orm";
 
@@ -24,13 +27,18 @@ export const shortRouter = router({
     .input(z.object({ slug: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { slug } = input;
-      const deletedSlug = ctx.db.delete(shortLink).where(eq(shortLink.slug, slug));
+      const deletedSlug = ctx.db
+        .delete(shortLink)
+        .where(eq(shortLink.slug, slug));
       return deletedSlug;
     }),
-    createSlug: procedure.input(z.object({ slug: z.string(), url: z.string(), email: z.string() })).mutation(async ({ ctx, input }) => {
+  createSlug: procedure
+    .input(z.object({ slug: z.string(), url: z.string(), email: z.string() }))
+    .mutation(async ({ ctx, input }) => {
       const { slug, url, email } = input;
-      const createdSlug = ctx.db.insert(shortLink).values({ owner: email, slug: slug, url: url });
+      const createdSlug = ctx.db
+        .insert(shortLink)
+        .values({ owner: email, slug: slug, url: url });
       return createdSlug;
-    })
-
+    }),
 });

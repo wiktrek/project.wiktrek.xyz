@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import type { NextPage } from "next";
 import Head from "next/head";
 import React, { useState } from "react";
@@ -75,15 +75,15 @@ const Home: NextPage = () => {
         <title>calculator - wiktrek</title>
         <meta name="description" content="calculator" />
       </Head>
-      <div className="mx-auto flex  w-screen flex-col items-center justify-center text-center text-xl">
+      <div className="mx-auto flex w-screen flex-col items-center justify-center text-center text-xl">
         <div className="grid grid-cols-1">
-          <div className=" w-64 rounded bg-gray-500 ">
+          <div className="w-64 rounded bg-gray-500">
             <a className="">
               {screen}
               {screen3}
               {screen2}
             </a>
-            <div className=" float-right">
+            <div className="float-right">
               <button onClick={clearone}>
                 <FontAwesomeIcon icon={faArrowLeft} />
               </button>

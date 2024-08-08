@@ -5,9 +5,7 @@
 
 // I am too lazy to finish this
 export default function Page() {
-  return (
-    <a>I am too lazy to finish this</a>
-  )
+  return <a>I am too lazy to finish this</a>;
 }
 
 // import type { NextPage } from "next";

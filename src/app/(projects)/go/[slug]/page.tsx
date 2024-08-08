@@ -5,25 +5,25 @@
 //   const router = useRouter();
 //   if (router.query.slug == null ) return;
 //   const slug = router.query.slug as string;
-  
+
 //   const { data } = trpc.short.getSlug.useQuery({
 //     slug: slug,
 //   });
 //   if (!data) return <p>Slug not found</p>;
 //   router.push(data?.s?.url as string);
-  
+
 //   // console.log(slug, data);
 //   return <p>redirecting...</p>;
 // }
-"use client"
-import { api as trpc} from "~/trpc/react";
+"use client";
+import { api as trpc } from "~/trpc/react";
 import { useRouter } from "next/navigation";
 export default function Page({ params }: { params: { slug: string } }) {
   const router = useRouter();
-  const { slug }= params
+  const { slug } = params;
   const { data } = trpc.short.getSlug.useQuery({
-    slug
-  })
+    slug,
+  });
 
   if (!data?.s?.url || data.s.url == undefined) return <p>Slug not found</p>;
   router.push(data?.s?.url);

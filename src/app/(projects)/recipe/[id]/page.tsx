@@ -1,18 +1,17 @@
-
-"use client"
-import { api as trpc} from "~/trpc/react";
+"use client";
+import { api as trpc } from "~/trpc/react";
 export default function Page({ params }: { params: { id: string } }) {
   const { data } = trpc.recipe.getById.useQuery({
-    id: Number(params.id)
-  })
+    id: Number(params.id),
+  });
   if (!data) return <p>Recipe not found</p>;
   return (
     <>
-        <main className="flex justify-center items-center text-center text-4xl">
-            <a>{params.id}</a>
-        </main>
+      <main className="flex items-center justify-center text-center text-4xl">
+        <a>{params.id}</a>
+      </main>
     </>
-  )
+  );
 }
 
 // export default function Page({ params }: { params: { slug: string } }) {

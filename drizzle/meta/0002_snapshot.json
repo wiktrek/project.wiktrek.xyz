@@ -36,9 +36,7 @@
       "indexes": {
         "Like_owner_idx": {
           "name": "Like_owner_idx",
-          "columns": [
-            "owner"
-          ],
+          "columns": ["owner"],
           "isUnique": false
         }
       },
@@ -46,25 +44,19 @@
       "compositePrimaryKeys": {
         "Like_id_pk": {
           "name": "Like_id_pk",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "Like_id_unique": {
           "name": "Like_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         },
         "Like_id_key": {
           "name": "Like_id_key",
           "nullsNotDistinct": false,
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       }
     },
@@ -119,9 +111,7 @@
       "indexes": {
         "PollQuestion_ownerEmail_idx": {
           "name": "PollQuestion_ownerEmail_idx",
-          "columns": [
-            "ownerEmail"
-          ],
+          "columns": ["ownerEmail"],
           "isUnique": false
         }
       },
@@ -129,18 +119,14 @@
       "compositePrimaryKeys": {
         "PollQuestion_id_pk": {
           "name": "PollQuestion_id_pk",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "PollQuestion_id_unique": {
           "name": "PollQuestion_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       }
     },
@@ -194,9 +180,7 @@
       "indexes": {
         "Recipe_owner_idx": {
           "name": "Recipe_owner_idx",
-          "columns": [
-            "owner"
-          ],
+          "columns": ["owner"],
           "isUnique": false
         }
       },
@@ -204,25 +188,19 @@
       "compositePrimaryKeys": {
         "Recipe_id_pk": {
           "name": "Recipe_id_pk",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "Recipe_id_unique": {
           "name": "Recipe_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         },
         "Recipe_id_key": {
           "name": "Recipe_id_key",
           "nullsNotDistinct": false,
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       }
     },
@@ -265,9 +243,7 @@
       "indexes": {
         "ShortLink_slug_idx": {
           "name": "ShortLink_slug_idx",
-          "columns": [
-            "slug"
-          ],
+          "columns": ["slug"],
           "isUnique": false
         }
       },
@@ -275,25 +251,19 @@
       "compositePrimaryKeys": {
         "ShortLink_id_pk": {
           "name": "ShortLink_id_pk",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "ShortLink_id_unique": {
           "name": "ShortLink_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         },
         "ShortLink_slug_key": {
           "name": "ShortLink_slug_key",
           "nullsNotDistinct": false,
-          "columns": [
-            "slug"
-          ]
+          "columns": ["slug"]
         }
       }
     },
@@ -336,16 +306,12 @@
       "indexes": {
         "Vote_questionId_idx": {
           "name": "Vote_questionId_idx",
-          "columns": [
-            "questionId"
-          ],
+          "columns": ["questionId"],
           "isUnique": false
         },
         "Vote_voterToken_idx": {
           "name": "Vote_voterToken_idx",
-          "columns": [
-            "voterToken"
-          ],
+          "columns": ["voterToken"],
           "isUnique": false
         }
       },
@@ -353,26 +319,19 @@
       "compositePrimaryKeys": {
         "Vote_id_pk": {
           "name": "Vote_id_pk",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "Vote_id_unique": {
           "name": "Vote_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         },
         "Vote_voterToken_questionId_key": {
           "name": "Vote_voterToken_questionId_key",
           "nullsNotDistinct": false,
-          "columns": [
-            "voterToken",
-            "questionId"
-          ]
+          "columns": ["voterToken", "questionId"]
         }
       }
     }

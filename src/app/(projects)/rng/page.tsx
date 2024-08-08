@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-"use client"
+"use client";
 import type { NextPage } from "next";
 import Head from "next/head";
 import React, { useState } from "react";
@@ -20,7 +20,7 @@ const Rng: NextPage = () => {
       return random;
     }
     const num = getnum();
-    
+
     console.log();
     if (typeof num != "number") return getnum();
     setResult(`${num}`);

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import type { NextPage } from "next";
 import Head from "next/head";
 import React from "react";
@@ -35,12 +35,12 @@ const Home: NextPage = () => {
   }
 
   return (
-    <> 
+    <>
       <Head>
         <title>Rock paper scissors - wiktrek</title>
         <meta name="description" content="Rock paper scissors" />
       </Head>
-      <div className="mx-auto flex  w-screen flex-col items-center justify-center text-center text-xl">
+      <div className="mx-auto flex w-screen flex-col items-center justify-center text-center text-xl">
         <div className="">
           <button className="h-8 w-16 rounded bg-slate-500" onClick={checkwin}>
             rock

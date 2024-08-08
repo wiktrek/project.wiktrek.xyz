@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { type SetStateAction, useState } from "react";
@@ -101,7 +101,11 @@ const Home: NextPage = () => {
                       </a>
                     );
                   if (c.cmd === "banner")
-                    return <pre className="text-yellow-500" key={c.value}>{c.value}</pre>;
+                    return (
+                      <pre className="text-yellow-500" key={c.value}>
+                        {c.value}
+                      </pre>
+                    );
                   console.log("test");
                   return (
                     <p key={index} className="text-yellow-500">

@@ -21,7 +21,7 @@ export default function RootLayout({
       <body>
         <CommandMenu />
         <ClerkProvider>
-            <TRPCReactProvider>{children}</TRPCReactProvider>
+          <TRPCReactProvider>{children}</TRPCReactProvider>
         </ClerkProvider>
       </body>
     </html>

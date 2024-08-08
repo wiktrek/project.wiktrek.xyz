@@ -4,16 +4,15 @@ import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 import React from "react";
 const Home: NextPage = () => {
-
   return (
     <>
       <Head>
         <title>Projects - wiktrek.xyz</title>
         <meta name="description" content="wiktrek's projects" />
       </Head>
-      <div className=" items-center justify-center text-center text-ring text-3xl font-medium bg-background ">
-        <div className=" right-0 absolute">
-          <UserButton afterSignOutUrl="/"/>
+      <div className="items-center justify-center bg-background text-center text-3xl font-medium text-ring">
+        <div className="absolute right-0">
+          <UserButton afterSignOutUrl="/" />
         </div>
         <div>
           <ul className="">
@@ -23,9 +22,7 @@ const Home: NextPage = () => {
               </a>
             </li>
             <li>
-              <Link href="/poll">
-                poll app
-              </Link>
+              <Link href="/poll">poll app</Link>
             </li>
             <li>
               <Link href="/url">Link shortener</Link>
@@ -40,7 +37,9 @@ const Home: NextPage = () => {
               <a href="https://info.wiktrek.xyz">info</a>
             </li>
             <li>
-              <a href="https://github.com/wiktrek/password.rs">password manager</a>
+              <a href="https://github.com/wiktrek/password.rs">
+                password manager
+              </a>
             </li>
             <li>
               <a href="https://github.com/wiktrek/rustapi">rust api</a>
@@ -61,27 +60,21 @@ const Home: NextPage = () => {
               <a href="https://three.wiktrek.xyz">three.js</a>
             </li> */}
             <li>
-              <Link href="/calculator">calculator
-              </Link>
+              <Link href="/calculator">calculator</Link>
             </li>
             <li>
-              <Link href="/rps">
-                rock paper scissors
-              </Link>
+              <Link href="/rps">rock paper scissors</Link>
             </li>
             <li>
-              <Link href="/rng">
-                random number generator
-              </Link>
+              <Link href="/rng">random number generator</Link>
             </li>
             <li>
-            <h1 className="pt-4">future Projects</h1>
+              <h1 className="pt-4">future Projects</h1>
             </li>
             <li>
-
               {/* <Link href="/projects/recipe"> */}
               <a>Recipe</a>
-              { /* </Link> */}
+              {/* </Link> */}
             </li>
           </ul>
         </div>
@@ -91,5 +84,3 @@ const Home: NextPage = () => {
 };
 
 export default Home;
-
-
