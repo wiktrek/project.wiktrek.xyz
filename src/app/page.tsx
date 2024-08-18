@@ -1,16 +1,11 @@
 import type { NextPage } from "next";
-import Head from "next/head";
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 import React from "react";
 const Home: NextPage = () => {
   return (
     <>
-      <Head>
-        <title>Projects - wiktrek.xyz</title>
-        <meta name="description" content="wiktrek's projects" />
-      </Head>
-      <div className="items-center justify-center bg-background text-center text-3xl font-medium text-ring">
+      <div className="items-center justify-center overflow-y-hidden bg-background text-center text-3xl font-medium text-ring">
         <div className="absolute right-0">
           <UserButton afterSignOutUrl="/" />
         </div>

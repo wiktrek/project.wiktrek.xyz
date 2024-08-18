@@ -6,7 +6,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { CommandMenu } from "~/app/_components/commandMenu";
 
 export const metadata = {
-  title: "projects - wiktrek.xyz",
+  title: "Projects - wiktrek.xyz",
   description: "Wiktrek's projects",
   icons: [{ rel: "icon", url: "/favicon.svg" }],
 };
