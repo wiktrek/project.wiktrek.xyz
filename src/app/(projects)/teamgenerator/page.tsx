@@ -7,12 +7,12 @@ import { useState } from "react";
 const Page: NextPage = () => {
   const [result, setResult] = useState([] as string[][]);
   const [textarea, setTextarea] = useState("");
+  const [size, setSize] = useState(2);
   function Randomize() {
-    const teams: string[][] = [];
     let teammates = textarea.split("\n");
     shuffle(teammates);
-    teammates.map((t) => {});
-    setResult(teams);
+
+    setResult(split_into_chunks(teammates, size));
   }
   return (
     <>
@@ -32,6 +32,8 @@ const Page: NextPage = () => {
           type="number"
           className="w-16 rounded-md border-2 border-border text-center [appearance:textfield] active:border-border [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           defaultValue={2}
+          onChange={(e) => setSize(Number(e.target.value))}
+          value={size}
         />
         <button className="text-2xl font-semibold" onClick={Randomize}>
           Randomize!
@@ -39,14 +41,14 @@ const Page: NextPage = () => {
         <p>
           {result.map((team, i) => {
             return (
-              <>
+              <div key={i}>
                 <p>Team {i + 1}</p>
                 <ul>
                   {team.map((member) => {
-                    return <li>{member}</li>;
+                    return <li key={member}>{member}</li>;
                   })}
                 </ul>
-              </>
+              </div>
             );
           })}
         </p>
@@ -56,6 +58,26 @@ const Page: NextPage = () => {
 };
 
 export default Page;
+function split_into_chunks(array: string[], amount: number): string[][] {
+  let split_arr: string[][] = [];
+  if (array.length % amount === 0) {
+    let d = array.length / amount;
+    for (let a = 0; a < amount; a++) {
+      let arr = range(0 + d * a, d * (a + 1)).map((n) => {
+        return array[n]!;
+      });
+      split_arr.push(arr);
+    }
+  }
+  return split_arr;
+}
+function range(start: number, end: number): number[] {
+  let numbers = [];
+  for (let i = start; i < end; i++) {
+    numbers.push(i);
+  }
+  return numbers;
+}
 function shuffle(array: string[]) {
   let currentIndex = array.length;
 
