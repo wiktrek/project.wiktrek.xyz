@@ -9,9 +9,11 @@ const Page: NextPage = () => {
   const [textarea, setTextarea] = useState("");
   const [size, setSize] = useState(2);
   function Randomize() {
-    let teammates = textarea.split("\n");
+    let teammates = textarea
+      .split("\n")
+      .filter((teammate) => teammate.trim().length !== 0);
     shuffle(teammates);
-
+    setResult([]);
     setResult(split_into_chunks(teammates, size));
   }
   return (
@@ -38,48 +40,48 @@ const Page: NextPage = () => {
         <button className="text-2xl font-semibold" onClick={Randomize}>
           Randomize!
         </button>
-        <p>
-          {result.map((team, i) => {
-            return (
-              <div key={i}>
-                <p>Team {i + 1}</p>
-                <ul>
-                  {team.map((member) => {
-                    return <li key={member}>{member}</li>;
-                  })}
-                </ul>
-              </div>
-            );
-          })}
-        </p>
+        <ResultComponent result={result} />
       </main>
     </>
   );
 };
-
+const ResultComponent = ({ result }: { result: string[][] }) => {
+  return (
+    <div>
+      {result.map((team, i) => {
+        return (
+          <div key={"team " + i}>
+            <p>Team {i + 1}</p>
+            <ul>
+              {team.map((member) => {
+                return <li key={i + member}>{member}</li>;
+              })}
+            </ul>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 export default Page;
 function split_into_chunks(array: string[], amount: number): string[][] {
   let split_arr: string[][] = [];
-  console.log("e", array);
+  let d = array.length / amount; // amount of teammates in a team
+
   let arr = [];
   for (let i = 0; i < array.length; i++) {
     arr.push(array[i]!);
-    if ((i + 1) % amount === 0) {
+    if ((i + 1) % d === 0 && i !== array.length - 1) {
       split_arr.push(arr);
       arr = [];
-    }
-    if (i === array.length - 1) {
-      split_arr.push(arr);
+    } else {
+      if (i === array.length - 1) {
+        split_arr.push(arr);
+        arr = [];
+      }
     }
   }
   return split_arr;
-}
-function range(start: number, end: number): number[] {
-  let numbers = [];
-  for (let i = start; i < end; i++) {
-    numbers.push(i);
-  }
-  return numbers;
 }
 function shuffle(array: string[]) {
   let currentIndex = array.length;
