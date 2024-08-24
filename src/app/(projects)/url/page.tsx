@@ -1,5 +1,5 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
-import type { NextPage } from "next";
+import type { Metadata, NextPage } from "next";
 import Head from "next/head";
 import { api } from "~/trpc/server";
 import Link from "next/link";
@@ -24,18 +24,17 @@ const Page: NextPage = async () => {
     return <a>Loading...</a>;
   }
   return (
-    <>
-      <Head>
-        <title>Url shortener - wiktrek.xyz</title>
-      </Head>
-      <main className="mx-auto flex w-screen flex-col items-center justify-center text-center text-xl text-white">
-        <UrlComponent
-          email={user.primaryEmailAddress!.emailAddress}
-          data={data}
-        />
-      </main>
-    </>
+    <main className="mx-auto flex w-screen flex-col items-center justify-center text-center text-xl text-white">
+      <UrlComponent
+        email={user.primaryEmailAddress!.emailAddress}
+        data={data}
+      />
+    </main>
   );
 };
 
 export default Page;
+export const metadata: Metadata = {
+  title: "Link shortener - wiktrek.xyz",
+  description: "Create short links",
+};

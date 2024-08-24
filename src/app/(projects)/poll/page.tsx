@@ -1,4 +1,4 @@
-import type { NextPage } from "next";
+import type { Metadata, NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
@@ -27,32 +27,30 @@ const Page: NextPage = async () => {
   }
 
   return (
-    <>
-      <Head>
-        <title>Poll - wiktrek</title>
-        <meta name="description" content="Polls" />
-      </Head>
-      <div className="items-center justify-center text-center text-2xl">
-        <div className="">
-          {data.map((question) => {
-            return (
-              <div key={question.id} className="p-2">
-                <ul className="inline-flex">
-                  <Link href={`/poll/q/${question.id}`}>
-                    <p>{question.question}</p>
-                  </Link>
+    <main className="items-center justify-center text-center text-2xl">
+      <div className="">
+        {data.map((question) => {
+          return (
+            <div key={question.id} className="p-2">
+              <ul className="inline-flex">
+                <Link href={`/poll/q/${question.id}`}>
+                  <p>{question.question}</p>
+                </Link>
 
-                  <DeletePoll id={question.id} />
-                </ul>
-              </div>
-            );
-          })}
-        </div>
-        <Link href="/poll/create">
-          <button className="w">Create new poll</button>
-        </Link>
+                <DeletePoll id={question.id} />
+              </ul>
+            </div>
+          );
+        })}
       </div>
-    </>
+      <Link href="/poll/create">
+        <button className="w">Create new poll</button>
+      </Link>
+    </main>
   );
 };
 export default Page;
+export const metadata: Metadata = {
+  title: "Poll - wiktrek.xyz",
+  description: "Create polls",
+};

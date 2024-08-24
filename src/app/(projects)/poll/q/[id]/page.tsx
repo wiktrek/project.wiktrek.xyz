@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { QuestionPageContent } from "~/app/_components/pollComponents";
 import { currentUser } from "@clerk/nextjs/server";
+import { Metadata } from "next";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const id = Number(params.id);
@@ -15,3 +16,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     </>
   );
 }
+export const metadata: Metadata = {
+  title: "Poll - wiktrek.xyz",
+  description: "Create polls",
+};

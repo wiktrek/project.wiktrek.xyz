@@ -5,6 +5,7 @@ import Head from "next/head";
 import Link from "next/link";
 
 import { auth, currentUser } from "@clerk/nextjs/server";
+import { Metadata } from "next";
 const QuestionCreator: React.FC = async () => {
   const { userId } = auth();
   if (!userId) {
@@ -42,3 +43,7 @@ const QuestionCreator: React.FC = async () => {
   );
 };
 export default QuestionCreator;
+export const metadata: Metadata = {
+  title: "Poll - wiktrek.xyz",
+  description: "Create polls",
+};
