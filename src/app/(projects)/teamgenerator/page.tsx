@@ -60,12 +60,15 @@ const Page: NextPage = () => {
 export default Page;
 function split_into_chunks(array: string[], amount: number): string[][] {
   let split_arr: string[][] = [];
-  if (array.length % amount === 0) {
-    let d = array.length / amount;
-    for (let a = 0; a < amount; a++) {
-      let arr = range(0 + d * a, d * (a + 1)).map((n) => {
-        return array[n]!;
-      });
+  console.log("e", array);
+  let arr = [];
+  for (let i = 0; i < array.length; i++) {
+    arr.push(array[i]!);
+    if ((i + 1) % amount === 0) {
+      split_arr.push(arr);
+      arr = [];
+    }
+    if (i === array.length - 1) {
       split_arr.push(arr);
     }
   }
