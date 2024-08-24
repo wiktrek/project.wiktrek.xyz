@@ -12,11 +12,6 @@ const Home: NextPage = () => {
         <div>
           <ul className="">
             <li>
-              <a href="https://github.com/wiktrek/better-code-editor">
-                better code editor
-              </a>
-            </li>
-            <li>
               <Link href="/poll">poll app</Link>
             </li>
             <li>
@@ -62,6 +57,14 @@ const Home: NextPage = () => {
             </li>
             <li>
               <Link href="/rng">random number generator</Link>
+            </li>
+            <li>
+              <Link href="/teamgenerator">team generator</Link>
+            </li>
+            <li>
+              <a href="https://github.com/wiktrek/better-code-editor">
+                better code editor
+              </a>
             </li>
             <li>
               <h1 className="pt-4">future Projects</h1>

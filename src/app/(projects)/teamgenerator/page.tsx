@@ -24,7 +24,7 @@ const Page: NextPage = () => {
       <main className="top-16 flex flex-col items-center justify-center text-center">
         <textarea
           className="h-72 w-56 resize-none rounded-xl border-2 border-border p-2"
-          placeholder={`Wiktrek \nMe`}
+          placeholder={`wiktrek`}
           id="textarea"
           onChange={(e) => setTextarea(e.target.value)}
           value={textarea}
@@ -35,7 +35,7 @@ const Page: NextPage = () => {
           className="w-16 rounded-md border-2 border-border text-center [appearance:textfield] active:border-border [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           defaultValue={2}
           onChange={(e) => setSize(Number(e.target.value))}
-          value={size}
+          value={size == 0 ? "" : size}
         />
         <button className="text-2xl font-semibold" onClick={Randomize}>
           Randomize!
@@ -51,8 +51,8 @@ const ResultComponent = ({ result }: { result: string[][] }) => {
       {result.map((team, i) => {
         return (
           <div key={"team " + i}>
-            <p>Team {i + 1}</p>
-            <ul>
+            <p className="text-2xl text-primary">Team {i + 1}</p>
+            <ul className="text-base">
               {team.map((member) => {
                 return <li key={i + member}>{member}</li>;
               })}
