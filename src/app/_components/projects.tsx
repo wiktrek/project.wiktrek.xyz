@@ -1,11 +1,12 @@
+"use client";
 import Link from "next/link";
-
+type Category = "Simple" | "Rust" | "Cool" | "Learning";
 interface ProjectType {
   name: string;
   description: string;
   url: string;
   type: "project.wiktrek.xyz" | "other";
-  category: "Simple" | "Rust" | "Cool" | "Learning";
+  category: Category;
 }
 /*
 
@@ -13,7 +14,8 @@ interface ProjectType {
 
 
     Categorize projects
-
+    Sort projects by category
+    hide projects with categories !== Cool
 
 
 
@@ -127,10 +129,26 @@ const projects: ProjectType[] = [
   },
 ];
 export function Projects() {
+  return <ProjectsByCategory projects={projects} />;
+}
+function Project(props: ProjectType) {
+  const { name, description } = props;
+  return (
+    <div className="h-36 w-56 rounded-md bg-transparent p-2 text-left text-xl text-foreground shadow-md transition-all animate-out hover:scale-110 hover:cursor-pointer">
+      <a className="text-xl text-primary">{name}</a>
+      <p className="px-2 text-base">{description}</p>
+    </div>
+  );
+}
+function ProjectsByCategory(props: { projects: ProjectType[] }) {
+  const filtered = props.projects.filter(
+    (project) => project.category === "Cool",
+  );
+  function Show_Category() {}
   return (
     <div className="top-16 flex w-full flex-col items-center justify-center text-center">
       <div className="mx-auto grid grid-cols-3 gap-8">
-        {projects.map((project) => {
+        {filtered.map((project) => {
           const { url, type } = project;
           return (
             <div>
@@ -146,16 +164,46 @@ export function Projects() {
             </div>
           );
         })}
+        <Button category="Simple" />
+        <Button category="Rust" />
+        <Button category="Learning" />
+        {props.projects
+          .filter((project) => project.category !== "Cool")
+          .map((project) => {
+            const { url, type } = project;
+            return (
+              <div className={`hidden ${project.category}`}>
+                {type === "project.wiktrek.xyz" ? (
+                  <Link href={url}>
+                    <Project key={project.name} {...project} />
+                  </Link>
+                ) : (
+                  <a href={url}>
+                    <Project key={project.name} {...project} />
+                  </a>
+                )}
+              </div>
+            );
+          })}
       </div>
     </div>
   );
 }
-function Project(props: ProjectType) {
-  const { name, description } = props;
+function Button(props: { category: Category }) {
   return (
-    <div className="h-36 w-56 rounded-md bg-transparent p-2 text-left text-xl text-foreground shadow-md transition-all animate-out hover:scale-110 hover:cursor-pointer">
-      <a className="text-xl text-primary">{name}</a>
-      <p className="px-2 text-base">{description}</p>
+    <div>
+      <button
+        id={props.category}
+        onClick={(e) => {
+          const documents = document.querySelectorAll(`.${props.category}`);
+          documents.forEach((document) => {
+            document.classList.toggle("hidden");
+          });
+        }}
+        className="h-36 w-56 rounded-md bg-transparent p-2 text-center text-2xl text-foreground shadow-md transition-all animate-out hover:scale-110 hover:cursor-pointer"
+      >
+        {props.category} projects
+      </button>
     </div>
   );
 }

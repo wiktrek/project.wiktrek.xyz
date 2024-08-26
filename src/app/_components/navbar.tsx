@@ -6,8 +6,8 @@ const Navbar: NextPage = () => {
   return (
     <>
       <div className="flex h-4 list-none items-center justify-between p-7 text-2xl font-medium text-ring">
-        <a href="https://wiktrek.xyz">wiktrek.xyz</a>
         <Link href="/">Projects</Link>
+        <a href="https://wiktrek.xyz">wiktrek.xyz</a>
       </div>
     </>
   );
