@@ -168,6 +168,11 @@ function ProjectsByCategory(props: { projects: ProjectType[] }) {
         <Button category="Rust" />
         <Button category="Learning" />
         {props.projects
+          .sort((a, b) => {
+            if (a.category < b.category) return -1;
+            if (a.category > b.category) return 1;
+            return 0;
+          })
           .filter((project) => project.category !== "Cool")
           .map((project) => {
             const { url, type } = project;
