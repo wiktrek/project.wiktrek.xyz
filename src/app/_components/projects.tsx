@@ -164,6 +164,9 @@ function ProjectsByCategory(props: { projects: ProjectType[] }) {
             </div>
           );
         })}
+      </div>
+      <p className="py-4">Other projects</p>
+      <div className="mx-auto grid grid-cols-3 gap-8">
         <Button category="Simple" />
         <Button category="Rust" />
         <Button category="Learning" />
@@ -202,22 +205,27 @@ function Button(props: { category: Category }) {
         onClick={(e) => {
           // hide all other categories
           const types: Category[] = ["Learning", "Rust", "Simple"];
-          types.map((type) => {
-            const documents = document.querySelectorAll(`.${type}`);
-            documents.forEach((doc) => {
-              if (!doc.classList.contains("hidden")) {
-                doc.classList.toggle("hidden");
-              }
+          types
+            .filter((c) => c !== props.category)
+            .map((type) => {
+              const documents = document.querySelectorAll(`.${type}`);
+              documents.forEach((doc) => {
+                if (!doc.classList.contains("hidden")) {
+                  doc.classList.toggle("hidden");
+                }
+              });
             });
-          });
           const documents = document.querySelectorAll(`.${props.category}`);
           documents.forEach((document) => {
             document.classList.toggle("hidden");
           });
         }}
-        className="h-36 w-56 rounded-md bg-transparent p-2 text-center text-2xl text-foreground shadow-md transition-all animate-out hover:scale-110 hover:cursor-pointer"
+        className="h-36 w-56 rounded-md bg-transparent p-2 text-left text-2xl text-foreground shadow-md transition-all animate-out hover:scale-110 hover:cursor-pointer"
       >
         {props.category} projects
+        <p className="pt-2 text-left text-base">
+          Click to show {props.category} projects
+        </p>
       </button>
     </div>
   );
