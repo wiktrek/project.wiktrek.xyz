@@ -200,6 +200,16 @@ function Button(props: { category: Category }) {
       <button
         id={props.category}
         onClick={(e) => {
+          // hide all other categories
+          const types: Category[] = ["Learning", "Rust", "Simple"];
+          types.map((type) => {
+            const documents = document.querySelectorAll(`.${type}`);
+            documents.forEach((doc) => {
+              if (!doc.classList.contains("hidden")) {
+                doc.classList.toggle("hidden");
+              }
+            });
+          });
           const documents = document.querySelectorAll(`.${props.category}`);
           documents.forEach((document) => {
             document.classList.toggle("hidden");
