@@ -24,7 +24,7 @@ export const like = pgTable(
   (table) => {
     return {
       ownerIdx: index("Like_owner_idx").on(table.owner),
-      likeId: primaryKey(table.id),
+      likeId: primaryKey({ columns: [table.id] }),
       likeIdKey: unique("Like_id_key").on(table.id),
     };
   },
@@ -33,7 +33,7 @@ export const like = pgTable(
 export const pollQuestion = pgTable(
   "PollQuestion",
   {
-    id: serial("id").unique().notNull(),
+    id: serial("id").notNull(),
     createdAt: timestamp("createdAt", {
       mode: "string",
       withTimezone: true,
@@ -46,8 +46,12 @@ export const pollQuestion = pgTable(
   },
   (table) => {
     return {
-      ownerEmailIdx: index("PollQuestion_ownerEmail_idx").on(table.ownerEmail),
-      pollQuestionId: primaryKey(table.id),
+      primaryKey: primaryKey({ columns: [table.id] }),
+      indexes: {
+        ownerEmailIdx: index("PollQuestion_ownerEmail_idx").on(
+          table.ownerEmail,
+        ),
+      },
     };
   },
 );
@@ -55,7 +59,7 @@ export const pollQuestion = pgTable(
 export const recipe = pgTable(
   "Recipe",
   {
-    id: serial("id").unique().notNull(),
+    id: serial("id").notNull(),
     rating: integer("rating").notNull(),
     name: varchar("name", { length: 255 }).notNull(),
     description: varchar("description", { length: 255 }),
@@ -65,9 +69,11 @@ export const recipe = pgTable(
   },
   (table) => {
     return {
-      ownerIdx: index("Recipe_owner_idx").on(table.owner),
-      recipeId: primaryKey(table.id),
-      recipeIdKey: unique("Recipe_id_key").on(table.id),
+      indexes: {
+        // recipeIdKey: unique("Recipe_id_key").on(table.id),
+        ownerIdx: index("Recipe_owner_idx").on(table.owner),
+      },
+      primaryKey: primaryKey({ columns: [table.id] }),
     };
   },
 );
@@ -87,7 +93,7 @@ export const shortLink = pgTable(
   (table) => {
     return {
       slugIdx: index("ShortLink_slug_idx").on(table.slug),
-      shortLinkId: primaryKey(table.id),
+      shortLinkId: primaryKey({ columns: [table.id] }),
       shortLinkSlugKey: unique("ShortLink_slug_key").on(table.slug),
     };
   },
@@ -109,7 +115,7 @@ export const vote = pgTable(
     return {
       questionIdIdx: index("Vote_questionId_idx").on(table.questionId),
       voterTokenIdx: index("Vote_voterToken_idx").on(table.voterToken),
-      voteId: primaryKey(table.id),
+      voteId: primaryKey({ columns: [table.id] }),
       voteVoterTokenQuestionIdKey: unique("Vote_voterToken_questionId_key").on(
         table.voterToken,
         table.questionId,

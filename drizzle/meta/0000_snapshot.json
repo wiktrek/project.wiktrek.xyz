@@ -1,10 +1,10 @@
 {
-  "id": "fe8e594b-d613-4d89-8b05-14d38e38175d",
+  "id": "2878ade6-9a67-4355-a4c9-195cabb9fe5e",
   "prevId": "00000000-0000-0000-0000-000000000000",
-  "version": "5",
-  "dialect": "pg",
+  "version": "7",
+  "dialect": "postgresql",
   "tables": {
-    "Like": {
+    "public.Like": {
       "name": "Like",
       "schema": "",
       "columns": {
@@ -36,31 +36,106 @@
       "indexes": {
         "Like_owner_idx": {
           "name": "Like_owner_idx",
-          "columns": ["owner"],
-          "isUnique": false
+          "columns": [
+            {
+              "expression": "owner",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "Like_id_pk": {
           "name": "Like_id_pk",
-          "columns": ["id"]
+          "columns": [
+            "id"
+          ]
         }
       },
       "uniqueConstraints": {
         "Like_id_unique": {
           "name": "Like_id_unique",
           "nullsNotDistinct": false,
-          "columns": ["id"]
+          "columns": [
+            "id"
+          ]
         },
         "Like_id_key": {
           "name": "Like_id_key",
           "nullsNotDistinct": false,
-          "columns": ["id"]
+          "columns": [
+            "id"
+          ]
         }
       }
     },
-    "PollQuestion": {
+    "public.Message": {
+      "name": "Message",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "author": {
+          "name": "author",
+          "type": "varchar(16)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "text": {
+          "name": "text",
+          "type": "varchar(128)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "Message_idx": {
+          "name": "Message_idx",
+          "columns": [
+            {
+              "expression": "id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "Message_id_unique": {
+          "name": "Message_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "id"
+          ]
+        }
+      }
+    },
+    "public.PollQuestion": {
       "name": "PollQuestion",
       "schema": "",
       "columns": {
@@ -74,7 +149,7 @@
           "name": "createdAt",
           "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "default": "now()"
         },
         "endsAt": {
@@ -108,29 +183,19 @@
           "notNull": true
         }
       },
-      "indexes": {
-        "PollQuestion_ownerEmail_idx": {
-          "name": "PollQuestion_ownerEmail_idx",
-          "columns": ["ownerEmail"],
-          "isUnique": false
-        }
-      },
+      "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "PollQuestion_id_pk": {
           "name": "PollQuestion_id_pk",
-          "columns": ["id"]
+          "columns": [
+            "id"
+          ]
         }
       },
-      "uniqueConstraints": {
-        "PollQuestion_id_unique": {
-          "name": "PollQuestion_id_unique",
-          "nullsNotDistinct": false,
-          "columns": ["id"]
-        }
-      }
+      "uniqueConstraints": {}
     },
-    "Recipe": {
+    "public.Recipe": {
       "name": "Recipe",
       "schema": "",
       "columns": {
@@ -177,34 +242,19 @@
           "notNull": true
         }
       },
-      "indexes": {
-        "Recipe_owner_idx": {
-          "name": "Recipe_owner_idx",
-          "columns": ["owner"],
-          "isUnique": false
-        }
-      },
+      "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "Recipe_id_pk": {
           "name": "Recipe_id_pk",
-          "columns": ["id"]
+          "columns": [
+            "id"
+          ]
         }
       },
-      "uniqueConstraints": {
-        "Recipe_id_unique": {
-          "name": "Recipe_id_unique",
-          "nullsNotDistinct": false,
-          "columns": ["id"]
-        },
-        "Recipe_id_key": {
-          "name": "Recipe_id_key",
-          "nullsNotDistinct": false,
-          "columns": ["id"]
-        }
-      }
+      "uniqueConstraints": {}
     },
-    "ShortLink": {
+    "public.ShortLink": {
       "name": "ShortLink",
       "schema": "",
       "columns": {
@@ -218,7 +268,7 @@
           "name": "createdAt",
           "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "default": "now()"
         },
         "owner": {
@@ -243,31 +293,47 @@
       "indexes": {
         "ShortLink_slug_idx": {
           "name": "ShortLink_slug_idx",
-          "columns": ["slug"],
-          "isUnique": false
+          "columns": [
+            {
+              "expression": "slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "ShortLink_id_pk": {
           "name": "ShortLink_id_pk",
-          "columns": ["id"]
+          "columns": [
+            "id"
+          ]
         }
       },
       "uniqueConstraints": {
         "ShortLink_id_unique": {
           "name": "ShortLink_id_unique",
           "nullsNotDistinct": false,
-          "columns": ["id"]
+          "columns": [
+            "id"
+          ]
         },
         "ShortLink_slug_key": {
           "name": "ShortLink_slug_key",
           "nullsNotDistinct": false,
-          "columns": ["slug"]
+          "columns": [
+            "slug"
+          ]
         }
       }
     },
-    "Vote": {
+    "public.Vote": {
       "name": "Vote",
       "schema": "",
       "columns": {
@@ -281,7 +347,7 @@
           "name": "createdAt",
           "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "default": "now()"
         },
         "questionId": {
@@ -306,38 +372,66 @@
       "indexes": {
         "Vote_questionId_idx": {
           "name": "Vote_questionId_idx",
-          "columns": ["questionId"],
-          "isUnique": false
+          "columns": [
+            {
+              "expression": "questionId",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         },
         "Vote_voterToken_idx": {
           "name": "Vote_voterToken_idx",
-          "columns": ["voterToken"],
-          "isUnique": false
+          "columns": [
+            {
+              "expression": "voterToken",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "Vote_id_pk": {
           "name": "Vote_id_pk",
-          "columns": ["id"]
+          "columns": [
+            "id"
+          ]
         }
       },
       "uniqueConstraints": {
         "Vote_id_unique": {
           "name": "Vote_id_unique",
           "nullsNotDistinct": false,
-          "columns": ["id"]
+          "columns": [
+            "id"
+          ]
         },
         "Vote_voterToken_questionId_key": {
           "name": "Vote_voterToken_questionId_key",
           "nullsNotDistinct": false,
-          "columns": ["voterToken", "questionId"]
+          "columns": [
+            "voterToken",
+            "questionId"
+          ]
         }
       }
     }
   },
   "enums": {},
   "schemas": {},
+  "sequences": {},
   "_meta": {
     "columns": {},
     "schemas": {},

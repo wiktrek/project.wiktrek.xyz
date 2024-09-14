@@ -1,1 +1,0 @@
-ALTER TABLE "PollQuestion" ALTER COLUMN "createdAt" DROP NOT NULL;

@@ -1,26 +1,12 @@
 {
-  "version": "5",
-  "dialect": "pg",
+  "version": "7",
+  "dialect": "postgresql",
   "entries": [
     {
       "idx": 0,
-      "version": "5",
-      "when": 1707484716555,
-      "tag": "0000_stiff_night_thrasher",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1707484905464,
-      "tag": "0001_huge_thundra",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1707485147518,
-      "tag": "0002_wild_cloak",
+      "version": "7",
+      "when": 1726346154345,
+      "tag": "0000_calm_bastion",
       "breakpoints": true
     }
   ]
