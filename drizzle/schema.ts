@@ -117,3 +117,20 @@ export const vote = pgTable(
     };
   },
 );
+export const message = pgTable(
+  "Message",
+  {
+    id: serial("id").unique().notNull(),
+    author: varchar("author", { length: 16 }).notNull(),
+    text: varchar("text", { length: 128 }).notNull(),
+    createdAt: timestamp("createdAt", {
+      mode: "string",
+      withTimezone: true,
+    }).defaultNow(),
+  },
+  (table) => {
+    return {
+      MessageIdx: index("Message_idx").on(table.id),
+    };
+  },
+);
