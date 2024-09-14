@@ -26,14 +26,12 @@ export const questionRouter = router({
       const myVote = await ctx.db.query.vote.findFirst({
         where: and(eq(vote.questionId, id), eq(vote.voterToken, token)),
       });
-      console.log(myVote);
 
       const rest = {
         question,
         vote: myVote,
         isOwner: question?.ownerEmail === email,
       };
-      console.log(rest.vote ?? rest.isOwner);
       if (rest.vote ?? rest.isOwner) {
         const votes = await ctx.db
           .select({ count: sql<number>`count(${vote.choice})` })

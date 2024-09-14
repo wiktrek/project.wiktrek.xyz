@@ -24,7 +24,6 @@ export function UrlComponent(props: {
   const removeMutation = trpc.short.removeSlug.useMutation();
   const createMutation = trpc.short.createSlug.useMutation();
 
-  console.log(slug, url, email);
   const CopyUrl = (slug: string) => {
     copy(`https://wiktrek.xyz/go/${slug}/`);
     toast("Link copied!");
@@ -40,7 +39,6 @@ export function UrlComponent(props: {
   };
   const submitData = async (e: React.SyntheticEvent) => {
     if (slug === "" || url === "") return;
-    // console.log(slug, url, user);
     e.preventDefault();
     createMutation.mutate({
       slug: slug,

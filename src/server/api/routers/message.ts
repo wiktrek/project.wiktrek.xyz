@@ -23,7 +23,6 @@ export const messageRouter = router({
           count: sql`count(*)`.as<number>(),
         })
         .from(message);
-      console.log(count[0]?.count);
       if ((count[0]?.count as number) >= 101) {
         const oldestUser = await ctx.db
           .select()

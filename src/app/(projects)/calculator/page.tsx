@@ -19,7 +19,6 @@ const Home: NextPage = () => {
     }
   }
   function ok(e: React.SyntheticEvent) {
-    console.log(e.currentTarget.id);
     setScreen3(e.currentTarget.id);
     setX(e.currentTarget.id);
     setCheck(true);
@@ -40,9 +39,7 @@ const Home: NextPage = () => {
   function equals() {
     const a = parseFloat(screen);
     const b = parseFloat(screen2);
-    console.log(`${a} ${b}`);
     const c = x;
-    console.log(c);
     if (c === "x") {
       setScreen(`${(a * b).toString()}`);
       setScreen2("");

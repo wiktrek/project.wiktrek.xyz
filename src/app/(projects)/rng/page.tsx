@@ -21,7 +21,6 @@ const Rng: NextPage = () => {
     }
     const num = getnum();
 
-    console.log();
     if (typeof num != "number") return getnum();
     setResult(`${num}`);
   }

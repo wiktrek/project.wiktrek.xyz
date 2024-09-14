@@ -106,7 +106,6 @@ const Home: NextPage = () => {
                         {c.value}
                       </pre>
                     );
-                  console.log("test");
                   return (
                     <p key={index} className="text-yellow-500">
                       {c.value}

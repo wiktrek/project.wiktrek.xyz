@@ -12,7 +12,6 @@
 //   if (!data) return <p>Slug not found</p>;
 //   router.push(data?.s?.url as string);
 
-//   // console.log(slug, data);
 //   return <p>redirecting...</p>;
 // }
 "use client";

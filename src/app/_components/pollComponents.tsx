@@ -48,7 +48,6 @@ export function FormComponent(props: { email: string }) {
   const router = useRouter();
   const createMutation = api.question.createQuestion.useMutation({
     async onSuccess(data) {
-      console.log(data);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       reset();
       if (!data[0]) return;
@@ -140,7 +139,6 @@ function VoteOn(props: {
   const { questionId, option, token } = props;
   const voteOnMutation = api.question.voteOn.useMutation({
     onSuccess: () => {
-      // console.log("WORKS!!!")
       window.location.reload();
     },
   });
@@ -196,7 +194,6 @@ export const QuestionPageContent: React.FC<{
   };
   if (data && data != undefined) getTotalVotes(data.votes as Choice[]);
   if (email === data.question?.ownerEmail) isOwner = true;
-  console.log(data.vote);
   return (
     <>
       {/* <Head>
