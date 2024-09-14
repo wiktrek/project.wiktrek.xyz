@@ -23,13 +23,6 @@ interface ProjectType {
  */
 const projects: ProjectType[] = [
   {
-    name: "Term",
-    description: "Terminal-like app",
-    url: "/term",
-    type: "project.wiktrek.xyz",
-    category: "Cool",
-  },
-  {
     name: "poll app",
     description: "Poll creation and voting app",
     url: "/poll",
@@ -43,6 +36,21 @@ const projects: ProjectType[] = [
     type: "project.wiktrek.xyz",
     category: "Cool",
   },
+  {
+    name: "Chat",
+    description: "Simple chat app",
+    url: "/chat",
+    type: "project.wiktrek.xyz",
+    category: "Cool",
+  },
+  {
+    name: "Term",
+    description: "Terminal-like app",
+    url: "/term",
+    type: "project.wiktrek.xyz",
+    category: "Cool",
+  },
+
   {
     name: "svelte",
     description: "App made with svelte",
@@ -144,7 +152,6 @@ function ProjectsByCategory(props: { projects: ProjectType[] }) {
   const filtered = props.projects.filter(
     (project) => project.category === "Cool",
   );
-  function Show_Category() {}
   return (
     <div className="top-16 flex w-full flex-col items-center justify-center text-center">
       <div className="mx-auto grid grid-cols-3 gap-8">

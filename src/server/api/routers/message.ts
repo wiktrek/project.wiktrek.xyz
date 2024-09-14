@@ -8,11 +8,10 @@ import { eq, sql } from "drizzle-orm";
 
 export const messageRouter = router({
   getMessages: procedure.query(async ({ ctx, input }) => {
-    const s = await ctx.db.query.message.findMany();
-    return { s };
+    return (await ctx.db.query.message.findMany()).reverse();
   }),
   createMessage: procedure
-    .input(z.object({ text: z.string().max(128), author: z.string().max(16) }))
+    .input(z.object({ text: z.string().max(64), author: z.string().max(16) }))
     .mutation(async ({ ctx, input }) => {
       const { author, text } = input;
       await ctx.db.insert(message).values({
@@ -24,7 +23,8 @@ export const messageRouter = router({
           count: sql`count(*)`.as<number>(),
         })
         .from(message);
-      if (count[0]?.count === 101) {
+      console.log(count[0]?.count);
+      if ((count[0]?.count as number) >= 101) {
         const oldestUser = await ctx.db
           .select()
           .from(message)
