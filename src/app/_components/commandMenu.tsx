@@ -76,6 +76,7 @@ export const CommandMenu = () => {
           {projects.map(({ name, url }) => {
             return (
               <CommandItem
+                key={name}
                 onSelect={() => {
                   router.push(url);
                   setOpen(false);

@@ -8,19 +8,6 @@ interface ProjectType {
   type: "project.wiktrek.xyz" | "other";
   category: Category;
 }
-/*
-
-
-
-
-    Categorize projects
-    Sort projects by category
-    hide projects with categories !== Cool
-
-
-
-
- */
 const projects: ProjectType[] = [
   {
     name: "poll app",
@@ -154,11 +141,11 @@ function ProjectsByCategory(props: { projects: ProjectType[] }) {
   );
   return (
     <div className="top-16 flex w-full flex-col items-center justify-center text-center">
-      <div className="mx-auto grid grid-cols-3 gap-8">
+      <div className="mx-auto grid-cols-3 gap-8 md:grid">
         {filtered.map((project) => {
           const { url, type } = project;
           return (
-            <div>
+            <div key={url}>
               {type === "project.wiktrek.xyz" ? (
                 <Link href={url}>
                   <Project key={project.name} {...project} />
@@ -173,7 +160,7 @@ function ProjectsByCategory(props: { projects: ProjectType[] }) {
         })}
       </div>
       <p className="py-4">Other projects</p>
-      <div className="mx-auto grid grid-cols-3 gap-8">
+      <div className="mx-auto grid-cols-3 gap-8 animate-in md:grid">
         <Button category="Simple" />
         <Button category="Rust" />
         <Button category="Learning" />
@@ -187,7 +174,7 @@ function ProjectsByCategory(props: { projects: ProjectType[] }) {
           .map((project) => {
             const { url, type } = project;
             return (
-              <div className={`hidden ${project.category}`}>
+              <div className={`hidden ${project.category}`} key={url}>
                 {type === "project.wiktrek.xyz" ? (
                   <Link href={url}>
                     <Project key={project.name} {...project} />

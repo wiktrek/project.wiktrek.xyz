@@ -49,7 +49,7 @@ export default function Page() {
         <div>
           Hi {name}!
           <div className="mx-auto h-[48rem] w-[30rem] rounded border-2 border-secondary text-left">
-            <div className="scrollbar-thin flex h-[44rem] w-[30rem] flex-col-reverse overflow-y-scroll pl-2 pt-2 text-left">
+            <div className="flex h-[44rem] w-[30rem] flex-col-reverse overflow-y-scroll pl-2 pt-2 text-left scrollbar-thin">
               {messages.map((data) => {
                 return <Message data={data} />;
               })}
