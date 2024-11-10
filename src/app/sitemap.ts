@@ -3,6 +3,11 @@ import type { MetadataRoute } from "next";
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
+      url: "https://wiktrek.xyz",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+    },
+    {
       url: "https://project.wiktrek.xyz/poll",
       lastModified: new Date(),
       changeFrequency: "monthly",
