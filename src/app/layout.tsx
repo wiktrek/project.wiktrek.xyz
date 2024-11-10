@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
-      <body className="bg-background">
+      <body className="bg-background font-sans">
         <CommandMenu />
         <Navbar />
         <ClerkProvider>

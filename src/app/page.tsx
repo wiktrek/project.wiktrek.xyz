@@ -10,7 +10,8 @@ const Home: NextPage = () => {
         <div className="absolute right-0">
           <UserButton afterSignOutUrl="/" />
         </div>
-        <div>
+        <div className="font-semibold">
+          <h1>My programming projects</h1>
           <ul className="">
             <Projects />
             <li>
@@ -18,7 +19,7 @@ const Home: NextPage = () => {
             </li>
             <li>
               {/* <Link href="/projects/recipe"> */}
-              <a>Recipe</a>
+              <p className="text-text">Recipe</p>
               {/* </Link> */}
             </li>
           </ul>
