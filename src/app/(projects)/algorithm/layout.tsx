@@ -25,6 +25,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         }}
       />
       {children}
+      <footer></footer>
     </main>
   );
 }
