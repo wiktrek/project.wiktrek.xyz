@@ -19,7 +19,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             },
             {
               name: "Basic",
-              algorithms: [{ name: "quicksort", link: "quicksort" }],
+              algorithms: [{ name: "Sorting?", link: "sort" }],
             },
           ],
         }}
