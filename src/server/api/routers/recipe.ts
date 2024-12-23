@@ -13,11 +13,10 @@ const recipeSchema = z.object({
   description: z.string(),
   email: z.string(),
   recipe: z.number(),
-  directions: z
+  instructions: z
     .array(
       z.object({
         name: z.string().min(1).max(200),
-        number: z.number(),
         step: z.string().min(1).max(200),
       }),
     )
@@ -52,7 +51,7 @@ export const recipeRouter = router({
       rating: 0,
       description: input.description,
       ingredients: input.ingredients,
-      directions: input.directions,
+      instructions: input.instructions,
       owner: input.email,
     });
     return createdRecipe;
