@@ -29,6 +29,10 @@ const Page: NextPage = async () => {
     name: "instructions",
     control,
   });
+  // const { fields, append, remove } = useFieldArray<recipeInputType>({
+  //   name: "ingredients",
+  //   control,
+  // });
   const user = await currentUser();
   return (
     <main className="flex flex-col items-center justify-center text-center text-2xl">
@@ -78,7 +82,9 @@ const Page: NextPage = async () => {
         <button
           id=""
           type="button"
-          onClick={() => append({ step: "", name: "" })}
+          onClick={() => {
+            append({ step: "", name: "" });
+          }}
         >
           add more instructions
         </button>
