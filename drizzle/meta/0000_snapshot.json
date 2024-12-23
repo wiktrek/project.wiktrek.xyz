@@ -1,5 +1,5 @@
 {
-  "id": "2878ade6-9a67-4355-a4c9-195cabb9fe5e",
+  "id": "1386f5e4-5e73-4339-abeb-d623fadecad9",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -235,8 +235,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "directions": {
-          "name": "directions",
+        "instructions": {
+          "name": "instructions",
           "type": "json",
           "primaryKey": false,
           "notNull": true

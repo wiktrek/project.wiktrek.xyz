@@ -65,7 +65,7 @@ export const recipe = pgTable(
     description: varchar("description", { length: 255 }),
     ingredients: json("ingredients").notNull(),
     owner: varchar("owner", { length: 255 }).notNull(),
-    directions: json("directions").notNull(),
+    instructions: json("instructions").notNull(),
   },
   (table) => {
     return {

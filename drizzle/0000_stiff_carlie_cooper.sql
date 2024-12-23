@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS "Recipe" (
 	"description" varchar(255),
 	"ingredients" json NOT NULL,
 	"owner" varchar(255) NOT NULL,
-	"directions" json NOT NULL,
+	"instructions" json NOT NULL,
 	CONSTRAINT "Recipe_id_pk" PRIMARY KEY("id")
 );
 --> statement-breakpoint
