@@ -25,7 +25,7 @@
     --background: hsl(0, 0%, 7%);
     --primary: hsl(0, 17%, 72%);
     --secondary: hsl(0, 24%, 32%);
-    --accent: hsl(187, 68%, 60%);
+    --accent: hsl(0, 30%, 55%);
   }
 }
 @layer base {

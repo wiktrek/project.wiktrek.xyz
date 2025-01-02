@@ -78,17 +78,6 @@ module.exports = {
         accent: {
           DEFAULT: "var(--accent)",
           foreground: "hsl(var(--accent-foreground))",
-          50: "hsl(187, 68%, 95%)",
-          100: "hsl(187, 69%, 90%)",
-          200: "hsl(187, 69%, 80%)",
-          300: "hsl(187, 69%, 70%)",
-          400: "hsl(187, 68%, 60%)",
-          500: "hsl(187, 68%, 50%)",
-          600: "hsl(187, 68%, 40%)",
-          700: "hsl(187, 69%, 30%)",
-          800: "hsl(187, 69%, 20%)",
-          900: "hsl(187, 69%, 10%)",
-          950: "hsl(187, 68%, 5%)",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
