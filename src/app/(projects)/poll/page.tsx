@@ -23,7 +23,7 @@ const Page: NextPage = async () => {
     email: `${user?.primaryEmailAddress?.emailAddress}`,
   });
   if (!data) {
-    return <a>Loading...</a>;
+    return <p>Loading...</p>;
   }
 
   return (

@@ -51,10 +51,10 @@ export function Projects() {
 function Project(props: ProjectType) {
   const { name, description } = props;
   return (
-    <a className="h-36 w-56 rounded-md bg-transparent p-2 text-left text-xl text-foreground shadow-md transition-all animate-out hover:scale-110 hover:cursor-pointer">
-      <a className="text-xl text-primary">{name}</a>
+    <div className="h-36 w-56 rounded-md bg-transparent p-2 text-left text-xl text-foreground shadow-md transition-all animate-out hover:scale-110 hover:cursor-pointer">
+      <p className="text-xl text-primary">{name}</p>
       <p className="px-2 text-base">{description}</p>
-    </a>
+    </div>
   );
 }
 function ProjectsByCategory(props: { projects: ProjectType[] }) {

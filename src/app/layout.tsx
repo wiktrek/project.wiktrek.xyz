@@ -4,7 +4,7 @@ import { GeistSans } from "geist/font/sans";
 import { TRPCReactProvider } from "~/trpc/react";
 import { ClerkProvider } from "@clerk/nextjs";
 import { CommandMenu } from "~/app/_components/commandMenu";
-import Navbar from "./_components/navbar";
+import Navbar from "~/app/_components/navbar";
 
 export const metadata = {
   title: "Projects - wiktrek.xyz",

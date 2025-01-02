@@ -203,7 +203,7 @@ export const QuestionPageContent: React.FC<{
         <div className="">
           {isOwner && <p>This is your poll</p>}
           <div className="">
-            <a>{data.question?.question}</a>
+            <p>{data.question?.question}</p>
             {(data.question?.options as { text: string }[])?.map(
               (option, index) => {
                 if (isOwner || data.vote != undefined) {

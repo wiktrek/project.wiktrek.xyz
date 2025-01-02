@@ -21,7 +21,7 @@ const Page: NextPage = async () => {
     email: user?.primaryEmailAddress!.emailAddress,
   });
   if (!data) {
-    return <a>Loading...</a>;
+    return <p>Loading...</p>;
   }
   return (
     <main className="mx-auto flex w-screen flex-col items-center justify-center text-center text-xl text-white">
