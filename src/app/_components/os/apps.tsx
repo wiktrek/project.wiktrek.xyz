@@ -125,6 +125,9 @@ export function TicTacToe() {
   }, [board]);
   useEffect(() => {
     if (player == false) {
+      if (check(board) != "no") {
+        return;
+      }
       let filtered = new Array<number>();
       board.map((b, i) => {
         if (b == null) {
@@ -158,6 +161,9 @@ export function TicTacToe() {
                   key={i}
                   onClick={() => {
                     if (player == true) {
+                      if (check(board) != "no") {
+                        return;
+                      }
                       setBoard(
                         board.map((cell, index) => {
                           if (cell === null && index === i) {
