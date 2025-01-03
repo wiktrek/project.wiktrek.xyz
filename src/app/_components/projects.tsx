@@ -38,6 +38,14 @@ const projects: ProjectType[] = [
     category: "Cool",
   },
   {
+    name: "Os",
+    description:
+      "website that tries to look like a desktop of an operating system",
+    url: "/os",
+    type: "project.wiktrek.xyz",
+    category: "Cool",
+  },
+  {
     name: "Other projects",
     description: "Other projects",
     url: "/other",
