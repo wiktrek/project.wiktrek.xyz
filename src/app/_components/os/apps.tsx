@@ -104,7 +104,6 @@ function check(array: string[]): string {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i]!;
     if (array[a] && array[a] === array[b] && array[a] === array[c]) {
-      console.log(array[a]);
       return array[a];
     }
   }
@@ -117,8 +116,7 @@ export function TicTacToe() {
   useEffect(() => {
     let checked = check(board);
     if (checked != "no") {
-      console.log("Win", checked);
-      console.log(win);
+      setWin(checked + " won!");
     } else {
       if (board.filter((b) => b == null).length == 0) {
         setWin("Draw");
@@ -127,12 +125,16 @@ export function TicTacToe() {
   }, [board]);
   useEffect(() => {
     if (player == false) {
-      let filtered = board.filter((b) => b == null);
+      let filtered = new Array<number>();
+      board.map((b, i) => {
+        if (b == null) {
+          filtered.push(i);
+        }
+      });
       let randomIndex = Math.floor(Math.random() * filtered.length);
-      console.log(randomIndex);
       setBoard(
         board.map((cell, index) => {
-          if (cell === null && index === randomIndex) {
+          if (cell === null && index === filtered[randomIndex]) {
             return "O";
           }
           return cell;
@@ -146,7 +148,7 @@ export function TicTacToe() {
       <div className="flex flex-col items-center justify-center text-center">
         <h1 className="text-center text-xl font-bold">Tic Tac Toe</h1>
         <p>{player ? "Your turn" : ""}</p>
-        <p>{win !== "no" ? win : ""}</p>
+        <p>{win != "no" ? win : ""}</p>
         <div className="grid grid-cols-3 grid-rows-3 gap-2">
           {board.map((b, i) => {
             if (b == null) {
@@ -156,7 +158,6 @@ export function TicTacToe() {
                   key={i}
                   onClick={() => {
                     if (player == true) {
-                      // console.log(board);
                       setBoard(
                         board.map((cell, index) => {
                           if (cell === null && index === i) {
@@ -183,6 +184,15 @@ export function TicTacToe() {
             }
           })}
         </div>
+        <button
+          onClick={() => {
+            setBoard(Array(9).fill(null));
+            setPlayer(true);
+            setWin("no");
+          }}
+        >
+          Reset
+        </button>
       </div>
     </AppComponent>
   );
