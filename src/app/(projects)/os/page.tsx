@@ -1,6 +1,6 @@
 "use client";
 
-import { Apps, BlogApp, Snake } from "~/app/_components/os/apps";
+import { Apps, BlogApp, TicTacToe } from "~/app/_components/os/apps";
 
 export default function Page() {
   return (
@@ -13,7 +13,7 @@ function Main() {
   return (
     <div className="mx-auto h-[100vh] w-[90%] bg-background-300">
       <Apps />
-      <Snake />
+      <TicTacToe />
       <BlogApp />
     </div>
   );

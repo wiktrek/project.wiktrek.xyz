@@ -1,5 +1,6 @@
 import Draggable from "react-draggable";
 import { closeApp, runApp } from "../lib/os";
+import { useEffect, useState } from "react";
 interface App {
   name: string;
   icon: string;
@@ -12,9 +13,9 @@ const apps: App[] = [
     id: "blog",
   },
   {
-    name: "snake",
-    icon: "Snake",
-    id: "snake",
+    name: "TicTacToe",
+    icon: "TTT",
+    id: "tictactoe",
   },
 ];
 
@@ -42,12 +43,6 @@ export function Apps() {
 export function BlogApp() {
   return (
     <AppComponent id="blog">
-      <button
-        className="absolute right-2 top-2 text-3xl text-red-500"
-        onClick={() => runApp("blog")}
-      >
-        X
-      </button>
       <p className="text-xl">My blog posts</p>
       <ul>
         <li>
@@ -82,11 +77,11 @@ export function AppComponent({
   return (
     <div id={id} className="hidden">
       <Draggable>
-        <div className="absolute h-64 w-96 cursor-move rounded-xl bg-background-800 p-4 font-bold text-white">
+        <div className="absolute h-[24rem] w-[30rem] cursor-move rounded-xl bg-background-800 p-4 font-bold text-white">
           {children}
           <button
             className="absolute right-2 top-2 text-3xl text-red-500"
-            onClick={() => runApp("blog")}
+            onClick={() => runApp(id)}
           >
             X
           </button>
@@ -95,10 +90,100 @@ export function AppComponent({
     </div>
   );
 }
-export function Snake() {
+function check(array: string[]): string {
+  const lines: [number, number, number][] = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i]!;
+    if (array[a] && array[a] === array[b] && array[a] === array[c]) {
+      console.log(array[a]);
+      return array[a];
+    }
+  }
+  return "no";
+}
+export function TicTacToe() {
+  const [board, setBoard] = useState(Array(9).fill(null));
+  const [player, setPlayer] = useState(true);
+  const [win, setWin] = useState("no");
+  useEffect(() => {
+    let checked = check(board);
+    if (checked != "no") {
+      console.log("Win", checked);
+      console.log(win);
+    } else {
+      if (board.filter((b) => b == null).length == 0) {
+        setWin("Draw");
+      }
+    }
+  }, [board]);
+  useEffect(() => {
+    if (player == false) {
+      let filtered = board.filter((b) => b == null);
+      let randomIndex = Math.floor(Math.random() * filtered.length);
+      console.log(randomIndex);
+      setBoard(
+        board.map((cell, index) => {
+          if (cell === null && index === randomIndex) {
+            return "O";
+          }
+          return cell;
+        }),
+      );
+      setPlayer(true);
+    }
+  }, [player]);
   return (
-    <AppComponent id="snake">
-      <div></div>
+    <AppComponent id="tictactoe">
+      <div className="flex flex-col items-center justify-center text-center">
+        <h1 className="text-center text-xl font-bold">Tic Tac Toe</h1>
+        <p>{player ? "Your turn" : ""}</p>
+        <p>{win !== "no" ? win : ""}</p>
+        <div className="grid grid-cols-3 grid-rows-3 gap-2">
+          {board.map((b, i) => {
+            if (b == null) {
+              return (
+                <button
+                  className="h-16 w-16 rounded bg-background-50"
+                  key={i}
+                  onClick={() => {
+                    if (player == true) {
+                      // console.log(board);
+                      setBoard(
+                        board.map((cell, index) => {
+                          if (cell === null && index === i) {
+                            return "X";
+                          }
+                          return cell;
+                        }),
+                      );
+                      setPlayer(false);
+                    }
+                  }}
+                ></button>
+              );
+            } else {
+              return (
+                <button
+                  className="h-16 w-16 rounded bg-background-50 text-center text-xl font-bold text-black"
+                  key={i}
+                  disabled
+                >
+                  {b}
+                </button>
+              );
+            }
+          })}
+        </div>
+      </div>
     </AppComponent>
   );
 }
