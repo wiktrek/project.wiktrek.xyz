@@ -46,6 +46,13 @@ const projects: ProjectType[] = [
     category: "Cool",
   },
   {
+    name: "Browser games",
+    description: "browser games that I made",
+    url: "/games",
+    type: "project.wiktrek.xyz",
+    category: "Cool",
+  },
+  {
     name: "Other projects",
     description: "Other projects",
     url: "/other",
