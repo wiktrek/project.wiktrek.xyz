@@ -17,9 +17,13 @@
 "use client";
 import { api as trpc } from "~/trpc/react";
 import { useRouter } from "next/navigation";
-export default function Page({ params }: { params: { slug: string } }) {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const router = useRouter();
-  const { slug } = params;
+  const { slug } = await params;
   const { data } = trpc.short.getSlug.useQuery({
     slug,
   });
