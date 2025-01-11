@@ -14,15 +14,27 @@ function storeMoney(items: Item[]): number {
   });
   return sum;
 }
+
 export default function Page() {
-  const [money, setMoney] = useState(0);
+  const [store, setStore] = useState(readLocalStorage()[0] ?? getStore());
+  const [money, setMoney] = useState(readLocalStorage()[1] ?? 0);
   const [cooldown, setCooldown] = useState(false);
-  const [store, setStore] = useState(getStore());
+  function readLocalStorage(): [Item[], number] {
+    const items = JSON.parse(localStorage.getItem("items") as string) as Item[];
+    const money = JSON.parse(localStorage.getItem("money") as string) as number;
+    return [items, money];
+  }
+  function saveLocalStorage(items: Item[], money: number) {
+    console.log("saved!");
+    localStorage.setItem("items", JSON.stringify(items));
+    localStorage.setItem("money", money.toString());
+  }
   useEffect(() => {
     const interval = setInterval(() => {
       const newMoney = storeMoney(store);
       console.log(newMoney);
       setMoney((prevMoney) => prevMoney + newMoney);
+      saveLocalStorage(store, money);
     }, 2000);
 
     return () => clearInterval(interval);
@@ -81,6 +93,9 @@ export default function Page() {
           })}
         </ul>
       </aside>
+      <footer className="fixed bottom-0 flex w-full justify-center text-center text-xs">
+        Yes I know you can change every value in local storage
+      </footer>
     </main>
   );
 }
