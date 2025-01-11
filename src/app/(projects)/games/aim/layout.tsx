@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "aim- wiktrek.xyz",
+  title: "aim - wiktrek.xyz",
   description: "aim",
 };
 export default function PageLayout({
