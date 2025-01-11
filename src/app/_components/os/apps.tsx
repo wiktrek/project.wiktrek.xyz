@@ -101,10 +101,10 @@ function check(array: string[]): string {
     [0, 4, 8],
     [2, 4, 6],
   ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i]!;
+  for (const v of lines) {
+    const [a, b, c] = v;
     if (array[a] && array[a] === array[b] && array[a] === array[c]) {
-      return array[a]!;
+      return array[a];
     }
   }
   return "no";
@@ -114,7 +114,7 @@ export function TicTacToe() {
   const [player, setPlayer] = useState(true);
   const [win, setWin] = useState("no");
   useEffect(() => {
-    let checked = check(board);
+    const checked = check(board);
     if (checked != "no") {
       setWin(checked + " won!");
     } else {
@@ -135,16 +135,18 @@ export function TicTacToe() {
         }
       });
       const randomIndex = Math.floor(Math.random() * filtered.length);
+
       setBoard(
         board.map((cell, index) => {
           if (cell === null && index === filtered[randomIndex]) {
             return "O";
           }
-          return cell!;
+          return cell;
         }),
       );
       setPlayer(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player]);
   return (
     <AppComponent id="tictactoe">

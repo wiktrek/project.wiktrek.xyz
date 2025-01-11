@@ -1,5 +1,4 @@
 import type { Metadata, NextPage } from "next";
-import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 import { api as trpc } from "~/trpc/server";

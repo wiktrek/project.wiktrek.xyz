@@ -6,7 +6,7 @@ export function runApp(id: string) {
 }
 export function closeApp(id: string) {
   const app = document.getElementById(id);
-  if (app && app.classList.contains("hidden")) {
+  if (app?.classList.contains("hidden")) {
     app.classList.remove("hidden");
   }
 }

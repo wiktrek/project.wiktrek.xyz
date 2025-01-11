@@ -1,5 +1,4 @@
 import type { NextPage } from "next";
-import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 import React from "react";
 import { Projects } from "~/app/_components/projects";

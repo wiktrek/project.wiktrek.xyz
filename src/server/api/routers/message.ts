@@ -23,14 +23,14 @@ export const messageRouter = router({
           count: sql`count(*)`.as<number>(),
         })
         .from(message);
-      if (count[0]?.count! >= 101) {
+      if (count[0]!.count >= 101) {
         const oldestUser = await ctx.db
           .select()
           .from(message)
           .orderBy(message.createdAt)
           .limit(1)
           .execute();
-        const oldestUserId = oldestUser[0]?.id!;
+        const oldestUserId = oldestUser[0]!.id;
         await ctx.db
           .delete(message)
           .where(eq(message.id, oldestUserId))

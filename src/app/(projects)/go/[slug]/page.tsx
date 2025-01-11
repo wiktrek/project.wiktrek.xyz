@@ -14,21 +14,20 @@
 
 //   return <p>redirecting...</p>;
 // }
-"use client";
 import { api as trpc } from "~/trpc/react";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 export default async function Page({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const router = useRouter();
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const { slug } = await params;
   const { data } = trpc.short.getSlug.useQuery({
     slug,
   });
 
   if (!data?.s?.url || data.s.url == undefined) return <p>Slug not found</p>;
-  router.push(data?.s?.url);
+  redirect(data?.s?.url);
   return <p>redirecting...</p>;
 }

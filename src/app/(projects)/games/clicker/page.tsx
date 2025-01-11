@@ -21,15 +21,22 @@ export default function Page() {
   const [money, setMoney] = useState(readLocalStorage()[1] ?? 0);
   const [cooldown, setCooldown] = useState(false);
   function readLocalStorage(): [Item[], number] {
-    const items = JSON.parse(localStorage.getItem("items")!) as Item[];
-    const money = JSON.parse(localStorage.getItem("money")!) as number;
-    return [items, money];
+    if (localStorage) {
+      const items = JSON.parse(localStorage.getItem("items")!) as Item[];
+      const money = JSON.parse(localStorage.getItem("money")!) as number;
+      return [items, money];
+    } else {
+      return [getStore(), 0];
+    }
   }
   function saveLocalStorage(items: Item[], money: number) {
     console.log("saved!");
-    localStorage.setItem("items", JSON.stringify(items));
-    localStorage.setItem("money", money.toString());
+    if (localStorage) {
+      localStorage.setItem("items", JSON.stringify(items));
+      localStorage.setItem("money", money.toString());
+    }
   }
+
   useEffect(() => {
     const interval = setInterval(() => {
       const newMoney = storeMoney(store);
@@ -39,6 +46,7 @@ export default function Page() {
     }, 2000);
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [store]);
   return (
     <main>

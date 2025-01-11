@@ -1,6 +1,6 @@
 "use client";
 
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
 
@@ -9,7 +9,7 @@ const Page: NextPage = () => {
   const [textarea, setTextarea] = useState("");
   const [size, setSize] = useState(2);
   function Randomize() {
-    let teammates = textarea
+    const teammates = textarea
       .split("\n")
       .filter((teammate) => teammate.trim().length !== 0);
     shuffle(teammates);
@@ -65,8 +65,8 @@ const ResultComponent = ({ result }: { result: string[][] }) => {
 };
 export default Page;
 function split_into_chunks(array: string[], amount: number): string[][] {
-  let split_arr: string[][] = [];
-  let d = array.length / amount; // amount of teammates in a team
+  const split_arr: string[][] = [];
+  const d = array.length / amount; // amount of teammates in a team
 
   let arr = [];
   for (let i = 0; i < array.length; i++) {
@@ -89,7 +89,7 @@ function shuffle(array: string[]) {
   // While there remain elements to shuffle...
   while (currentIndex != 0) {
     // Pick a remaining element...
-    let randomIndex = Math.floor(Math.random() * currentIndex);
+    const randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
 
     // And swap it with the current element.
