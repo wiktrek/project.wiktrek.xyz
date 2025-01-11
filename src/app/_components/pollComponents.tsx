@@ -14,7 +14,7 @@ import {
 } from "~/shared/create-question-validator";
 import { useEffect, useState } from "react";
 import { v4 } from "uuid";
-
+import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 export function DeletePoll(props: { id: number }) {
   const deleteMutation = api.question.deleteQuestion.useMutation();
   return (
@@ -40,7 +40,7 @@ export function CopyUrl(props: { id: number }) {
   };
   return (
     <button className="pl-2 pr-1" onClick={CopyUrl} id={`${props.id}`}>
-      <FontAwesomeIcon icon={faClipboard} />
+      <FontAwesomeIcon icon={faClipboard as IconProp} />
     </button>
   );
 }

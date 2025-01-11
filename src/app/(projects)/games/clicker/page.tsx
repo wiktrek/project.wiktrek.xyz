@@ -1,5 +1,4 @@
 "use client";
-import { Metadata } from "next";
 import { useEffect, useState } from "react";
 interface Item {
   name: string;
@@ -17,12 +16,13 @@ function storeMoney(items: Item[]): number {
 }
 
 export default function Page() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [store, setStore] = useState(readLocalStorage()[0] ?? getStore());
   const [money, setMoney] = useState(readLocalStorage()[1] ?? 0);
   const [cooldown, setCooldown] = useState(false);
   function readLocalStorage(): [Item[], number] {
-    const items = JSON.parse(localStorage.getItem("items") as string) as Item[];
-    const money = JSON.parse(localStorage.getItem("money") as string) as number;
+    const items = JSON.parse(localStorage.getItem("items")!) as Item[];
+    const money = JSON.parse(localStorage.getItem("money")!) as number;
     return [items, money];
   }
   function saveLocalStorage(items: Item[], money: number) {
@@ -64,7 +64,7 @@ export default function Page() {
             You will get: <b className="text-secondary">{storeMoney(store)}</b>{" "}
             every 2 seconds!
           </p>
-          {store.map((item, i) => {
+          {store.map((item) => {
             return (
               <li key={item.name}>
                 <p>
@@ -75,7 +75,7 @@ export default function Page() {
           })}
         </div>
         <ul>
-          {store.map((item, i) => {
+          {store.map((item) => {
             return (
               <li key={item.name}>
                 <button

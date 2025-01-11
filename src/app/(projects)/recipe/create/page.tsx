@@ -6,7 +6,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { Input } from "~/app/_components/ui/input";
 import { recipeInputType, recipeValidator } from "~/shared/recipe-validator";
 import { api as trpc } from "~/trpc/react";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { useUser } from "@clerk/nextjs";
 const Page: NextPage = async () => {
   // return <h1>I am too lazy to finish this</h1>
   const {
@@ -33,7 +33,10 @@ const Page: NextPage = async () => {
   //   name: "ingredients",
   //   control,
   // });
-  const user = await currentUser();
+  const { isLoaded, isSignedIn, user } = useUser();
+  if (!isLoaded || !isSignedIn) {
+    return <p>Loading...</p>;
+  }
   return (
     <main className="flex flex-col items-center justify-center text-center text-2xl">
       <div>

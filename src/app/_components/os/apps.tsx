@@ -104,13 +104,13 @@ function check(array: string[]): string {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i]!;
     if (array[a] && array[a] === array[b] && array[a] === array[c]) {
-      return array[a];
+      return array[a]!;
     }
   }
   return "no";
 }
 export function TicTacToe() {
-  const [board, setBoard] = useState(Array(9).fill(null));
+  const [board, setBoard] = useState<string[]>(Array(9).fill(null));
   const [player, setPlayer] = useState(true);
   const [win, setWin] = useState("no");
   useEffect(() => {
@@ -128,19 +128,19 @@ export function TicTacToe() {
       if (check(board) != "no") {
         return;
       }
-      let filtered = new Array<number>();
+      const filtered = new Array<number>();
       board.map((b, i) => {
         if (b == null) {
           filtered.push(i);
         }
       });
-      let randomIndex = Math.floor(Math.random() * filtered.length);
+      const randomIndex = Math.floor(Math.random() * filtered.length);
       setBoard(
         board.map((cell, index) => {
           if (cell === null && index === filtered[randomIndex]) {
             return "O";
           }
-          return cell;
+          return cell!;
         }),
       );
       setPlayer(true);

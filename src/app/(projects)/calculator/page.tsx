@@ -4,6 +4,7 @@ import Head from "next/head";
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faTrash } from "@fortawesome/free-solid-svg-icons";
+import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 const Home: NextPage = () => {
   const [screen, setScreen] = useState("");
   const [screen2, setScreen2] = useState("");
@@ -82,7 +83,7 @@ const Home: NextPage = () => {
             </a>
             <div className="float-right">
               <button onClick={clearone}>
-                <FontAwesomeIcon icon={faArrowLeft} />
+                <FontAwesomeIcon icon={faArrowLeft as IconProp} />
               </button>
               <button onClick={equals} className="text-2xl">
                 =
@@ -200,7 +201,7 @@ const Home: NextPage = () => {
                 className="h-16 w-16 rounded bg-gray-500"
                 id="clear"
               >
-                <FontAwesomeIcon icon={faTrash} />
+                <FontAwesomeIcon icon={faTrash as IconProp} />
               </button>
               <button
                 onClick={ok}

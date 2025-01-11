@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { QuestionPageContent } from "~/app/_components/pollComponents";
 import { currentUser } from "@clerk/nextjs/server";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export default async function Page({
   params,

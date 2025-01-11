@@ -7,7 +7,7 @@ import { DeletePoll } from "~/app/_components/pollComponents";
 import { auth, currentUser } from "@clerk/nextjs/server";
 
 const Page: NextPage = async () => {
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) {
     return (
       <h1>
