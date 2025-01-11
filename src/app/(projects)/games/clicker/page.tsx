@@ -1,4 +1,5 @@
 "use client";
+import { Metadata } from "next";
 import { useEffect, useState } from "react";
 interface Item {
   name: string;
@@ -65,7 +66,7 @@ export default function Page() {
           </p>
           {store.map((item, i) => {
             return (
-              <li>
+              <li key={item.name}>
                 <p>
                   {item.name}: {item.quantity * item.clicks}
                 </p>
@@ -76,7 +77,7 @@ export default function Page() {
         <ul>
           {store.map((item, i) => {
             return (
-              <li>
+              <li key={item.name}>
                 <button
                   className="mt-2 flex w-36 justify-between rounded bg-background-600 p-2 text-xl font-semibold disabled:bg-background-800"
                   disabled={money < getPrice(item)}
