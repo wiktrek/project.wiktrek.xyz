@@ -1,14 +1,18 @@
 "use client";
 import { api as trpc } from "~/trpc/react";
-export default function Page({ params }: { params: { id: string } }) {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { data } = trpc.recipe.getById.useQuery({
-    id: Number(params.id),
+    id: Number((await params).id),
   });
   if (!data) return <p>Recipe not found</p>;
   return (
     <>
       <main className="flex items-center justify-center text-center text-4xl">
-        <p>{params.id}</p>
+        <p>{(await params).id}</p>
       </main>
     </>
   );
