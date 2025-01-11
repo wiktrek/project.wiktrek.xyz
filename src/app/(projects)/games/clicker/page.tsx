@@ -21,7 +21,7 @@ export default function Page() {
   const [money, setMoney] = useState(readLocalStorage()[1] ?? 0);
   const [cooldown, setCooldown] = useState(false);
   function readLocalStorage(): [Item[], number] {
-    if (localStorage) {
+    if (typeof window !== "undefined") {
       const items = JSON.parse(localStorage.getItem("items")!) as Item[];
       const money = JSON.parse(localStorage.getItem("money")!) as number;
       return [items, money];
@@ -31,7 +31,7 @@ export default function Page() {
   }
   function saveLocalStorage(items: Item[], money: number) {
     console.log("saved!");
-    if (localStorage) {
+    if (typeof window !== "undefined") {
       localStorage.setItem("items", JSON.stringify(items));
       localStorage.setItem("money", money.toString());
     }
