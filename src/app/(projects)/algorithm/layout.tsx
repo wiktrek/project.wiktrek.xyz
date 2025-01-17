@@ -3,7 +3,7 @@ import Link from "next/link";
 interface AlgList {
   categories: {
     name: string;
-    algorithms: { name: String; link: String }[];
+    algorithms: { name: string; link: string }[];
   }[];
 }
 
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   title: "algorithms - wiktrek.xyz",
   description: "website similar to leetcode/adventofcode",
 };
-const AlgComponent = (props: { name: String; link: String }) => {
+const AlgComponent = (props: { name: string; link: string }) => {
   const { name, link } = props;
   return (
     <div>

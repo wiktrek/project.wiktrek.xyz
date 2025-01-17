@@ -1,11 +1,10 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import type { Metadata, NextPage } from "next";
-import Head from "next/head";
 import { api } from "~/trpc/server";
 import Link from "next/link";
 import { UrlComponent } from "~/app/_components/urlComponent";
 const Page: NextPage = async () => {
-  const { userId } = auth();
+  const { userId } = await auth();
   const user = await currentUser();
   if (!userId || !user) {
     return (

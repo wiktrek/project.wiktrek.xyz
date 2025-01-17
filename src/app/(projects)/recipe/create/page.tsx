@@ -1,13 +1,16 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import Link from "next/link";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Input } from "~/app/_components/ui/input";
-import { recipeInputType, recipeValidator } from "~/shared/recipe-validator";
+import {
+  type recipeInputType,
+  recipeValidator,
+} from "~/shared/recipe-validator";
 import { api as trpc } from "~/trpc/react";
-import { auth, currentUser } from "@clerk/nextjs/server";
-const Page: NextPage = async () => {
+import { useUser } from "@clerk/nextjs";
+const Page: NextPage = () => {
   // return <h1>I am too lazy to finish this</h1>
   const {
     register,
@@ -33,7 +36,10 @@ const Page: NextPage = async () => {
   //   name: "ingredients",
   //   control,
   // });
-  const user = await currentUser();
+  const { isLoaded, isSignedIn, user } = useUser();
+  if (!isLoaded || !isSignedIn) {
+    return <p>Loading...</p>;
+  }
   return (
     <main className="flex flex-col items-center justify-center text-center text-2xl">
       <div>
@@ -46,7 +52,7 @@ const Page: NextPage = async () => {
             name: data.name,
             ingredients: data.ingredients,
             instructions: data.instructions,
-            email: user!.primaryEmailAddress!.emailAddress,
+            email: user.primaryEmailAddress!.emailAddress,
             recipe: 0,
           });
           reset();

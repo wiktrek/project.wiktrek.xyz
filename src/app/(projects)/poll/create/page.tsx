@@ -5,9 +5,9 @@ import Head from "next/head";
 import Link from "next/link";
 
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 const QuestionCreator: React.FC = async () => {
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) {
     return (
       <h1>

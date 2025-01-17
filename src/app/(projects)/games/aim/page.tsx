@@ -7,8 +7,8 @@ export default function Page() {
     top: "50%",
   });
   function random() {
-    var i = randomInt(window.screen.width - 200);
-    var j = randomInt(window.screen.height - 400);
+    const i = randomInt(window.screen.width - 200);
+    const j = randomInt(window.screen.height - 400);
     setButtonStyle({
       left: i + "px",
       top: j + "px",

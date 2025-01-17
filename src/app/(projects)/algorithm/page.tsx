@@ -1,12 +1,12 @@
 "use client";
 import type { NextPage } from "next";
 import Link from "next/link";
-interface AlgList {
-  categories: {
-    name: string;
-    algorithms: { name: String; link: String }[];
-  }[];
-}
+// interface AlgList {
+//   categories: {
+//     name: string;
+//     algorithms: { name: string; link: string }[];
+//   }[];
+// }
 const Home: NextPage = () => {
   return (
     <main className="flex flex-col items-center justify-center text-left">

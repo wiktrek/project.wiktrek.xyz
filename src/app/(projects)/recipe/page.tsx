@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import Link from "next/link";
 const Page: NextPage = async () => {
   // return <h1>I am too lazy to finish this</h1>

@@ -1,6 +1,6 @@
 import Draggable from "react-draggable";
 import { closeApp, runApp } from "../lib/os";
-import { useEffect, useState } from "react";
+import { Ref, RefObject, useEffect, useRef, useState } from "react";
 interface App {
   name: string;
   icon: string;
@@ -74,10 +74,14 @@ export function AppComponent({
   children: React.ReactNode;
   id: string;
 }) {
+  const nodeRef = useRef<HTMLElement>(null);
   return (
     <div id={id} className="hidden">
-      <Draggable>
-        <div className="absolute h-[24rem] w-[30rem] cursor-move rounded-xl bg-background-800 p-4 font-bold text-white">
+      <Draggable nodeRef={nodeRef as RefObject<HTMLElement>}>
+        <div
+          className="absolute h-[24rem] w-[30rem] cursor-move rounded-xl bg-background-800 p-4 font-bold text-white"
+          ref={nodeRef as Ref<HTMLDivElement>}
+        >
           {children}
           <button
             className="absolute right-2 top-2 text-3xl text-red-500"
@@ -90,6 +94,7 @@ export function AppComponent({
     </div>
   );
 }
+
 function check(array: string[]): string {
   const lines: [number, number, number][] = [
     [0, 1, 2],
@@ -101,8 +106,8 @@ function check(array: string[]): string {
     [0, 4, 8],
     [2, 4, 6],
   ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i]!;
+  for (const v of lines) {
+    const [a, b, c] = v;
     if (array[a] && array[a] === array[b] && array[a] === array[c]) {
       return array[a];
     }
@@ -110,11 +115,11 @@ function check(array: string[]): string {
   return "no";
 }
 export function TicTacToe() {
-  const [board, setBoard] = useState(Array(9).fill(null));
+  const [board, setBoard] = useState<string[]>(Array(9).fill(null));
   const [player, setPlayer] = useState(true);
   const [win, setWin] = useState("no");
   useEffect(() => {
-    let checked = check(board);
+    const checked = check(board);
     if (checked != "no") {
       setWin(checked + " won!");
     } else {
@@ -128,13 +133,14 @@ export function TicTacToe() {
       if (check(board) != "no") {
         return;
       }
-      let filtered = new Array<number>();
+      const filtered = new Array<number>();
       board.map((b, i) => {
         if (b == null) {
           filtered.push(i);
         }
       });
-      let randomIndex = Math.floor(Math.random() * filtered.length);
+      const randomIndex = Math.floor(Math.random() * filtered.length);
+
       setBoard(
         board.map((cell, index) => {
           if (cell === null && index === filtered[randomIndex]) {
@@ -145,6 +151,7 @@ export function TicTacToe() {
       );
       setPlayer(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player]);
   return (
     <AppComponent id="tictactoe">

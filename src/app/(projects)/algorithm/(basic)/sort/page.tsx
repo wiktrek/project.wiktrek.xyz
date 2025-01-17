@@ -1,24 +1,24 @@
 "use client";
 import type { NextPage } from "next";
-import Link from "next/link";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { darcula } from "react-syntax-highlighter/dist/esm/styles/hljs";
+// import Link from "next/link";
+// import SyntaxHighlighter from "react-syntax-highlighter";
+// import { darcula } from "react-syntax-highlighter/dist/esm/styles/hljs";
 const Home: NextPage = () => {
-  const bubble_sort = `#python code
-  def bubble_sort(arr):
-    n = len(arr)
-    for i in range(n):
-        swapped = False
-        for j in range(0, n-i-1):
+  //   const bubble_sort = `#python code
+  //   def bubble_sort(arr):
+  //     n = len(arr)
+  //     for i in range(n):
+  //         swapped = False
+  //         for j in range(0, n-i-1):
 
-            if arr[j] > arr[j+1]:
-                arr[j], arr[j+1] = arr[j+1], arr[j]
-                swapped = True
-        if not swapped:
-            break
-arr = [5,4,3,2,1,10,9,8,7,6]
-bubble_sort(arr)
-print("sorted:", arr)`;
+  //             if arr[j] > arr[j+1]:
+  //                 arr[j], arr[j+1] = arr[j+1], arr[j]
+  //                 swapped = True
+  //         if not swapped:
+  //             break
+  // arr = [5,4,3,2,1,10,9,8,7,6]
+  // bubble_sort(arr)
+  // print("sorted:", arr)`;
   return (
     <main className="flex items-center justify-center text-center">
       <div className="text-left text-2xl">
@@ -106,9 +106,9 @@ print("sorted:", arr)`;
           </a>
         </div>
         <p className="text-3xl font-bold">Python code</p>
-        <SyntaxHighlighter language="python" style={darcula}>
+        {/* <SyntaxHighlighter language="python" style={darcula}>
           {bubble_sort}
-        </SyntaxHighlighter>
+        </SyntaxHighlighter> */}
       </div>
     </main>
   );

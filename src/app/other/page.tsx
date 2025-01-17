@@ -1,6 +1,5 @@
 import type { NextPage } from "next";
 import Link from "next/link";
-import { UserButton } from "@clerk/nextjs";
 import React from "react";
 interface ProjectType {
   name: string;
@@ -91,7 +90,7 @@ const Home: NextPage = () => {
           {projects.map((project) => {
             const { url, type } = project;
             return (
-              <div>
+              <div key={url}>
                 {type === "project.wiktrek.xyz" ? (
                   <Link href={url}>
                     <Project key={project.name} {...project} />

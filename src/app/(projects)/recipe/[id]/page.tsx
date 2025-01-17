@@ -1,4 +1,3 @@
-"use client";
 import { api as trpc } from "~/trpc/react";
 export default async function Page({
   params,

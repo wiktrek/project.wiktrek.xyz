@@ -1,5 +1,4 @@
 import type { Metadata, NextPage } from "next";
-import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 import { api as trpc } from "~/trpc/server";
@@ -7,7 +6,7 @@ import { DeletePoll } from "~/app/_components/pollComponents";
 import { auth, currentUser } from "@clerk/nextjs/server";
 
 const Page: NextPage = async () => {
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) {
     return (
       <h1>

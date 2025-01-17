@@ -7,6 +7,8 @@ import { toast } from "sonner";
 import copy from "copy-to-clipboard";
 import { api as trpc } from "~/trpc/react";
 import Link from "next/link";
+
+import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 export function UrlComponent(props: {
   email: string;
   data: {
@@ -100,7 +102,7 @@ export function UrlComponent(props: {
                         CopyUrl(item.slug);
                       }}
                     >
-                      <FontAwesomeIcon icon={faClipboard} />
+                      <FontAwesomeIcon icon={faClipboard as IconProp} />
                     </button>
                     <button
                       onClick={() => {
@@ -108,7 +110,7 @@ export function UrlComponent(props: {
                       }}
                       data-slug={item.slug}
                     >
-                      <FontAwesomeIcon icon={faTrash} />
+                      <FontAwesomeIcon icon={faTrash as IconProp} />
                     </button>
                   </div>
                 </>
