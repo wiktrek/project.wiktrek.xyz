@@ -13,6 +13,9 @@ export default function Page() {
       window.addEventListener(
         "keyup",
         (e) => {
+          if (e.key == "Enter") {
+            return Finish();
+          }
           if (e.key == "Backspace") {
             return setInput((prevInput) => {
               const newInput = prevInput.slice(0, -1);
@@ -20,6 +23,7 @@ export default function Page() {
               return newInput;
             });
           }
+          if (e.key.length >= 2) return;
           setInput((prevInput) => {
             const newInput = `${prevInput}${e.key}`;
             setCorrect(compareStrings(newInput, texts[0]!));
@@ -34,6 +38,7 @@ export default function Page() {
 
     return () => controller.abort();
   }, []);
+  function Finish() {}
   return (
     <div>
       <div className="flex space-x-2">
