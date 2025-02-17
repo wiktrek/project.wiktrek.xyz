@@ -14,7 +14,7 @@
 
 //   return <p>redirecting...</p>;
 // }
-import { api as trpc } from "~/trpc/react";
+import { api as trpc } from "~/trpc/server";
 import { redirect } from "next/navigation";
 export default async function Page({
   params,
@@ -23,7 +23,7 @@ export default async function Page({
 }) {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { slug } = await params;
-  const { data } = trpc.short.getSlug.useQuery({
+  const data = await trpc.short.getSlug({
     slug,
   });
 

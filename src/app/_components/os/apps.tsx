@@ -1,6 +1,7 @@
 import Draggable from "react-draggable";
 import { closeApp, runApp } from "../lib/os";
-import { Ref, RefObject, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { Ref, RefObject } from "react";
 interface App {
   name: string;
   icon: string;

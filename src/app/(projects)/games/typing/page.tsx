@@ -8,6 +8,7 @@ export default function Page() {
   const [correct, setCorrect] = useState<number[]>([]);
   const [input, setInput] = useState("");
   useEffect(() => {
+    const texts = ["a quick brown fox jumps over the lazy dog"];
     const controller = new AbortController();
     if (window !== null) {
       window.addEventListener(
@@ -38,6 +39,7 @@ export default function Page() {
 
     return () => controller.abort();
   }, []);
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   function Finish() {}
   return (
     <div>
@@ -57,7 +59,7 @@ export default function Page() {
   );
 }
 function compareStrings(input: string, text: string): number[] {
-  let correct: number[] = [];
+  const correct: number[] = [];
   const inputWords = input.split(" ");
   const textWords = text.split(" ");
   console.log(inputWords);
