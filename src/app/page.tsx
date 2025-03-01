@@ -7,7 +7,7 @@ const Home: NextPage = () => {
     <>
       <div className="items-center justify-center overflow-y-hidden bg-background text-center text-3xl font-medium text-ring">
         <div className="absolute right-0">
-          <UserButton afterSignOutUrl="/" />
+          <UserButton />
         </div>
         <div className="font-semibold">
           <h1>My programming projects</h1>
