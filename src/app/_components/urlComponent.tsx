@@ -22,7 +22,6 @@ export function UrlComponent(props: {
   const { email, data } = props;
   const [slug, setSlug] = useState("");
   const [url, setUrl] = useState("");
-  //   const [newError, setError] = useState("");
 
   const removeMutation = trpc.short.removeSlug.useMutation();
   const createMutation = trpc.short.createSlug.useMutation();
@@ -34,12 +33,19 @@ export function UrlComponent(props: {
   const submitData = async (e: React.SyntheticEvent) => {
     if (slug === "" || url === "") return;
     e.preventDefault();
-    createMutation.mutate({
-      slug: slug,
-      url: url,
-      email: email,
-    });
-    toast("Slug has been created.");
+    createMutation.mutate(
+      {
+        slug: slug,
+        url: url,
+        email: email,
+      },
+      {
+        onSuccess: () => {
+          toast("Slug has been created.");
+          window.location.reload();
+        },
+      },
+    );
   };
   if (!email) {
     return <TryLoggingIn />;
@@ -70,7 +76,6 @@ export function UrlComponent(props: {
             Create
           </button>
         </form>
-        {/* <a>{newError}</a> */}
       </div>
       <div className="">
         <ul className="">

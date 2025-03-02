@@ -33,9 +33,7 @@ export function DeletePoll(props: { id: number }) {
 export function CopyUrl(props: { id: number }) {
   const CopyUrl = async (event: React.SyntheticEvent) => {
     const rowId = event.currentTarget.id;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     copy(`https://wiktrek.xyz/q/${rowId}`);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     toast("Link copied!");
   };
   return (
