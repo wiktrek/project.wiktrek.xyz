@@ -4,18 +4,12 @@ import React from "react";
 import { api as trpc } from "~/trpc/server";
 import { DeletePoll } from "~/app/_components/pollComponents";
 import { auth, currentUser } from "@clerk/nextjs/server";
+import TryLoggingIn from "~/app/_components/try";
 
 const Page: NextPage = async () => {
   const { userId } = await auth();
   if (!userId) {
-    return (
-      <h1>
-        Loading... If it {"doesn't"} load try{" "}
-        <Link href="/sign-in" className="text-ring">
-          logging in again
-        </Link>
-      </h1>
-    );
+    return <TryLoggingIn />;
   }
   const user = await currentUser();
   const data = await trpc.question.getAllMY({

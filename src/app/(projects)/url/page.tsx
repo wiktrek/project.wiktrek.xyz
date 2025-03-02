@@ -3,18 +3,12 @@ import type { Metadata, NextPage } from "next";
 import { api } from "~/trpc/server";
 import Link from "next/link";
 import { UrlComponent } from "~/app/_components/urlComponent";
+import TryLoggingIn from "~/app/_components/try";
 const Page: NextPage = async () => {
   const { userId } = await auth();
   const user = await currentUser();
   if (!userId || !user) {
-    return (
-      <h1>
-        Loading... If it {"doesn't"} load try{" "}
-        <Link href="/sign-in" className="text-ring">
-          logging in again
-        </Link>
-      </h1>
-    );
+    return <TryLoggingIn />;
   }
   const data = await api.short.getAllLinks({
     email: user?.primaryEmailAddress!.emailAddress,

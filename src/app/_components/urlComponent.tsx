@@ -9,6 +9,7 @@ import { api as trpc } from "~/trpc/react";
 import Link from "next/link";
 
 import type { IconProp } from "@fortawesome/fontawesome-svg-core";
+import TryLoggingIn from "./try";
 export function UrlComponent(props: {
   email: string;
   data: {
@@ -50,14 +51,7 @@ export function UrlComponent(props: {
     toast("Slug has been created.");
   };
   if (!email) {
-    return (
-      <h1 className="text-3xl">
-        Loading... If it {"doesn't"} load try{" "}
-        <Link href="/sign-in" className="font-bold text-ring">
-          logging in again
-        </Link>
-      </h1>
-    );
+    return <TryLoggingIn />;
   }
   return (
     <>

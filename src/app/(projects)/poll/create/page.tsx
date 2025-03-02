@@ -6,29 +6,16 @@ import Link from "next/link";
 
 import { auth, currentUser } from "@clerk/nextjs/server";
 import type { Metadata } from "next";
+import TryLoggingIn from "~/app/_components/try";
 const QuestionCreator: React.FC = async () => {
   const { userId } = await auth();
   if (!userId) {
-    return (
-      <h1>
-        Loading... If it {"doesn't"} load try{" "}
-        <Link href="/sign-in" className="text-ring">
-          logging in again
-        </Link>
-      </h1>
-    );
+    return <TryLoggingIn />;
   }
   const user = await currentUser();
   // const data = await trpc.question.getAllMY({ email: `${user?.primaryEmailAddress?.emailAddress}` });
   if (!user) {
-    return (
-      <h1>
-        Loading... If it {"doesn't"} load try{" "}
-        <Link href="/sign-in" className="text-ring">
-          logging in again
-        </Link>
-      </h1>
-    );
+    return <TryLoggingIn />;
   }
   return (
     <>
