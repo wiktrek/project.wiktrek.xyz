@@ -19,7 +19,7 @@ export function DeletePoll(props: { id: number }) {
   const deleteMutation = api.question.deleteQuestion.useMutation();
   return (
     <button
-      className="text-lg"
+      className="ml-2 items-center text-xl font-bold"
       onClick={() => {
         deleteMutation.mutate({
           id: props.id,
@@ -83,12 +83,13 @@ export function FormComponent(props: { email: string }) {
       })}
       className=""
     >
-      <label className="grid pb-2">
-        <span>Question</span>
+      <label className="grid pb-2 text-left">
+        <span className="mb-2">Question</span>
         <Input
           {...register("question")}
           type="text"
           placeholder="How do magnets work?"
+          className="w-72"
         />
       </label>
       <label>
@@ -102,7 +103,11 @@ export function FormComponent(props: { email: string }) {
                     required: true,
                   })}
                 />
-                <button id="" type="button" onClick={() => remove(index)}>
+                <button
+                  className="pl-2 font-extrabold"
+                  type="button"
+                  onClick={() => remove(index)}
+                >
                   X
                 </button>
               </section>

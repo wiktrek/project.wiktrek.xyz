@@ -10,6 +10,7 @@ import Link from "next/link";
 
 import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 import TryLoggingIn from "./try";
+import { Toaster } from "./ui/sonner";
 export function UrlComponent(props: {
   email: string;
   data: {
@@ -28,7 +29,6 @@ export function UrlComponent(props: {
 
   const CopyUrl = (slug: string) => {
     copy(`https://wiktrek.xyz/go/${slug}/`);
-    toast("Link copied!");
   };
   const submitData = async (e: React.SyntheticEvent) => {
     if (slug === "" || url === "") return;
@@ -79,16 +79,28 @@ export function UrlComponent(props: {
       </div>
       <div className="">
         <ul className="">
-          {data?.map((item: { slug: string }, index: number) => {
+          {data?.map((item: { slug: string; url: string }, index: number) => {
             return (
               <li key={item.slug}>
                 <div className="" id={item.slug}>
-                  {index + 1 + " "}
-                  {item.slug}
+                  <a
+                    href={item.url}
+                    className="transition-all hover:underline"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {item.slug} -{" "}
+                    {
+                      new RegExp(
+                        "^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/?\n]+)",
+                      ).exec(item.url)![1]
+                    }
+                  </a>
                   <button
                     className="px-1"
                     onClick={() => {
                       CopyUrl(item.slug);
+                      toast("Link copied!");
                     }}
                   >
                     <FontAwesomeIcon icon={faClipboard as IconProp} />
@@ -117,6 +129,7 @@ export function UrlComponent(props: {
         <Link href="/api/auth/logout" className="font-semibold text-ring">
           logout
         </Link>
+        <Toaster />
       </div>
     </>
   );

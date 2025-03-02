@@ -1,7 +1,6 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import type { Metadata, NextPage } from "next";
 import { api } from "~/trpc/server";
-import Link from "next/link";
 import { UrlComponent } from "~/app/_components/urlComponent";
 import TryLoggingIn from "~/app/_components/try";
 const Page: NextPage = async () => {

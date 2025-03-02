@@ -2,6 +2,7 @@
 import { QuestionPageContent } from "~/app/_components/pollComponents";
 import { currentUser } from "@clerk/nextjs/server";
 import type { Metadata } from "next";
+import { Toaster } from "~/app/_components/ui/sonner";
 
 export default async function Page({
   params,
@@ -17,6 +18,7 @@ export default async function Page({
   return (
     <>
       <QuestionPageContent email={email} id={id} />
+      <Toaster />
     </>
   );
 }

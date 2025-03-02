@@ -5,6 +5,7 @@ import { api as trpc } from "~/trpc/server";
 import { DeletePoll } from "~/app/_components/pollComponents";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import TryLoggingIn from "~/app/_components/try";
+import { Toaster } from "~/app/_components/ui/sonner";
 
 const Page: NextPage = async () => {
   const { userId } = await auth();
@@ -25,11 +26,12 @@ const Page: NextPage = async () => {
         {data.map((question) => {
           return (
             <div key={question.id} className="p-2">
-              <ul className="inline-flex">
+              <ul className="inline-flex items-center">
                 <Link href={`/poll/q/${question.id}`}>
-                  <p>{question.question}</p>
+                  <p className="text-2xl font-bold text-primary">
+                    {question.question}
+                  </p>
                 </Link>
-
                 <DeletePoll id={question.id} />
               </ul>
             </div>
@@ -37,8 +39,9 @@ const Page: NextPage = async () => {
         })}
       </div>
       <Link href="/poll/create">
-        <button className="w">Create new poll</button>
+        <button className="font-bold">Create new poll</button>
       </Link>
+      <Toaster />
     </main>
   );
 };

@@ -7,6 +7,7 @@ import Link from "next/link";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import type { Metadata } from "next";
 import TryLoggingIn from "~/app/_components/try";
+import { Toaster } from "~/app/_components/ui/sonner";
 const QuestionCreator: React.FC = async () => {
   const { userId } = await auth();
   if (!userId) {
@@ -25,6 +26,7 @@ const QuestionCreator: React.FC = async () => {
       </Head>
       <main className="mx-auto flex w-screen flex-col items-center justify-center text-center text-xl text-white">
         <FormComponent email={user.primaryEmailAddress!.emailAddress} />
+        <Toaster />
       </main>
     </>
   );
