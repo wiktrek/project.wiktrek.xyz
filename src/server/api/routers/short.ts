@@ -4,7 +4,7 @@ import {
   createTRPCRouter as router,
 } from "../trpc";
 import { shortLink } from "~/server/db/schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 export const shortRouter = router({
   getSlug: procedure
@@ -24,12 +24,12 @@ export const shortRouter = router({
       return links;
     }),
   removeSlug: procedure
-    .input(z.object({ slug: z.string() }))
+    .input(z.object({ slug: z.string(), email: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { slug } = input;
       const deletedSlug = ctx.db
         .delete(shortLink)
-        .where(eq(shortLink.slug, slug));
+        .where(and(eq(shortLink.slug, slug), eq(shortLink.owner, input.email)));
       return deletedSlug;
     }),
   createSlug: procedure

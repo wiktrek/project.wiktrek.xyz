@@ -31,15 +31,6 @@ export function UrlComponent(props: {
     copy(`https://wiktrek.xyz/go/${slug}/`);
     toast("Link copied!");
   };
-  function reload() {
-    window.location.reload();
-  }
-
-  const DeleteFunction = (slug: string) => {
-    removeMutation.mutate({ slug });
-
-    return reload();
-  };
   const submitData = async (e: React.SyntheticEvent) => {
     if (slug === "" || url === "") return;
     e.preventDefault();
@@ -82,36 +73,42 @@ export function UrlComponent(props: {
         {/* <a>{newError}</a> */}
       </div>
       <div className="">
-        <table className="">
-          <tbody>
-            {data?.map((item: { slug: string }, index: number) => {
-              return (
-                <>
-                  <div className="" id={item.slug}>
-                    {index + 1 + " "}
-                    {item.slug}
-                    <button
-                      className="px-1"
-                      onClick={() => {
-                        CopyUrl(item.slug);
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faClipboard as IconProp} />
-                    </button>
-                    <button
-                      onClick={() => {
-                        DeleteFunction(item.slug);
-                      }}
-                      data-slug={item.slug}
-                    >
-                      <FontAwesomeIcon icon={faTrash as IconProp} />
-                    </button>
-                  </div>
-                </>
-              );
-            })}
-          </tbody>
-        </table>
+        <ul className="">
+          {data?.map((item: { slug: string }, index: number) => {
+            return (
+              <li key={item.slug}>
+                <div className="" id={item.slug}>
+                  {index + 1 + " "}
+                  {item.slug}
+                  <button
+                    className="px-1"
+                    onClick={() => {
+                      CopyUrl(item.slug);
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faClipboard as IconProp} />
+                  </button>
+                  <button
+                    onClick={() => {
+                      removeMutation.mutate(
+                        { slug: item.slug, email },
+                        {
+                          onSuccess: () => {
+                            toast("Slug has been removed.");
+                            window.location.reload();
+                          },
+                        },
+                      );
+                    }}
+                    data-slug={item.slug}
+                  >
+                    <FontAwesomeIcon icon={faTrash as IconProp} />
+                  </button>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
         <Link href="/api/auth/logout" className="font-semibold text-ring">
           logout
         </Link>
