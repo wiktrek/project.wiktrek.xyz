@@ -19,6 +19,15 @@ export default function Page() {
           </Link>
           : click buttons
         </li>
+        <li className="text-xl font-medium">
+          <Link
+            href="/games/calculator"
+            className="text-primary hover:underline"
+          >
+            calculator
+          </Link>
+          : a normal calculator
+        </li>
       </ul>
     </main>
   );

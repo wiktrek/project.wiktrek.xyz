@@ -24,10 +24,6 @@ const projects: Project[] = [
     url: "/url",
   },
   {
-    name: "Calculator",
-    url: "/calculator",
-  },
-  {
     name: "Rock paper scissors",
     url: "/rps",
   },

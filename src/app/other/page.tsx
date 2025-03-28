@@ -51,12 +51,6 @@ const projects: ProjectType[] = [
     type: "other",
   },
   {
-    name: "calculator",
-    description: "Calculator app",
-    url: "/calculator",
-    type: "project.wiktrek.xyz",
-  },
-  {
     name: "rock paper scissors",
     description: "Rock paper scissors game",
     url: "/rps",
