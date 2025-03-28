@@ -17,23 +17,20 @@ export default function TypingGame() {
           setCorrect(correct);
         }}
         autoFocus
-        // className="hidden"
+        className="w-96"
       />
-      <div className="flex space-x-1">
-        {generatedText.split(" ").map((word, index) => {
+      <div className="flex">
+        {generatedText.split("").map((letter, index) => {
+          if (letter === " ") {
+            return <div key={index} className="w-2" />;
+          }
+          const isCorrect = correct.includes(index);
           return (
-            <div key={index} className={`flex`}>
-              {word.split("").map((letter) => {
-                const isCorrect = correct.includes(index);
-                return (
-                  <div
-                    key={letter}
-                    className={`${isCorrect ? "text-green-500" : "text-red-600"}`}
-                  >
-                    {letter}
-                  </div>
-                );
-              })}
+            <div
+              key={index}
+              className={`${isCorrect ? "text-green-500" : "text-red-600"}`}
+            >
+              {letter}
             </div>
           );
         })}
