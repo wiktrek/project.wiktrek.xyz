@@ -3,69 +3,63 @@
 
 import { useEffect, useState } from "react";
 
-export default function Page() {
-  const texts = ["a quick brown fox jumps over the lazy dog"];
+export default function TypingGame() {
+  const [text, setText] = useState<string>("");
   const [correct, setCorrect] = useState<number[]>([]);
-  const [input, setInput] = useState("");
-  useEffect(() => {
-    const texts = ["a quick brown fox jumps over the lazy dog"];
-    const controller = new AbortController();
-    if (window !== null) {
-      window.addEventListener(
-        "keyup",
-        (e) => {
-          if (e.key == "Enter") {
-            return Finish();
-          }
-          if (e.key == "Backspace") {
-            return setInput((prevInput) => {
-              const newInput = prevInput.slice(0, -1);
-              setCorrect(compareStrings(newInput, texts[0]!));
-              return newInput;
-            });
-          }
-          if (e.key.length >= 2) return;
-          setInput((prevInput) => {
-            const newInput = `${prevInput}${e.key}`;
-            setCorrect(compareStrings(newInput, texts[0]!));
-            return newInput;
-          });
-        },
-        {
-          signal: controller.signal,
-        },
-      );
-    }
-
-    return () => controller.abort();
-  }, []);
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  function Finish() {}
+  const generatedText = generateText();
   return (
     <div>
-      <div className="flex space-x-2">
-        {texts[0]?.split(" ").map((c, i) => {
+      <input
+        value={text}
+        onChange={(e) => {
+          setText(e.target.value);
+          const { correct, wrong } = check(generatedText, e.target.value);
+          setCorrect(correct);
+        }}
+        autoFocus
+        // className="hidden"
+      />
+      <div className="flex space-x-1">
+        {generatedText.split(" ").map((word, index) => {
           return (
-            <div key={i} style={{ color: correct[i] ? "green" : "red" }}>
-              {c}
+            <div key={index} className={`flex`}>
+              {word.split("").map((letter) => {
+                const isCorrect = correct.includes(index);
+                return (
+                  <div
+                    key={letter}
+                    className={`${isCorrect ? "text-green-500" : "text-red-600"}`}
+                  >
+                    {letter}
+                  </div>
+                );
+              })}
             </div>
           );
         })}
       </div>
-      <div className="mt-4">
-        <p>Input: {input}</p>
-      </div>
+      <div>{text}</div>
     </div>
   );
 }
-function compareStrings(input: string, text: string): number[] {
+function generateText(): string {
+  const texts = ["a quick brown fox jumps over the lazy dog"];
+
+  const randomIndex = Math.floor(Math.random() * texts.length);
+  return texts[randomIndex]!;
+}
+function check(
+  text: string,
+  text2: string,
+): { correct: number[]; wrong: number[] } {
   const correct: number[] = [];
-  const inputWords = input.split(" ");
-  const textWords = text.split(" ");
-  console.log(inputWords);
-  console.log(textWords);
-  inputWords.forEach((w, i) => {
-    correct[i] = w === textWords[i] ? 1 : 0;
-  });
-  return correct;
+  const wrong: number[] = [];
+  for (let i = 0; i < text.length; i++) {
+    if (text[i] === text2[i]) {
+      correct.push(i);
+    } else {
+      wrong.push(i);
+    }
+  }
+  return { correct, wrong };
 }
