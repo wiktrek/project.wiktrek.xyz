@@ -5,7 +5,7 @@ import { Projects } from "~/app/_components/projects";
 const Home: NextPage = () => {
   return (
     <>
-      <div className="items-center justify-center overflow-y-hidden bg-background text-center text-3xl font-medium text-ring">
+      <div className="bg-background text-ring items-center justify-center overflow-y-hidden text-center text-3xl font-medium">
         <div className="absolute right-0">
           <UserButton />
         </div>
