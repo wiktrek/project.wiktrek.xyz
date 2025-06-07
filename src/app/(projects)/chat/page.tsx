@@ -11,8 +11,9 @@ export default function Page() {
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
   const [messages, setMessages] = useState([] as Message[]);
+
+  const { data } = api.message.getMessages.useQuery();
   useEffect(() => {
-    const { data } = api.message.getMessages.useQuery();
     setMessages(data as Message[]);
   }, []);
   const mutation = api.message.createMessage.useMutation();
@@ -20,7 +21,7 @@ export default function Page() {
     <main className="items-center justify-center text-center text-xl">
       {name == "" ? (
         <div className="text-2xl">
-          <p>What&aposs your name?</p>
+          <p>What&apos;s your name?</p>
           <input
             id="name-input"
             placeholder="username"
@@ -48,8 +49,8 @@ export default function Page() {
       ) : (
         <div>
           Hi {name}!
-          <div className="mx-auto h-[48rem] w-[30rem] rounded border-2 border-secondary text-left">
-            <div className="flex h-[44rem] w-[30rem] flex-col-reverse overflow-y-scroll pl-2 pt-2 text-left scrollbar-thin">
+          <div className="border-secondary mx-auto h-[48rem] w-[30rem] rounded border-2 text-left">
+            <div className="scrollbar-thin flex h-[44rem] w-[30rem] flex-col-reverse overflow-y-scroll pt-2 pl-2 text-left">
               {messages.map((data, i) => {
                 return <Message data={data} key={data.author + i} />;
               })}

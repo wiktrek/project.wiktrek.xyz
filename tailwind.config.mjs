@@ -15,10 +15,10 @@ module.exports = {
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
-        ring: "var(--ring)",
+        ring: "hsl(var(--ring))",
         foreground: "hsl(var(--foreground))",
         text: {
-          DEFAULT: "var(--text)",
+          DEFAULT: "hsl(var(--text))",
           50: "hsl(0, 4%, 95%)",
           100: "hsl(0, 2%, 90%)",
           200: "hsl(0, 4%, 80%)",
@@ -32,7 +32,7 @@ module.exports = {
           950: "hsl(0, 4%, 5%)",
         },
         background: {
-          DEFAULT: "var(--background)",
+          DEFAULT: "hsl(var(--background))",
           50: "hsl(0, 0%, 95%)",
           100: "hsl(0, 0%, 90%)",
           200: "hsl(0, 0%, 80%)",
@@ -46,7 +46,7 @@ module.exports = {
           950: "hsl(0, 0%, 5%)",
         },
         primary: {
-          DEFAULT: "var(--primary)",
+          DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
           50: "hsl(0, 15%, 95%)",
           100: "hsl(0, 18%, 90%)",
@@ -61,7 +61,7 @@ module.exports = {
           950: "hsl(0, 15%, 5%)",
         },
         secondary: {
-          DEFAULT: "var(--secondary)",
+          DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
           50: "hsl(0, 23%, 95%)",
           100: "hsl(0, 25%, 90%)",
