@@ -1,4 +1,5 @@
 "use client";
+import { motion } from "motion/react";
 import Link from "next/link";
 type Category = "Simple" | "Rust" | "Cool" | "Learning";
 interface ProjectType {
@@ -66,10 +67,15 @@ export function Projects() {
 function Project(props: ProjectType) {
   const { name, description } = props;
   return (
-    <div className="h-36 w-56 rounded-md bg-transparent p-2 text-left text-xl text-foreground shadow-md transition-all animate-out hover:scale-110 hover:cursor-pointer">
-      <p className="text-xl text-primary">{name}</p>
+    <motion.div
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.95 }}
+      onHoverStart={() => console.log("hover started!")}
+      className="text-foreground h-36 w-56 rounded-md bg-transparent p-2 text-left text-xl shadow-md"
+    >
+      <p className="text-primary text-xl">{name}</p>
       <p className="px-2 text-base">{description}</p>
-    </div>
+    </motion.div>
   );
 }
 function ProjectsByCategory(props: { projects: ProjectType[] }) {
