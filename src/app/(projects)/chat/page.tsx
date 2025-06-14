@@ -7,16 +7,18 @@ interface Message {
   text: string;
 }
 export default function Page() {
+  const mutation = api.message.createMessage.useMutation();
   const [name, setName] = useState("");
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
   const [messages, setMessages] = useState([] as Message[]);
-
-  const { data } = api.message.getMessages.useQuery();
+  const { data, isLoading } = api.message.getMessages.useQuery();
   useEffect(() => {
-    setMessages(data as Message[]);
-  }, []);
-  const mutation = api.message.createMessage.useMutation();
+    if (!isLoading && data) {
+      setMessages(data as Message[]);
+    }
+  }, [isLoading, data]);
+
   return (
     <main className="items-center justify-center text-center text-xl">
       {name == "" ? (

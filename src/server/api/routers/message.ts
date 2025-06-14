@@ -20,7 +20,7 @@ export const messageRouter = router({
       });
       const count = await ctx.db
         .select({
-          count: sql`count(*)`.as<number>(),
+          count: sql`count(*)`.as<number>("count"),
         })
         .from(message);
       if (count[0]!.count >= 101) {
