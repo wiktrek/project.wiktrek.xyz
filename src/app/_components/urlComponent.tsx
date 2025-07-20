@@ -9,7 +9,6 @@ import { api as trpc } from "~/trpc/react";
 import Link from "next/link";
 
 import type { IconProp } from "@fortawesome/fontawesome-svg-core";
-import TryLoggingIn from "./try";
 import { Toaster } from "./ui/sonner";
 export function UrlComponent(props: {
   email: string;
@@ -48,7 +47,7 @@ export function UrlComponent(props: {
     );
   };
   if (!email) {
-    return <TryLoggingIn />;
+    return <div>Loading...</div>;
   }
   return (
     <>
@@ -126,7 +125,7 @@ export function UrlComponent(props: {
             );
           })}
         </ul>
-        <Link href="/api/auth/logout" className="font-semibold text-ring">
+        <Link href="/api/auth/logout" className="text-ring font-semibold">
           logout
         </Link>
         <Toaster />

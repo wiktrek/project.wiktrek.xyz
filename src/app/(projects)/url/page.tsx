@@ -1,14 +1,11 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
-import type { Metadata, NextPage } from "next";
+import type { Metadata } from "next";
 import { api } from "~/trpc/server";
 import { UrlComponent } from "~/app/_components/urlComponent";
-import TryLoggingIn from "~/app/_components/try";
-const Page: NextPage = async () => {
-  const { userId } = await auth();
+const Page = async () => {
+  const { userId, redirectToSignIn } = await auth();
   const user = await currentUser();
-  if (!userId || !user) {
-    return <TryLoggingIn />;
-  }
+  if (!userId || !user) return redirectToSignIn;
   const data = await api.short.getAllLinks({
     email: user?.primaryEmailAddress!.emailAddress,
   });

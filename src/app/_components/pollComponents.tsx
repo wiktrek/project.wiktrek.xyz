@@ -37,7 +37,7 @@ export function CopyUrl(props: { id: number }) {
     toast("Link copied!");
   };
   return (
-    <button className="pl-2 pr-1" onClick={CopyUrl} id={`${props.id}`}>
+    <button className="pr-1 pl-2" onClick={CopyUrl} id={`${props.id}`}>
       <FontAwesomeIcon icon={faClipboard as IconProp} />
     </button>
   );
@@ -172,13 +172,16 @@ export const QuestionPageContent: React.FC<{
     }
     setToken(localStorage.getItem("voterToken")!);
   }, []);
-  const { data } = api.question.getById.useQuery({
+  const { isLoading, data } = api.question.getById.useQuery({
     email,
     token,
     id,
   });
   let isOwner = false;
   let totalVotes = 0;
+  if (isLoading) {
+    return <div className="flex text-center">Loading...</div>;
+  }
   if (!data?.question || !data) {
     return <div>Question not found</div>;
   }

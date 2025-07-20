@@ -4,14 +4,11 @@ import React from "react";
 import { api as trpc } from "~/trpc/server";
 import { DeletePoll } from "~/app/_components/pollComponents";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import TryLoggingIn from "~/app/_components/try";
 import { Toaster } from "~/app/_components/ui/sonner";
 
 const Page: NextPage = async () => {
-  const { userId } = await auth();
-  if (!userId) {
-    return <TryLoggingIn />;
-  }
+  const { userId, redirectToSignIn } = await auth();
+  if (!userId) return redirectToSignIn();
   const user = await currentUser();
   const data = await trpc.question.getAllMY({
     email: `${user?.primaryEmailAddress?.emailAddress}`,
@@ -28,7 +25,7 @@ const Page: NextPage = async () => {
             <div key={question.id} className="p-2">
               <ul className="inline-flex items-center">
                 <Link href={`/poll/q/${question.id}`}>
-                  <p className="text-2xl font-bold text-primary">
+                  <p className="text-primary text-2xl font-bold">
                     {question.question}
                   </p>
                 </Link>
