@@ -1,13 +1,13 @@
 "use client";
 import { motion } from "motion/react";
 import Link from "next/link";
-type Category = "Simple" | "Rust" | "Cool" | "Learning";
+type Tags = "Next.js" | "Typescript" | "";
 interface ProjectType {
   name: string;
   description: string;
   url: string;
   type: "project.wiktrek.xyz" | "other";
-  category: Category;
+  tags: Tags[];
 }
 const projects: ProjectType[] = [
   {
@@ -15,28 +15,28 @@ const projects: ProjectType[] = [
     description: "Poll creation and voting app",
     url: "/poll",
     type: "project.wiktrek.xyz",
-    category: "Cool",
+    tags: ["Next.js", "Typescript"],
   },
   {
     name: "Link shortener",
     description: "URL shortening service",
     url: "/url",
     type: "project.wiktrek.xyz",
-    category: "Cool",
+    tags: ["Next.js", "Typescript"],
   },
   {
     name: "Chat",
     description: "Simple chat app",
     url: "/chat",
     type: "project.wiktrek.xyz",
-    category: "Cool",
+    tags: ["Next.js", "Typescript"],
   },
   {
     name: "Term",
     description: "Terminal-like app",
     url: "/term",
     type: "project.wiktrek.xyz",
-    category: "Cool",
+    tags: ["Next.js", "Typescript"],
   },
   {
     name: "Os",
@@ -44,65 +44,33 @@ const projects: ProjectType[] = [
       "website that tries to look like a desktop of an operating system",
     url: "/os",
     type: "project.wiktrek.xyz",
-    category: "Cool",
+    tags: ["Next.js", "Typescript"],
   },
   {
     name: "Browser games",
     description: "browser games that I made",
     url: "/games",
     type: "project.wiktrek.xyz",
-    category: "Cool",
-  },
-  {
-    name: "Other projects",
-    description: "Other projects",
-    url: "/other",
-    type: "project.wiktrek.xyz",
-    category: "Cool",
+    tags: ["Next.js", "Typescript"],
   },
 ];
 export function Projects() {
-  return <ProjectsByCategory projects={projects} />;
-}
-function Project(props: ProjectType) {
-  const { name, description } = props;
   return (
-    <motion.div
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.95 }}
-      onHoverStart={() => console.log("hover started!")}
-      className="text-foreground h-36 w-56 rounded-md bg-transparent p-2 text-left text-xl shadow-md"
-    >
-      <p className="text-primary text-xl">{name}</p>
-      <p className="px-2 text-base">{description}</p>
-    </motion.div>
-  );
-}
-function ProjectsByCategory(props: { projects: ProjectType[] }) {
-  const filtered = props.projects.filter(
-    (project) => project.category === "Cool",
-  );
-  return (
-    <div className="top-16 flex w-full flex-col items-center justify-center text-center">
-      <h1>Projects</h1>
-      <div className="mx-auto grid-cols-3 gap-8 md:grid">
-        {filtered.map((project) => {
-          const { url, type } = project;
-          return (
-            <div key={url}>
-              {type === "project.wiktrek.xyz" ? (
-                <Link href={url}>
-                  <Project key={project.name} {...project} />
-                </Link>
-              ) : (
-                <a href={url}>
-                  <Project key={project.name} {...project} />
-                </a>
-              )}
-            </div>
-          );
-        })}
-      </div>
+    <div className="flex h-screen">
+      {projects.map((p) => (
+        <div
+          key={p.name}
+          className="bg-background-900 mx-4 h-64 w-64 rounded-xl p-3 text-left"
+        >
+          <p className="pl-4 text-2xl">{p.name}</p>
+          <p className="py-4 text-xl">{p.description}</p>
+          <div className="flex">
+            {p.tags.map((m) => (
+              <h4 className="bg-accent ml-2 rounded-xl px-2 text-lg">{m}</h4>
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
