@@ -6,17 +6,14 @@ import Link from "next/link";
 
 import { auth, currentUser } from "@clerk/nextjs/server";
 import type { Metadata } from "next";
-import TryLoggingIn from "~/app/_components/try";
 import { Toaster } from "~/app/_components/ui/sonner";
 const QuestionCreator: React.FC = async () => {
-  const { userId } = await auth();
-  if (!userId) {
-    return <TryLoggingIn />;
-  }
+  const { userId, redirectToSignIn } = await auth();
+  if (!userId) return redirectToSignIn();
   const user = await currentUser();
   // const data = await trpc.question.getAllMY({ email: `${user?.primaryEmailAddress?.emailAddress}` });
   if (!user) {
-    return <TryLoggingIn />;
+    return <p>Loading...</p>;
   }
   return (
     <>
