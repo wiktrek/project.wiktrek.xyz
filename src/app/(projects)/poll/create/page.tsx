@@ -3,7 +3,6 @@ import React from "react";
 import { FormComponent } from "~/app/_components/pollComponents";
 import Head from "next/head";
 import Link from "next/link";
-
 import { auth, currentUser } from "@clerk/nextjs/server";
 import type { Metadata } from "next";
 import { Toaster } from "~/app/_components/ui/sonner";

@@ -79,3 +79,10 @@ export function Projects() {
     </div>
   );
 }
+function OtherProjects() {
+  return (
+    <div>
+      <p>Other projects</p>
+    </div>
+  );
+}

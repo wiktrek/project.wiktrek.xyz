@@ -5,7 +5,7 @@ import { UrlComponent } from "~/app/_components/urlComponent";
 const Page = async () => {
   const { userId, redirectToSignIn } = await auth();
   const user = await currentUser();
-  if (!userId || !user) return redirectToSignIn;
+  if (!userId || !user) return redirectToSignIn();
   const data = await api.short.getAllLinks({
     email: user?.primaryEmailAddress!.emailAddress,
   });
