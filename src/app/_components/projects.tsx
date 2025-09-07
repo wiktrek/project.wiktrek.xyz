@@ -56,21 +56,26 @@ const projects: ProjectType[] = [
 ];
 export function Projects() {
   return (
-    <div className="flex h-screen">
-      {projects.map((p) => (
-        <div
-          key={p.name}
-          className="bg-background-900 mx-4 h-64 w-64 rounded-xl p-3 text-left"
-        >
-          <p className="pl-4 text-2xl">{p.name}</p>
-          <p className="py-4 text-xl">{p.description}</p>
-          <div className="flex">
-            {p.tags.map((m) => (
-              <h4 className="bg-accent ml-2 rounded-xl px-2 text-lg">{m}</h4>
-            ))}
-          </div>
-        </div>
-      ))}
+    <div className="flex h-screen justify-center pt-8">
+      <div className="grid w-3/4 grid-cols-4">
+        {projects.map((p) => (
+          <a
+            href="https://wiktrek.xyz"
+            key={p.name}
+            className="bg-background-900 mx-4 h-64 w-64 rounded-xl p-3 text-left shadow transition-all hover:scale-105"
+          >
+            <p className="pl-4 text-2xl">{p.name}</p>
+            <p className="py-4 text-xl">{p.description}</p>
+            <div className="flex">
+              {p.tags.map((m) => (
+                <h4 key={m} className="bg-accent ml-2 rounded-xl px-2 text-lg">
+                  {m}
+                </h4>
+              ))}
+            </div>
+          </a>
+        ))}
+      </div>
     </div>
   );
 }
