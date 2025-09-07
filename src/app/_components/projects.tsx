@@ -56,13 +56,13 @@ const projects: ProjectType[] = [
 ];
 export function Projects() {
   return (
-    <div className="flex h-screen justify-center pt-8">
-      <div className="grid w-3/4 grid-cols-4">
+    <div className="flex h-[150vh] justify-center pt-8 md:h-[60vh]">
+      <div className="grid h-[140vh] md:h-[50vh] md:grid-cols-4">
         {projects.map((p) => (
           <a
             href="https://wiktrek.xyz"
             key={p.name}
-            className="bg-background-900 mx-4 h-64 w-64 rounded-xl p-3 text-left shadow transition-all hover:scale-105"
+            className="bg-background-901 rounded-x mx-4 h-48 w-64 p-3 text-left shadow transition-all hover:scale-105"
           >
             <p className="pl-4 text-2xl">{p.name}</p>
             <p className="py-4 text-xl">{p.description}</p>
