@@ -60,7 +60,7 @@ export function Projects() {
       <div className="grid h-[140vh] md:h-[50vh] md:grid-cols-4">
         {projects.map((p) => (
           <a
-            href="https://wiktrek.xyz"
+            href={`https://${p.type}${p.url}`}
             key={p.name}
             className="bg-background-901 rounded-x mx-4 h-48 w-64 p-3 text-left shadow transition-all hover:scale-105"
           >
