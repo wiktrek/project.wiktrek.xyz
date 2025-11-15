@@ -4,11 +4,13 @@ import {
   createTRPCRouter as router,
 } from "../trpc";
 import { message } from "~/server/db/schema";
-import { eq, sql } from "drizzle-orm";
+import { eq, sql, desc } from "drizzle-orm";
 
 export const messageRouter = router({
   getMessages: procedure.query(async ({ ctx }) => {
-    return (await ctx.db.query.message.findMany()).reverse();
+    return (await ctx.db.query.message.findMany({
+      orderBy: [desc(message.createdAt)]
+    }));
   }),
   createMessage: procedure
     .input(z.object({ text: z.string().max(64), author: z.string().max(16) }))

@@ -1,16 +1,20 @@
 "use client";
 
+import { parseConnectionParamsFromUnknown } from "@trpc/server/unstable-core-do-not-import";
 import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 interface Message {
   author: string;
   text: string;
 }
-export default function Page() {
+
+let conn: WebSocket;
+export default function Page() {  
   const mutation = api.message.createMessage.useMutation();
   const [name, setName] = useState("");
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
+  const [coolDown, setCoolDown] = useState(false)
   const [messages, setMessages] = useState([] as Message[]);
   const { data, isLoading } = api.message.getMessages.useQuery();
   useEffect(() => {
@@ -18,7 +22,34 @@ export default function Page() {
       setMessages(data as Message[]);
     }
   }, [isLoading, data]);
-
+  useEffect(() => {
+    connectWS()
+    return () => {
+      if (conn) {
+        conn.close();
+      }
+    }
+  }, [])
+  useEffect(() => {
+      if (coolDown) {
+        setTimeout(() => {
+          setCoolDown(false)
+        }, 750);
+        setError("");
+      }
+  }, [coolDown])
+  function connectWS() {
+    const host = "selfhosted.wiktrek.xyz/api"
+    conn = new WebSocket("ws://" + host + "/ws");
+    conn.onclose = function (evt) {
+      setError("Websocket unreachable ( Its probably not your fault )")
+    };
+    conn.onmessage = function (evt) {
+        let msg = JSON.parse(evt.data) as Message;
+        setMessages((prevMessages) => [msg, ...prevMessages])
+    };
+    return conn
+  }
   return (
     <main className="items-center justify-center text-center text-xl">
       {name == "" ? (
@@ -51,9 +82,10 @@ export default function Page() {
       ) : (
         <div>
           Hi {name}!
-          <div className="border-secondary mx-auto h-[48rem] w-[30rem] rounded border-2 text-left">
-            <div className="scrollbar-thin flex h-[44rem] w-[30rem] flex-col-reverse overflow-y-scroll pt-2 pl-2 text-left">
-              {messages.map((data, i) => {
+          <div className="border-secondary mx-auto h-192 w-120 rounded border-2 text-left">
+            <div className="scrollbar-thin flex h-176 w-120 flex-col-reverse overflow-y-scroll pt-2 pl-2 text-left">
+              {
+              messages.map((data, i) => {
                 return <Message data={data} key={data.author + i} />;
               })}
             </div>
@@ -74,7 +106,19 @@ export default function Page() {
                   if (checkForBannedWords(input)) {
                     return setError("Message contains banned words!");
                   }
-                  mutation.mutate({ author: name, text: input });
+                  if (!coolDown) {
+                    mutation.mutate({ author: name, text: input });
+                    if (conn) {
+                      conn.send(JSON.stringify({
+                        author: name,
+                        text: input
+                      }))
+                    }
+                    setCoolDown(true);
+                    setError("")
+                  } else {
+                    setError("You have to wait 0.75s before sending another message!")
+                  }
                 }}
               >
                 Send
@@ -85,8 +129,6 @@ export default function Page() {
           <div className="text-xl">
             <p className="text-2xl">Rules:</p>
             <p>1.No links</p>
-            <p className="text-2xl">Notes:</p>
-            <p>I am too lazy to make it use websockets (realtime updates)</p>
           </div>
         </div>
       )}
@@ -95,7 +137,7 @@ export default function Page() {
 }
 function Message(props: { data: Message }) {
   return (
-    <div className="w-[28rem] break-words">
+    <div className="w-md wrap-break-word">
       <a className="text-primary">{props.data.author}</a>:{props.data.text}
     </div>
   );
