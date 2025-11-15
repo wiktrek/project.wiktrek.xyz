@@ -42,7 +42,7 @@ export default function Page() {
     const host = "selfhosted.wiktrek.xyz/api"
     conn = new WebSocket("ws://" + host + "/ws");
     conn.onclose = function (evt) {
-      setError("Websocket unreachable ( Its probably not your fault )")
+      // setError("Websocket unreachable ( Its probably not your fault )")
     };
     conn.onmessage = function (evt) {
         let msg = JSON.parse(evt.data) as Message;
@@ -129,6 +129,10 @@ export default function Page() {
           <div className="text-xl">
             <p className="text-2xl">Rules:</p>
             <p>1.No links</p>
+          </div>
+          <div>
+            <p className="text-2xl">Notes:</p>
+            <p>Websockets are currently disabled</p>
           </div>
         </div>
       )}
