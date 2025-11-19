@@ -7,7 +7,7 @@ import { Projects } from "~/app/_components/projects";
 const Home: NextPage = () => {
   return (
     <>
-      <div className="bg-background text-ring items-center justify-center overflow-y-hidden text-center text-3xl font-medium">
+      <div className="bg-background text-ring items-center justify-center overflow-y-hidden text-center text-3xl font-medium h-[200vh]">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -15,25 +15,7 @@ const Home: NextPage = () => {
         >
           <UserButton />
         </motion.div>
-        <motion.div
-          className="font-semibold"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-        >
-          <h1>My programming projects</h1>
-          <ul>
-            <Projects />
-            <li>
-              <h1 className="pt-4">future Projects</h1>
-            </li>
-            <li>
-              {/* <Link href="/projects/recipe"> */}
-              <p className="text-text">Recipe</p>
-              <p className="text-text">Finance</p>
-              {/* </Link> */}
-            </li>
-          </ul>
-        </motion.div>
+          <Projects />
       </div>
     </>
   );
