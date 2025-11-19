@@ -1,81 +1,88 @@
-"use client"
-type TagType = "frontend" | "backend" | "ai" | "other";
-
-type TagName = "next.js" | "neondb" | "golang" | "clerk" | "drizzle" | "react" | "tailwind css" | "three.js" | "shadcn ui" | "motion" | "docker";
-
-interface Project {
+"use client";
+import { motion } from "motion/react";
+import Link from "next/link";
+type Tags = "Next.js" | "Typescript" | "";
+interface ProjectType {
   name: string;
   description: string;
-  image_url?: string;
-  tags: TagName[];
+  url: string;
+  type: "project.wiktrek.xyz" | "other";
+  tags: Tags[];
 }
-
-const tags = {
-  "next.js": "backend",
-  neondb: "backend",
-  golang: "backend",
-  clerk: "backend",
-  drizzle: "backend",
-  react: "frontend",
-  "tailwind css": "frontend",
-  "three.js": "frontend",
-  "shadcn ui": "frontend",
-  motion: "frontend",
-  docker: "other",
-};
-const projects: Project[] = [
+const projects: ProjectType[] = [
   {
-    name: "Poll",
-    description: "Very very cool poll app",
-    tags: ["next.js","neondb",'clerk',"drizzle","react","tailwind css"]
+    name: "Poll app",
+    description: "Poll creation and voting app",
+    url: "/poll",
+    type: "project.wiktrek.xyz",
+    tags: ["Next.js", "Typescript"],
   },
   {
     name: "Link shortener",
-    description: "Very very cool link shortener",
-    tags: ["next.js","neondb",'clerk',"drizzle","react","tailwind css"]
+    description: "URL shortening service",
+    url: "/url",
+    type: "project.wiktrek.xyz",
+    tags: ["Next.js", "Typescript"],
   },
   {
     name: "Chat",
     description: "Simple chat app",
-    tags: ["next.js","neondb","golang","drizzle","react","tailwind css"]
-  }
-]
+    url: "/chat",
+    type: "project.wiktrek.xyz",
+    tags: ["Next.js", "Typescript"],
+  },
+  {
+    name: "Term",
+    description: "Terminal-like app",
+    url: "/term",
+    type: "project.wiktrek.xyz",
+    tags: ["Next.js", "Typescript"],
+  },
+  {
+    name: "Os",
+    description:
+      "website that tries to look like a desktop of an operating system",
+    url: "/os",
+    type: "project.wiktrek.xyz",
+    tags: ["Next.js", "Typescript"],
+  },
+  {
+    name: "Browser games",
+    description: "browser games that I made",
+    url: "/games",
+    type: "project.wiktrek.xyz",
+    tags: ["Next.js", "Typescript"],
+  },
+];
 export function Projects() {
   return (
-    <section id="projects"  className="flex flex-col w-screen items-center justify-center text-center h-[120vh] mt-42">
-      <div>
-        Pls wait I'm working on something...
+    <div className="flex h-[150vh] justify-center pt-8 md:h-[60vh]">
+      <div className="grid h-[140vh] md:h-[50vh] md:grid-cols-4">
+        {projects.map((p) => (
+          <a
+            href={`https://${p.type}${p.url}`}
+            key={p.name}
+            className="bg-background-901 rounded-x mx-4 h-48 w-64 p-3 text-left shadow transition-all hover:scale-105"
+          >
+            <p className="pl-4 text-2xl">{p.name}</p>
+            <p className="py-4 text-xl">{p.description}</p>
+            <div className="flex">
+              {p.tags.map((m) => (
+                <h4 key={m} className="bg-accent ml-2 rounded-xl px-2 text-lg">
+                  {m}
+                </h4>
+              ))}
+            </div>
+          </a>
+        ))}
       </div>
-      <div className="grid grid-cols-3 grid-rows-4 gap-x-8 w-screen border-2 mt-4 justify-center items-center text-center">
-        {projects.map(p => Project(p))}
-      </div>
-    </section>
-  )
-}
-function Project(p: Project) {
-  return (
-    <div key={p.name} className="border-2 border-red-900 rounded-2xl h-80 w-80 p-4 hover:scale-105 transition-all">
-      <img src={p.image_url}></img>
-      <p className="text-left">{p.name}</p>
-      <p className="text-left">{p.description}</p>
-      <h3 className="text-sm">{p.tags}</h3>
     </div>
-  )
+  );
 }
-function Tag(tag: TagName) {
-  const type = tags[tag]
-  let color = ""
-  switch (type) {
-    case "frontend":
-      color = "white"
-    case "backend":
-      color = "green"
-    case "ai":
-      color = "red"
-    case "other":
-      color = "gray"
-  }
+function OtherProjects() {
   return (
-    <p>{tag}</p>
-  )
+    <div>
+      <p>Other projects</p>
+    </div>
+  );
 }
