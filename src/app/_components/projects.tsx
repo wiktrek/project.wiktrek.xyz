@@ -51,12 +51,24 @@ const projects: Project[] = [
     description: "App that tries to look like an operating system",
     tags: ["tailwind css", "react"],
     url: "/os"
-  }
+  },
+  {
+    name: "random team generator",
+    description: "Generate random teams",
+    tags: ["react", "tailwind css"],
+    url: "/teamgenerator"
+  },
+  // {
+  //   name: "Math",
+  //   description: "Explaining basic math",
+  //   tags: ["react", "tailwind css"],
+  //   url: "/math"
+  // }
 ]
 export function Projects() {
   return (
     <section id="projects"  className="flex flex-col w-screen items-center justify-center text-center h-[120vh]">
-      <div className="w-[80vw] grid grid-cols-4 border-amber-400 border-2 justify-around">
+      <div className="w-[80vw] grid grid-cols-4 justify-around gap-y-4">
         {projects.map(p => Project(p))}
       </div>
     </section>
@@ -88,7 +100,7 @@ function Project(p: Project) {
     }
   })
   return (
-    <Link key={p.name} className="border-2 border-red-900 rounded-2xl h-80 w-80 p-4 hover:scale-105 transition-all hover:cursor-crosshair" href={p.url}>
+    <Link key={p.name} className="border-2 rounded-2xl h-80 w-80 p-4 hover:scale-105 transition-all hover:cursor-crosshair" href={p.url}>
       <img src={p.image_url}></img>
       <p className="text-left text-xl">{p.name}</p>
       <p className="text-left text-lg">{p.description}</p>

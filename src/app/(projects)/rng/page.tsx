@@ -1,56 +1,34 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 "use client";
 import type { NextPage } from "next";
-import Head from "next/head";
 import React, { useState } from "react";
-
-const Rng: NextPage = () => {
-  const [result, setResult] = useState("");
-  async function rng(e: React.SyntheticEvent) {
-    e.preventDefault();
-    function getnum(): number | void {
-      // @ts-ignore: Object is possibly 'null'.
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const low: number = document.querySelector("#low").value;
-      // @ts-ignore: Object is possibly 'null'.
-      const max: number = Number(document.querySelector("#max").value) + 1;
-      if (low > max) return setResult("lower limit is higher than upper limit");
-
-      const random = Math.floor(Math.random() * (max - low + 1) + low);
-      return random;
-    }
-    const num = getnum();
-
-    if (typeof num != "number") return getnum();
-    setResult(`${num}`);
+const Rng = () => {
+  const [min,setMin] = useState(0);
+  const [max,setMax] = useState(10);
+  const [amount,setAmount] = useState(1);
+  const [output,setOutput] = useState([] as number[])
+  function random(min: number,max:number): number{
+    return Math.floor(Math.random() * (max - min) + min)
   }
-
+  function generateRandom(amount: number) {
+    let output = [];
+    for (let i = 0;i<amount;i++) {
+      output.push(random(min,max))
+    }
+    setOutput(output)
+  }
   return (
-    <>
-      <Head>
-        <title>Rng - wiktrek</title>
-        <meta name="description" content="Random number generator" />
-      </Head>
-      <div className="items-center justify-center text-center">
-        <ul className="">
-          <form onSubmit={rng}>
-            <li>
-              <label>lower limit</label>
-              <input className="text-black" type="number" name="low" id="low" />
-            </li>
-            <li>
-              <label>upper limit</label>
-              <input className="text-black" type="number" name="max" id="max" />
-            </li>
-            <button type="submit">generate random number</button>
-          </form>
-          <li>
-            <a>{result}</a>
-          </li>
-        </ul>
+    <main className="flex flex-col w-screen justify-center items-center">
+      <div className="flex flex-col w-80">
+        <label className="text-xl">min</label>
+          <input type="number" value={min} onChange={(e) => setMin(Number(e.target.value))} />
+        <label className="text-xl">max</label>
+          <input type="number" value={max} onChange={(e) => setMax(Number(e.target.value))} />  
+        <label className="text-xl">amount</label>
+        <input type="number" value={amount} onChange={(e) => setAmount(Number(e.target.value))} ></input>
+        <button onClick={() => generateRandom(amount)}>Generate</button>
+        <div>{output.map((o,i) => <p key={`${i}.${o}`}>{o}</p>)}</div>
       </div>
-    </>
-  );
-};
-
+    </main>
+  )
+}
 export default Rng;
