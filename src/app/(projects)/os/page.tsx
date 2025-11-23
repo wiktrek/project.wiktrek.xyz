@@ -1,7 +1,8 @@
 "use client";
 
-import { Apps, BlogApp, TicTacToe } from "~/app/_components/os/apps";
-
+import { Apps } from "~/app/_components/os/apps/apps";
+import { BlogApp } from "~/app/_components/os/apps/blog";
+import { TicTacToe } from "~/app/_components/os/apps/ttt";
 export default function Page() {
   return (
     <div className="mx-auto flex">
@@ -11,7 +12,7 @@ export default function Page() {
 }
 function Main() {
   return (
-    <div className="mx-auto h-[100vh] w-[90%] bg-background-300">
+    <div className="mx-auto h-[90vh] w-[95%] bg-background-300">
       <Apps />
       <TicTacToe />
       <BlogApp />
