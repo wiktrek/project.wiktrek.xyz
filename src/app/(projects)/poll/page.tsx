@@ -10,8 +10,9 @@ const Page: NextPage = async () => {
   const { userId, redirectToSignIn } = await auth();
   if (!userId) return redirectToSignIn();
   const user = await currentUser();
+  const email = user?.primaryEmailAddress?.emailAddress!;
   const data = await trpc.question.getAllMY({
-    email: `${user?.primaryEmailAddress?.emailAddress}`,
+    email: `${email}`,
   });
   if (!data) {
     return <p>Loading...</p>;
@@ -23,20 +24,20 @@ const Page: NextPage = async () => {
         {data.map((question) => {
           return (
             <div key={question.id} className="p-2">
-              <ul className="inline-flex items-center">
-                <Link href={`/poll/q/${question.id}`}>
+              <ul className="inline-flex items-center space-x-4">
+                <Link href={`/poll/q/${question.id}`} className="">
                   <p className="text-primary text-2xl font-bold">
                     {question.question}
                   </p>
                 </Link>
-                <DeletePoll id={question.id} />
+                <DeletePoll id={question.id} email={email} />
               </ul>
             </div>
           );
         })}
       </div>
       <Link href="/poll/create">
-        <button className="font-bold">Create new poll</button>
+        <button className="font-bold hover:cursor-pointer">Create new poll</button>
       </Link>
       <Toaster />
     </main>

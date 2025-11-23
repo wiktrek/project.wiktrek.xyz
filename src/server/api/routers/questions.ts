@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { email, z } from "zod";
 import {
   publicProcedure as procedure,
   createTRPCRouter as router,
@@ -89,13 +89,14 @@ export const questionRouter = router({
     .input(
       z.object({
         id: z.number(),
+        email: z.string()
       }),
     )
     .mutation(({ ctx, input }) => {
-      const { id } = input;
+      const { id,email } = input;
       const deletedQuestion = ctx.db
         .delete(pollQuestion)
-        .where(eq(pollQuestion.id, id));
+        .where(and(eq(pollQuestion.id, id), eq(pollQuestion.ownerEmail, email)));
       return deletedQuestion;
     }),
 });

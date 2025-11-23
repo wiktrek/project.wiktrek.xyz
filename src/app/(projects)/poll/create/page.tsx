@@ -29,6 +29,6 @@ const QuestionCreator: React.FC = async () => {
 };
 export default QuestionCreator;
 export const metadata: Metadata = {
-  title: "Poll - wiktrek.xyz",
+  title: "Create poll - wiktrek.xyz",
   description: "Create polls",
 };
