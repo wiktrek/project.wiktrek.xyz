@@ -5,7 +5,7 @@ import { api as trpc } from "~/trpc/server";
 import { DeletePoll } from "~/app/_components/pollComponents";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { Toaster } from "~/app/_components/ui/sonner";
-
+import { ClerkUser } from "~/app/_components/clerk";
 const Page: NextPage = async () => {
   const { userId, redirectToSignIn } = await auth();
   if (!userId) return redirectToSignIn();
@@ -20,6 +20,7 @@ const Page: NextPage = async () => {
 
   return (
     <main className="items-center justify-center text-center text-2xl">
+      <ClerkUser />
       <div className="">
         {data.map((question) => {
           return (

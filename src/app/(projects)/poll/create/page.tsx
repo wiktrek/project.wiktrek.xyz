@@ -6,6 +6,7 @@ import Link from "next/link";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import type { Metadata } from "next";
 import { Toaster } from "~/app/_components/ui/sonner";
+import { ClerkUser } from "~/app/_components/clerk";
 const QuestionCreator: React.FC = async () => {
   const { userId, redirectToSignIn } = await auth();
   if (!userId) return redirectToSignIn();
@@ -16,11 +17,8 @@ const QuestionCreator: React.FC = async () => {
   }
   return (
     <>
-      <Head>
-        <title>Poll create- wiktrek</title>
-        <meta name="description" content="create a poll" />
-      </Head>
       <main className="mx-auto flex w-screen flex-col items-center justify-center text-center text-xl text-white">
+        <ClerkUser />
         <FormComponent email={user.primaryEmailAddress!.emailAddress} />
         <Toaster />
       </main>
