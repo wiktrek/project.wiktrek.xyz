@@ -52,31 +52,34 @@ export function UrlComponent(props: {
   return (
     <>
       <div>
-        <h1>create new short url</h1>
-        <form onSubmit={submitData} className="">
-          <div className="pb-1">
+        <h1 className="text-2xl font-semibold text-primary">Create new short link</h1>
+        <form onSubmit={submitData} className="pt-2">
+          <div className="pb-1 grid">
+            <label className="text-left font-semibold text-xl">Slug</label>
             <Input
               autoFocus
               onChange={(e) => setSlug(e.target.value)}
               placeholder="slug"
+              className="h-12 text-lg font-bold w-72"
               type="text"
               value={slug}
             />
           </div>
-
+          <label className="grid text-left font-semibold text-xl">Link</label>
           <Input
             type="url"
             onChange={(e) => setUrl(e.target.value)}
-            placeholder="url"
-            className=""
+            placeholder="https://wiktrek.xyz"
+            className="h-12 text-lg font-bold w-72"
             value={url}
           />
-          <button type="submit" className="text-ring">
+          <button type="submit" className="text-ring text-2xl font-semibold">
             Create
           </button>
         </form>
       </div>
-      <div className="">
+      <div className="mt-4">
+        <h1 className="text-2xl font-semibold text-primary">Your short links</h1>
         <ul className="">
           {data?.map((item: { slug: string; url: string }, index: number) => {
             return (
@@ -125,9 +128,6 @@ export function UrlComponent(props: {
             );
           })}
         </ul>
-        <Link href="/api/auth/logout" className="text-ring font-semibold">
-          logout
-        </Link>
         <Toaster />
       </div>
     </>
