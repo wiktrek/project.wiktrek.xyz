@@ -8,14 +8,14 @@ const Home: NextPage = () => {
   return (
     <>
       <div className="bg-background text-ring items-center justify-center overflow-y-hidden text-center text-3xl font-medium h-[200vh]">
+        <Projects />
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="absolute right-0"
+          className="absolute right-0 top-4"
         >
           <UserButton />
         </motion.div>
-          <Projects />
       </div>
     </>
   );
