@@ -30,13 +30,13 @@ const tags = {
 const projects: Project[] = [
   {
     name: "Poll",
-    description: "Very very cool poll app",
+    description: "Simple poll app",
     tags: ["next.js","neondb",'clerk',"drizzle","react","tailwind css"],
     url: "/poll",
   },
   {
     name: "Link shortener",
-    description: "Very very cool link shortener",
+    description: "Link shortener",
     tags: ["next.js","neondb",'clerk',"drizzle","react","tailwind css"],
     url: "/url"
   },
@@ -58,6 +58,12 @@ const projects: Project[] = [
     tags: ["react", "tailwind css"],
     url: "/teamgenerator"
   },
+  {
+    name: "File explorer",
+    description: "Terminal file explorer",
+    tags: ["golang"],
+    url: "https://github.com/wiktrek/file-explorer"
+  }
   // {
   //   name: "Math",
   //   description: "Explaining basic math",
@@ -67,8 +73,8 @@ const projects: Project[] = [
 ]
 export function Projects() {
   return (
-    <section id="projects"  className="flex flex-col w-screen items-center justify-center text-center h-[120vh]">
-      <div className="w-[80vw] grid grid-cols-4 justify-around gap-y-4">
+    <section id="projects"  className="flex flex-col w-screen items-center justify-center text-center h-[140vh] md:h-[120vh]">
+      <div className="md:w-[60vw] grid grid-cols-1 md:grid-cols-3 justify-around gap-y-4">
         {projects.map(p => Project(p))}
       </div>
     </section>
@@ -100,11 +106,11 @@ function Project(p: Project) {
     }
   })
   return (
-    <Link key={p.name} className="border-2 rounded-2xl h-80 w-80 p-4 hover:scale-105 transition-all hover:cursor-crosshair" href={p.url}>
+    <Link key={p.name} className="border-2 rounded-2xl h-52 w-48 p-2 hover:scale-105 transition-all hover:cursor-crosshair md:w-80 md:h-80 md:p-4" href={p.url}>
       <img src={p.image_url}></img>
-      <p className="text-left text-xl">{p.name}</p>
-      <p className="text-left text-lg">{p.description}</p>
-      <div className="text-sm flex space-x-0.5 flex-wrap w-80">{p.tags.map(t => {
+      <p className="text-left text-lg md:text-xl">{p.name}</p>
+      <p className="text-left text-base md:text-lg">{p.description}</p>
+      <div className="text-xs md:text-sm flex space-x-0.5 flex-wrap w-40 md:w-80">{p.tags.map(t => {
         return <Tag tag={t} key={t}/>
       })}</div>
     </Link>
