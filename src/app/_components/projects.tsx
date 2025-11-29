@@ -1,88 +1,135 @@
-"use client";
-import { motion } from "motion/react";
+"use client"
+
 import Link from "next/link";
-type Tags = "Next.js" | "Typescript" | "";
-interface ProjectType {
+
+type TagType = "frontend" | "backend" | "ai" | "other";
+
+type TagName = "next.js" | "neondb" | "golang" | "clerk" | "drizzle" | "react" | "tailwind css" | "three.js" | "shadcn ui" | "motion" | "docker";
+
+interface Project {
   name: string;
   description: string;
+  image_url?: string;
   url: string;
-  type: "project.wiktrek.xyz" | "other";
-  tags: Tags[];
+  tags: TagName[];
 }
-const projects: ProjectType[] = [
+
+const tags = {
+  "next.js": "backend",
+  neondb: "backend",
+  golang: "backend",
+  clerk: "backend",
+  drizzle: "backend",
+  react: "frontend",
+  "tailwind css": "frontend",
+  "three.js": "frontend",
+  "shadcn ui": "frontend",
+  motion: "frontend",
+  docker: "other",
+};
+const projects: Project[] = [
   {
-    name: "Poll app",
-    description: "Poll creation and voting app",
+    name: "Poll",
+    description: "Simple poll app",
+    tags: ["next.js","neondb",'clerk',"drizzle","react","tailwind css"],
     url: "/poll",
-    type: "project.wiktrek.xyz",
-    tags: ["Next.js", "Typescript"],
   },
   {
     name: "Link shortener",
-    description: "URL shortening service",
-    url: "/url",
-    type: "project.wiktrek.xyz",
-    tags: ["Next.js", "Typescript"],
+    description: "Link shortener",
+    tags: ["next.js","neondb",'clerk',"drizzle","react","tailwind css"],
+    url: "/url"
   },
   {
     name: "Chat",
     description: "Simple chat app",
+    tags: ["next.js","neondb","golang","drizzle","react","tailwind css"],
     url: "/chat",
-    type: "project.wiktrek.xyz",
-    tags: ["Next.js", "Typescript"],
-  },
-  {
-    name: "Term",
-    description: "Terminal-like app",
-    url: "/term",
-    type: "project.wiktrek.xyz",
-    tags: ["Next.js", "Typescript"],
   },
   {
     name: "Os",
-    description:
-      "website that tries to look like a desktop of an operating system",
-    url: "/os",
-    type: "project.wiktrek.xyz",
-    tags: ["Next.js", "Typescript"],
+    description: "App that tries to look like an operating system",
+    tags: ["tailwind css", "react"],
+    url: "/os"
   },
   {
-    name: "Browser games",
-    description: "browser games that I made",
-    url: "/games",
-    type: "project.wiktrek.xyz",
-    tags: ["Next.js", "Typescript"],
+    name: "random team generator",
+    description: "Generate random teams",
+    tags: ["react", "tailwind css"],
+    url: "/teamgenerator"
   },
-];
+  {
+    name: "File explorer",
+    description: "Terminal file explorer",
+    tags: ["golang"],
+    url: "https://github.com/wiktrek/file-explorer"
+  }
+  // {
+  //   name: "Math",
+  //   description: "Explaining basic math",
+  //   tags: ["react", "tailwind css"],
+  //   url: "/math"
+  // }
+]
 export function Projects() {
   return (
-    <div className="flex h-[150vh] justify-center pt-8 md:h-[60vh]">
-      <div className="grid h-[140vh] md:h-[50vh] md:grid-cols-4">
-        {projects.map((p) => (
-          <a
-            href={`https://${p.type}${p.url}`}
-            key={p.name}
-            className="bg-background-901 rounded-x mx-4 h-48 w-64 p-3 text-left shadow transition-all hover:scale-105"
-          >
-            <p className="pl-4 text-2xl">{p.name}</p>
-            <p className="py-4 text-xl">{p.description}</p>
-            <div className="flex">
-              {p.tags.map((m) => (
-                <h4 key={m} className="bg-accent ml-2 rounded-xl px-2 text-lg">
-                  {m}
-                </h4>
-              ))}
-            </div>
-          </a>
-        ))}
+    <section id="projects"  className="flex flex-col w-screen items-center justify-center text-center h-[140vh] md:h-[120vh]">
+      <div className="md:w-[60vw] grid grid-cols-1 md:grid-cols-3 justify-around gap-y-4">
+        {projects.map(p => Project(p))}
       </div>
-    </div>
-  );
+    </section>
+  )
 }
-function OtherProjects() {
+function tagValues(tag: TagName): number {
+  switch (tags[tag]) {
+    case "frontend": return 4;
+    case "backend": return 3;
+    case "ai": return 2;
+    case "other": return 1;
+  }
+  return -1;
+}
+function Project(p: Project) {
+  p.tags.sort((a,b) => {
+    if (tags[a] == tags[b]) {
+      if (a < b) {
+        return -1;
+      } else {
+        return 1;
+      }
+    } else {
+      if (tagValues(a) < tagValues(b)) {
+        return -1;
+      } else {
+        return 1;
+      }
+    }
+  })
   return (
-    <div>
-      <p>Other projects</p>
-    </div>
-  );
+    <Link key={p.name} className="border-2 rounded-2xl h-52 w-48 p-2 hover:scale-105 transition-all hover:cursor-crosshair md:w-80 md:h-80 md:p-4" href={p.url}>
+      <img src={p.image_url}></img>
+      <p className="text-left text-lg md:text-xl">{p.name}</p>
+      <p className="text-left text-base md:text-lg">{p.description}</p>
+      <div className="text-xs md:text-sm flex space-x-0.5 flex-wrap w-40 md:w-80">{p.tags.map(t => {
+        return <Tag tag={t} key={t}/>
+      })}</div>
+    </Link>
+  )
+}
+function Tag(props: {tag: TagName}) {
+  const type = tags[props.tag]
+  const text = `#${props.tag}`
+  switch (type) {
+    case "frontend":
+      return (<h3 className="text-blue-400">{text}</h3>)
+    case "backend":
+      return (<h3 className="text-green-400">{text}</h3>)
+    case "ai":
+      return (<h3 className="text-white">{text}</h3>)
+    case "other":
+      return (<h3 className="text-red-700">{text}</h3>)
+  }
+  return (
+    <h3>{text}</h3>
+  )
 }

@@ -2,6 +2,8 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import type { Metadata } from "next";
 import { api } from "~/trpc/server";
 import { UrlComponent } from "~/app/_components/urlComponent";
+import { ClerkUser } from "~/app/_components/clerk";
+
 const Page = async () => {
   const { userId, redirectToSignIn } = await auth();
   const user = await currentUser();
@@ -14,6 +16,7 @@ const Page = async () => {
   }
   return (
     <main className="mx-auto flex w-screen flex-col items-center justify-center text-center text-xl text-white">
+      <ClerkUser />
       <UrlComponent
         email={user.primaryEmailAddress!.emailAddress}
         data={data}

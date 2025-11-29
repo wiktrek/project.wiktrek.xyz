@@ -18,25 +18,24 @@ const Page: NextPage = () => {
   }
   return (
     <>
-      <Head>
-        <title>Team generator - wiktrek.xyz</title>
-      </Head>
       <main className="top-16 flex flex-col items-center justify-center text-center">
+        <h1 className="text-3xl font-semibold">Generate random teams</h1>
         <textarea
-          className="h-72 w-56 resize-none rounded-xl border-2 border-border p-2"
-          placeholder={`wiktrek`}
+          className="h-72 w-64 resize-none rounded-xl border-2 border-border p-2"
+          placeholder={`wiktrek\nwiktrek2`}
           id="textarea"
           onChange={(e) => setTextarea(e.target.value)}
           value={textarea}
         ></textarea>
-        <label>Team amount</label>
+        <div>
+        <label className="text-2xl">Team amount: </label>
         <input
           type="number"
           className="w-16 rounded-md border-2 border-border text-center [appearance:textfield] active:border-border [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-          defaultValue={2}
           onChange={(e) => setSize(Number(e.target.value))}
-          value={size == 0 ? "" : size}
+          value={size}
         />
+        </div>
         <button className="text-2xl font-semibold" onClick={Randomize}>
           Randomize!
         </button>
@@ -53,8 +52,8 @@ const ResultComponent = ({ result }: { result: string[][] }) => {
           <div key={"team " + i}>
             <p className="text-2xl text-primary">Team {i + 1}</p>
             <ul className="text-base">
-              {team.map((member) => {
-                return <li key={i + member}>{member}</li>;
+              {team.map((member,j) => {
+                return <li key={`${i}.${j}.${member}`}>{member}</li>;
               })}
             </ul>
           </div>
@@ -65,19 +64,15 @@ const ResultComponent = ({ result }: { result: string[][] }) => {
 };
 export default Page;
 function split_into_chunks(array: string[], amount: number): string[][] {
+  console.log(array);
+  const d = Math.ceil(array.length / amount); // amount of teammates in a team
   const split_arr: string[][] = [];
-  const d = array.length / amount; // amount of teammates in a team
-
-  let arr = [];
-  for (let i = 0; i < array.length; i++) {
-    arr.push(array[i]!);
-    if ((i + 1) % d === 0 && i !== array.length - 1) {
-      split_arr.push(arr);
-      arr = [];
-    } else {
-      if (i === array.length - 1) {
-        split_arr.push(arr);
-        arr = [];
+  for (let i = 0;i<amount;i++) {
+    for (let j =0;j<d;j++) {
+      if (j == 0) {
+        split_arr.push([array[i*d+j]!])
+      } else {
+        split_arr[i]!.push(array[i*d+j]!);
       }
     }
   }
@@ -85,14 +80,9 @@ function split_into_chunks(array: string[], amount: number): string[][] {
 }
 function shuffle(array: string[]) {
   let currentIndex = array.length;
-
-  // While there remain elements to shuffle...
   while (currentIndex != 0) {
-    // Pick a remaining element...
     const randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
-
-    // And swap it with the current element.
 
     [array[currentIndex], array[randomIndex]] = [
       array[randomIndex]!,
