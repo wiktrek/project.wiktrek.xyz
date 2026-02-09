@@ -73,9 +73,22 @@ const projects: Project[] = [
 ]
 export function Projects() {
   return (
-    <section id="projects"  className="flex flex-col w-screen items-center justify-center text-center h-[140vh] md:h-[120vh]">
-      <div className="md:w-[60vw] lg:w-[72vw] xl:w-[72vw] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 justify-around gap-y-4">
-        {projects.map(p => Project(p))}
+    <section
+      id="projects"
+      className="w-screen px-6 md:px-10 py-20 md:py-28 flex justify-center bg-transparent"
+    >
+      <div className="w-full max-w-6xl">
+        <div className="flex flex-col items-start gap-2 mb-10">
+          <h2 className="text-3xl md:text-4xl font-semibold text-neutral-50">My projects</h2>
+          <p className="max-w-2xl text-sm md:text-base text-neutral-300">
+            Here are some of my projects
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {projects.map((project) => (
+            <Project key={project.name} project={project} />
+          ))}
+        </div>
       </div>
     </section>
   )
@@ -89,30 +102,47 @@ function tagValues(tag: TagName): number {
   }
   return -1;
 }
-function Project(p: Project) {
-  p.tags.sort((a,b) => {
+function Project({ project }: { project: Project }) {
+  const sortedTags = [...project.tags].sort((a, b) => {
     if (tags[a] == tags[b]) {
-      if (a < b) {
-        return -1;
-      } else {
-        return 1;
-      }
-    } else {
-      if (tagValues(a) < tagValues(b)) {
-        return -1;
-      } else {
-        return 1;
-      }
+      return a < b ? -1 : 1;
     }
+    return tagValues(a) < tagValues(b) ? -1 : 1;
   })
+
   return (
-    <Link key={p.name} className="border-2 rounded-2xl h-52 w-48 p-2 hover:scale-105 transition-all hover:cursor-crosshair md:w-60 md:h-64 lg:w-72 lg:h-72 xl:w-80 xl:h-80 md:p-4" href={p.url}>
-      <img src={p.image_url}></img>
-      <p className="text-left text-lg md:text-xl">{p.name}</p>
-      <p className="text-left text-base md:text-lg">{p.description}</p>
-      <div className="text-xs md:text-sm flex space-x-0.5 flex-wrap w-40 md:w-60 lg:w-80">{p.tags.map(t => {
-        return <Tag tag={t} key={t}/>
-      })}</div>
+    <Link
+      className="group relative overflow-hidden rounded-3xl border border-white/10 bg-neutral-900/70 p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] backdrop-blur transition hover:-translate-y-1 hover:border-white/20 hover:shadow-[0_20px_40px_rgba(0,0,0,0.35)] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+      href={project.url}
+    >
+      <div className="mb-4 h-36 w-full overflow-hidden rounded-2xl bg-gradient-to-br from-amber-200/20 via-transparent to-sky-300/30">
+        {project.image_url ? (
+          <img
+            src={project.image_url}
+            alt={project.name}
+            className="h-full w-full object-cover"
+            loading="lazy"
+          />
+        ) : (
+          <div className="flex h-full w-full items-end justify-between p-3 text-[10px] uppercase tracking-[0.35em] text-neutral-200/80">
+            <span>Preview</span>
+            <span className="text-neutral-400">{project.name}</span>
+          </div>
+        )}
+      </div>
+      <div className="flex items-center justify-between gap-4">
+        <p className="text-left text-lg md:text-xl font-semibold text-neutral-50">
+          {project.name}
+        </p>
+      </div>
+      <p className="mt-2 text-left text-sm md:text-base text-neutral-300">
+        {project.description}
+      </p>
+      <div className="mt-4 flex flex-wrap gap-2">
+        {sortedTags.map((tag) => (
+          <Tag tag={tag} key={tag} />
+        ))}
+      </div>
     </Link>
   )
 }
@@ -121,15 +151,33 @@ function Tag(props: {tag: TagName}) {
   const text = `#${props.tag}`
   switch (type) {
     case "frontend":
-      return (<h3 className="text-blue-400">{text}</h3>)
+      return (
+        <span className="rounded-full border border-sky-300/40 bg-sky-400/10 px-2.5 py-1 text-[11px] uppercase tracking-[0.2em] text-sky-200">
+          {text}
+        </span>
+      )
     case "backend":
-      return (<h3 className="text-green-400">{text}</h3>)
+      return (
+        <span className="rounded-full border border-emerald-300/40 bg-emerald-400/10 px-2.5 py-1 text-[11px] uppercase tracking-[0.2em] text-emerald-200">
+          {text}
+        </span>
+      )
     case "ai":
-      return (<h3 className="text-white">{text}</h3>)
+      return (
+        <span className="rounded-full border border-fuchsia-300/40 bg-fuchsia-400/10 px-2.5 py-1 text-[11px] uppercase tracking-[0.2em] text-fuchsia-200">
+          {text}
+        </span>
+      )
     case "other":
-      return (<h3 className="text-red-700">{text}</h3>)
+      return (
+        <span className="rounded-full border border-rose-400/40 bg-rose-400/10 px-2.5 py-1 text-[11px] uppercase tracking-[0.2em] text-rose-200">
+          {text}
+        </span>
+      )
   }
   return (
-    <h3>{text}</h3>
+    <span className="rounded-full border border-neutral-500/40 bg-neutral-500/10 px-2.5 py-1 text-[11px] uppercase tracking-[0.2em] text-neutral-200">
+      {text}
+    </span>
   )
 }
