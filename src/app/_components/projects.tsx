@@ -9,7 +9,6 @@ type TagName = "next.js" | "neondb" | "golang" | "clerk" | "drizzle" | "react" |
 interface Project {
   name: string;
   description: string;
-  image_url?: string;
   url: string;
   tags: TagName[];
 }
@@ -112,33 +111,18 @@ function Project({ project }: { project: Project }) {
 
   return (
     <Link
-      className="group relative overflow-hidden rounded-3xl border border-white/10 bg-neutral-900/70 p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] backdrop-blur transition hover:-translate-y-1 hover:border-white/20 hover:shadow-[0_20px_40px_rgba(0,0,0,0.35)] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+      className="group relative overflow-hidden rounded-xl border border-white/10 bg-neutral-900/70 p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] backdrop-blur transition hover:-translate-y-1 hover:border-white/20 hover:shadow-[0_16px_32px_rgba(0,0,0,0.35)] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
       href={project.url}
     >
-      <div className="mb-4 h-36 w-full overflow-hidden rounded-2xl bg-gradient-to-br from-amber-200/20 via-transparent to-sky-300/30">
-        {project.image_url ? (
-          <img
-            src={project.image_url}
-            alt={project.name}
-            className="h-full w-full object-cover"
-            loading="lazy"
-          />
-        ) : (
-          <div className="flex h-full w-full items-end justify-between p-3 text-[10px] uppercase tracking-[0.35em] text-neutral-200/80">
-            <span>Preview</span>
-            <span className="text-neutral-400">{project.name}</span>
-          </div>
-        )}
-      </div>
       <div className="flex items-center justify-between gap-4">
         <p className="text-left text-lg md:text-xl font-semibold text-neutral-50">
           {project.name}
         </p>
       </div>
-      <p className="mt-2 text-left text-sm md:text-base text-neutral-300">
+      <p className="mt-2 text-left text-sm md:text-base text-neutral-300 leading-relaxed">
         {project.description}
       </p>
-      <div className="mt-4 flex flex-wrap gap-2">
+      <div className="mt-5 flex flex-wrap gap-2">
         {sortedTags.map((tag) => (
           <Tag tag={tag} key={tag} />
         ))}
