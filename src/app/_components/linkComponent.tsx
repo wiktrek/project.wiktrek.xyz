@@ -3,9 +3,12 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { toast } from "sonner";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
+import { Toaster } from "./ui/sonner";
+import { api } from "~/trpc/react";
 
 // Zod schema matching the linkProfile database schema
 const createLinkProfileSchema = z.object({
@@ -307,5 +310,40 @@ export function CreateLinkProfileForm({
         {isLoading || isSubmitting ? "Creating..." : "Create Profile"}
       </Button>
     </form>
+  );
+}
+
+type LinkProfileClientProps = {
+  userId: string;
+};
+
+export function LinkProfileClient({ userId }: LinkProfileClientProps) {
+  const mutation = api.link.createProfile.useMutation();
+
+  return (
+    <>
+      <CreateLinkProfileForm
+        isLoading={mutation.isPending}
+        onSubmit={(o) => {
+          mutation.mutate(
+            {
+              userId,
+              username: o.username,
+              displayName: o.displayName,
+              avatarUrl: o.avatarUrl,
+              backgroundColor: o.backgroundColor,
+              bio: o.bio,
+              buttonStyle: o.buttonStyle,
+              isPublic: o.isPublic,
+              textColor: o.textColor,
+            },
+            {
+              onSuccess: () => toast("Created profile!"),
+            },
+          );
+        }}
+      />
+      <Toaster />
+    </>
   );
 }
