@@ -1,22 +1,21 @@
 import {
-  pgTable,
-  pgSchema,
+  pgTableCreator,
   integer,
   index,
-  primaryKey,
   unique,
   serial,
   varchar,
   timestamp,
   json,
   boolean,
+  pgTable,
 } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
+import { sql, relations } from "drizzle-orm";
 
 export const like = pgTable(
   "Like",
   {
-    id: serial("id").unique().notNull(),
+    id: serial("id").primaryKey(),
     owner: varchar("owner", { length: 255 }).notNull(),
     recipeId: integer("recipeId").notNull(),
     up: boolean("up").notNull(),
@@ -24,8 +23,6 @@ export const like = pgTable(
   (table) => {
     return {
       ownerIdx: index("Like_owner_idx").on(table.owner),
-      likeId: primaryKey({ columns: [table.id] }),
-      likeIdKey: unique("Like_id_key").on(table.id),
     };
   },
 );
@@ -33,12 +30,12 @@ export const like = pgTable(
 export const pollQuestion = pgTable(
   "PollQuestion",
   {
-    id: serial("id").notNull(),
+    id: serial("id").primaryKey(),
     createdAt: timestamp("createdAt", {
-      mode: "string",
+      mode: "date",
       withTimezone: true,
-    }).defaultNow(),
-    endsAt: timestamp("endsAt", { mode: "string", withTimezone: true }),
+    }).default(sql`now()`),
+    endsAt: timestamp("endsAt", { mode: "date", withTimezone: true }),
     question: varchar("question", { length: 5000 }).notNull(),
     options: json("options").notNull(),
     ownerEmail: varchar("ownerEmail", { length: 255 }).notNull(),
@@ -46,12 +43,9 @@ export const pollQuestion = pgTable(
   },
   (table) => {
     return {
-      primaryKey: primaryKey({ columns: [table.id] }),
-      indexes: {
-        ownerEmailIdx: index("PollQuestion_ownerEmail_idx").on(
-          table.ownerEmail,
-        ),
-      },
+      ownerEmailIdx: index("PollQuestion_ownerEmail_idx").on(
+        table.ownerEmail,
+      ),
     };
   },
 );
@@ -59,7 +53,7 @@ export const pollQuestion = pgTable(
 export const recipe = pgTable(
   "Recipe",
   {
-    id: serial("id").notNull(),
+    id: serial("id").primaryKey(),
     rating: integer("rating").notNull(),
     name: varchar("name", { length: 255 }).notNull(),
     description: varchar("description", { length: 255 }),
@@ -69,11 +63,7 @@ export const recipe = pgTable(
   },
   (table) => {
     return {
-      indexes: {
-        // recipeIdKey: unique("Recipe_id_key").on(table.id),
-        ownerIdx: index("Recipe_owner_idx").on(table.owner),
-      },
-      primaryKey: primaryKey({ columns: [table.id] }),
+      ownerIdx: index("Recipe_owner_idx").on(table.owner),
     };
   },
 );
@@ -81,11 +71,11 @@ export const recipe = pgTable(
 export const shortLink = pgTable(
   "ShortLink",
   {
-    id: serial("id").unique().notNull(),
+    id: serial("id").primaryKey(),
     createdAt: timestamp("createdAt", {
-      mode: "string",
+      mode: "date",
       withTimezone: true,
-    }).defaultNow(),
+    }).default(sql`now()`),
     owner: varchar("owner", { length: 191 }).notNull(),
     url: varchar("url", { length: 255 }).notNull(),
     slug: varchar("slug", { length: 191 }).notNull(),
@@ -93,7 +83,6 @@ export const shortLink = pgTable(
   (table) => {
     return {
       slugIdx: index("ShortLink_slug_idx").on(table.slug),
-      shortLinkId: primaryKey({ columns: [table.id] }),
       shortLinkSlugKey: unique("ShortLink_slug_key").on(table.slug),
     };
   },
@@ -102,11 +91,11 @@ export const shortLink = pgTable(
 export const vote = pgTable(
   "Vote",
   {
-    id: serial("id").unique().notNull(),
+    id: serial("id").primaryKey(),
     createdAt: timestamp("createdAt", {
-      mode: "string",
+      mode: "date",
       withTimezone: true,
-    }).defaultNow(),
+    }).default(sql`now()`),
     questionId: integer("questionId").notNull(),
     voterToken: varchar("voterToken", { length: 255 }).notNull(),
     choice: integer("choice").notNull(),
@@ -115,7 +104,6 @@ export const vote = pgTable(
     return {
       questionIdIdx: index("Vote_questionId_idx").on(table.questionId),
       voterTokenIdx: index("Vote_voterToken_idx").on(table.voterToken),
-      voteId: primaryKey({ columns: [table.id] }),
       voteVoterTokenQuestionIdKey: unique("Vote_voterToken_questionId_key").on(
         table.voterToken,
         table.questionId,
@@ -126,13 +114,13 @@ export const vote = pgTable(
 export const message = pgTable(
   "Message",
   {
-    id: serial("id").unique().notNull(),
+    id: serial("id").primaryKey(),
     author: varchar("author", { length: 16 }).notNull(),
     text: varchar("text", { length: 128 }).notNull(),
     createdAt: timestamp("createdAt", {
-      mode: "string",
+      mode: "date",
       withTimezone: true,
-    }).defaultNow(),
+    }).default(sql`now()`),
   },
   (table) => {
     return {
@@ -140,3 +128,76 @@ export const message = pgTable(
     };
   },
 );
+
+export const linkProfile = pgTable(
+  "LinkProfile",
+  {
+    id: serial("id").primaryKey(),
+    createdAt: timestamp("createdAt", {
+      mode: "date",
+      withTimezone: true,
+    }).default(sql`now()`),
+    updatedAt: timestamp("updatedAt", {
+      mode: "date",
+      withTimezone: true,
+    }).default(sql`now()`),
+    userId: varchar("userId", { length: 255 }).notNull().unique(),
+    username: varchar("username", { length: 50 }).notNull(),
+    displayName: varchar("displayName", { length: 100 }),
+    bio: varchar("bio", { length: 500 }),
+    avatarUrl: varchar("avatarUrl", { length: 500 }),
+    backgroundColor: varchar("backgroundColor", { length: 20 }).default("#ffffff"),
+    textColor: varchar("textColor", { length: 20 }).default("#000000"),
+    buttonStyle: varchar("buttonStyle", { length: 20 }).default("rounded"),
+    isPublic: boolean("isPublic").notNull().default(true),
+  },
+  (table) => {
+    return {
+      usernameKey: unique("LinkProfile_username_key").on(table.username),
+    };
+  },
+);
+
+export const link = pgTable(
+  "Link",
+  {
+    id: serial("id").primaryKey(),
+    createdAt: timestamp("createdAt", {
+      mode: "date",
+      withTimezone: true,
+    }).default(sql`now()`),
+    updatedAt: timestamp("updatedAt", {
+      mode: "date",
+      withTimezone: true,
+    }).default(sql`now()`),
+    profileId: integer("profileId")
+      .notNull()
+      .references(() => linkProfile.id, { onDelete: "cascade" }),
+    title: varchar("title", { length: 100 }).notNull(),
+    url: varchar("url", { length: 1000 }).notNull(),
+    order: integer("order").notNull().default(0),
+    isActive: boolean("isActive").notNull().default(true),
+    icon: varchar("icon", { length: 50 }),
+    clickCount: integer("clickCount").notNull().default(0),
+  },
+  (table) => {
+    return {
+      profileIdIdx: index("Link_profileId_idx").on(table.profileId),
+      profileOrderIdx: index("Link_profile_order_idx").on(
+        table.profileId,
+        table.order,
+      ),
+    };
+  },
+);
+
+export const linkProfileRelations = relations(linkProfile, ({ many }) => ({
+  links: many(link),
+}));
+
+export const linkRelations = relations(link, ({ one }) => ({
+  profile: one(linkProfile, {
+    fields: [link.profileId],
+    references: [linkProfile.id],
+  }),
+}));
