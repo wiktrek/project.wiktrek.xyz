@@ -4,6 +4,7 @@ import { recipeRouter } from "./routers/recipe";
 import { shortRouter } from "./routers/short";
 import { messageRouter } from "./routers/message";
 import { linkRouter } from "./routers/link";
+import { todoRouter } from "./routers/todo";
 /**
  * This is the primary router for your server.
  *
@@ -15,6 +16,7 @@ export const appRouter = createTRPCRouter({
   recipe: recipeRouter,
   message: messageRouter,
   link: linkRouter,
+  todo: todoRouter,
 });
 
 // export type definition of API

@@ -43,9 +43,7 @@ export const pollQuestion = pgTable(
   },
   (table) => {
     return {
-      ownerEmailIdx: index("PollQuestion_ownerEmail_idx").on(
-        table.ownerEmail,
-      ),
+      ownerEmailIdx: index("PollQuestion_ownerEmail_idx").on(table.ownerEmail),
     };
   },
 );
@@ -146,14 +144,18 @@ export const linkProfile = pgTable(
     displayName: varchar("displayName", { length: 100 }),
     bio: varchar("bio", { length: 500 }),
     avatarUrl: varchar("avatarUrl", { length: 500 }),
-    backgroundColor: varchar("backgroundColor", { length: 20 }).default("#ffffff"),
+    backgroundColor: varchar("backgroundColor", { length: 20 }).default(
+      "#ffffff",
+    ),
     textColor: varchar("textColor", { length: 20 }).default("#000000"),
     buttonStyle: varchar("buttonStyle", { length: 20 }).default("rounded"),
     isPublic: boolean("isPublic").notNull().default(true),
+    slug: varchar("slug", { length: 50 }),
   },
   (table) => {
     return {
       usernameKey: unique("LinkProfile_username_key").on(table.username),
+      slugKey: unique("LinkProfile_slug_key").on(table.slug),
     };
   },
 );
@@ -187,6 +189,84 @@ export const link = pgTable(
         table.profileId,
         table.order,
       ),
+    };
+  },
+);
+
+export const todo = pgTable(
+  "Todo",
+  {
+    id: serial("id").primaryKey(),
+    createdAt: timestamp("createdAt", {
+      mode: "date",
+      withTimezone: true,
+    }).default(sql`now()`),
+    owner: varchar("owner", { length: 255 }).notNull(),
+    title: varchar("title", { length: 500 }).notNull(),
+    description: varchar("description", { length: 5000 }).notNull().default(""),
+    date: timestamp("date", {
+      mode: "date",
+      withTimezone: true,
+    })
+      .notNull()
+      .default(sql`now()`),
+    status: varchar("status", { length: 20 }).notNull().default("todo"),
+    stageId: integer("stageId"),
+    completedAt: timestamp("completedAt", {
+      mode: "date",
+      withTimezone: true,
+    }),
+    tags: json("tags").$type<string[]>().notNull().default([]),
+    order: integer("order").notNull().default(0),
+  },
+  (table) => {
+    return {
+      ownerIdx: index("Todo_owner_idx").on(table.owner),
+      ownerStatusIdx: index("Todo_owner_status_idx").on(
+        table.owner,
+        table.status,
+      ),
+      ownerStageIdx: index("Todo_owner_stage_idx").on(
+        table.owner,
+        table.stageId,
+      ),
+    };
+  },
+);
+
+export const todoStage = pgTable(
+  "TodoStage",
+  {
+    id: serial("id").primaryKey(),
+    createdAt: timestamp("createdAt", {
+      mode: "date",
+      withTimezone: true,
+    }).default(sql`now()`),
+    owner: varchar("owner", { length: 255 }).notNull(),
+    name: varchar("name", { length: 100 }).notNull(),
+    color: varchar("color", { length: 20 }).notNull().default("gray"),
+    order: integer("order").notNull().default(0),
+    isDone: boolean("isDone").notNull().default(false),
+  },
+  (table) => {
+    return {
+      ownerIdx: index("TodoStage_owner_idx").on(table.owner),
+    };
+  },
+);
+
+export const todoSettings = pgTable(
+  "TodoSettings",
+  {
+    id: serial("id").primaryKey(),
+    owner: varchar("owner", { length: 255 }).notNull(),
+    doneRetention: varchar("doneRetention", { length: 10 })
+      .notNull()
+      .default("never"),
+  },
+  (table) => {
+    return {
+      ownerKey: unique("TodoSettings_owner_key").on(table.owner),
     };
   },
 );

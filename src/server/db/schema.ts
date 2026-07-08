@@ -7,5 +7,20 @@ import {
   message,
   link,
   linkProfile,
+  todo,
+  todoStage,
+  todoSettings,
 } from "../../../drizzle/schema";
-export { pollQuestion, shortLink, vote, recipe, like, message, link, linkProfile };
+export {
+  pollQuestion,
+  shortLink,
+  vote,
+  recipe,
+  like,
+  message,
+  link,
+  linkProfile,
+  todo,
+  todoStage,
+  todoSettings,
+};
