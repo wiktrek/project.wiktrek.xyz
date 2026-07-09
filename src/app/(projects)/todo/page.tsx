@@ -6,7 +6,7 @@ export default async function Page() {
   const { userId, redirectToSignIn } = await auth();
   if (!userId) return redirectToSignIn();
 
-  const { stages, todos, settings } = await api.todo.getBoard({ userId });
+  const { stages, todos, settings } = await api.todo.getBoard();
 
   return (
     <main className="mx-auto min-h-[calc(100vh-4rem)] max-w-7xl p-4">
@@ -17,7 +17,6 @@ export default async function Page() {
         initialStages={stages}
         initialTodos={todos}
         initialSettings={settings}
-        userId={userId}
       />
     </main>
   );

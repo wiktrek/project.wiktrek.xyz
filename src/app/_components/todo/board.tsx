@@ -53,12 +53,10 @@ export function TodoBoard({
   initialStages,
   initialTodos,
   initialSettings,
-  userId,
 }: {
   initialStages: Stage[];
   initialTodos: Todo[];
   initialSettings: TodoSettings;
-  userId: string;
 }) {
   const [stages, setStages] = useState(initialStages);
   const [items, setItems] = useState(initialTodos);
@@ -99,7 +97,7 @@ export function TodoBoard({
   function createTodoFromDraft(stageId: number, draft: string) {
     const { title, tags } = parseTodoDraft(draft);
     if (!title) return false;
-    createTodo.mutate({ userId, title, stageId, tags });
+    createTodo.mutate({ title, stageId, tags });
     return true;
   }
 
@@ -123,7 +121,6 @@ export function TodoBoard({
       ...reordered.map((item, order) => ({ ...item, order })),
     ]);
     moveTodo.mutate({
-      userId,
       id: cardDrag.id,
       stageId,
       orderedIds: reordered.map((item) => item.id),
@@ -137,7 +134,7 @@ export function TodoBoard({
     );
 
     setStages(next);
-    moveStage.mutate({ userId, orderedIds: next.map((stage) => stage.id) });
+    moveStage.mutate({ orderedIds: next.map((stage) => stage.id) });
   }
 
   function saveDetail() {
@@ -155,7 +152,7 @@ export function TodoBoard({
         item.id === detail.id ? { ...item, title, description, date } : item,
       ),
     );
-    updateTodo.mutate({ userId, id: detail.id, title, description, date });
+    updateTodo.mutate({ id: detail.id, title, description, date });
     setDetail(emptyDetail);
   }
 
@@ -163,14 +160,14 @@ export function TodoBoard({
     setMenu(null);
     setItems((prev) => prev.filter((item) => item.id !== id));
     if (detail.id === id) setDetail(emptyDetail);
-    deleteTodo.mutate({ userId, id });
+    deleteTodo.mutate({ id });
   }
 
   function submitNewStage() {
     const name = newStage.name.trim();
     setNewStage({ open: false, name: "" });
     if (!name) return;
-    createStage.mutate({ userId, name });
+    createStage.mutate({ name });
   }
 
   return (
@@ -180,7 +177,7 @@ export function TodoBoard({
           retention={retention}
           onChange={(doneRetention) => {
             setRetention(doneRetention);
-            updateSettings.mutate({ userId, doneRetention });
+            updateSettings.mutate({ doneRetention });
           }}
         />
       </div>
@@ -201,13 +198,13 @@ export function TodoBoard({
                     item.id === stage.id ? { ...item, name } : item,
                   ),
                 );
-                renameStage.mutate({ userId, id: stage.id, name });
+                renameStage.mutate({ id: stage.id, name });
               }}
               onDeleteStage={() => {
                 setStages((prev) =>
                   prev.filter((item) => item.id !== stage.id),
                 );
-                deleteStage.mutate({ userId, id: stage.id });
+                deleteStage.mutate({ id: stage.id });
               }}
               onOpenTodo={(card) => {
                 setMenu(null);

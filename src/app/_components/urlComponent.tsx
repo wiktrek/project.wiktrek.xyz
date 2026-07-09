@@ -11,7 +11,6 @@ import Link from "next/link";
 import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { Toaster } from "./ui/sonner";
 export function UrlComponent(props: {
-  email: string;
   data: {
     slug: string;
     url: string;
@@ -19,7 +18,7 @@ export function UrlComponent(props: {
     owner: string;
   }[];
 }) {
-  const { email, data } = props;
+  const { data } = props;
   const [slug, setSlug] = useState("");
   const [url, setUrl] = useState("");
 
@@ -36,7 +35,6 @@ export function UrlComponent(props: {
       {
         slug: slug,
         url: url,
-        email: email,
       },
       {
         onSuccess: () => {
@@ -46,31 +44,30 @@ export function UrlComponent(props: {
       },
     );
   };
-  if (!email) {
-    return <div>Loading...</div>;
-  }
   return (
     <>
       <div>
-        <h1 className="text-2xl font-semibold text-primary">Create new short link</h1>
+        <h1 className="text-primary text-2xl font-semibold">
+          Create new short link
+        </h1>
         <form onSubmit={submitData} className="pt-2">
-          <div className="pb-1 grid">
-            <label className="text-left font-semibold text-xl">Slug</label>
+          <div className="grid pb-1">
+            <label className="text-left text-xl font-semibold">Slug</label>
             <Input
               autoFocus
               onChange={(e) => setSlug(e.target.value)}
               placeholder="slug"
-              className="h-12 text-lg font-bold w-72"
+              className="h-12 w-72 text-lg font-bold"
               type="text"
               value={slug}
             />
           </div>
-          <label className="grid text-left font-semibold text-xl">Link</label>
+          <label className="grid text-left text-xl font-semibold">Link</label>
           <Input
             type="url"
             onChange={(e) => setUrl(e.target.value)}
             placeholder="https://wiktrek.xyz"
-            className="h-12 text-lg font-bold w-72"
+            className="h-12 w-72 text-lg font-bold"
             value={url}
           />
           <button type="submit" className="text-ring text-2xl font-semibold">
@@ -79,7 +76,9 @@ export function UrlComponent(props: {
         </form>
       </div>
       <div className="mt-4">
-        <h1 className="text-2xl font-semibold text-primary">Your short links</h1>
+        <h1 className="text-primary text-2xl font-semibold">
+          Your short links
+        </h1>
         <ul className="">
           {data?.map((item: { slug: string; url: string }, index: number) => {
             return (
@@ -110,7 +109,7 @@ export function UrlComponent(props: {
                   <button
                     onClick={() => {
                       removeMutation.mutate(
-                        { slug: item.slug, email },
+                        { slug: item.slug },
                         {
                           onSuccess: () => {
                             toast("Slug has been removed.");

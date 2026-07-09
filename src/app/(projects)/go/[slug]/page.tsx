@@ -12,6 +12,15 @@ export default async function Page({
   });
 
   if (!data?.s?.url || data.s.url == undefined) return <p>Slug not found</p>;
-  redirect(data?.s?.url);
+  let url: URL;
+  try {
+    url = new URL(data.s.url);
+  } catch {
+    return <p>Invalid redirect URL</p>;
+  }
+  if (url.protocol !== "http:" && url.protocol !== "https:") {
+    return <p>Invalid redirect URL</p>;
+  }
+  redirect(url.toString());
   return <p>redirecting...</p>;
 }

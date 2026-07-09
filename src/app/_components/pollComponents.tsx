@@ -1,9 +1,11 @@
 "use client";
 import { api } from "~/trpc/react";
+import { useUser } from "@clerk/nextjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "sonner";
 import copy from "copy-to-clipboard";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,17 +15,15 @@ import {
   createQuestionValidator,
 } from "~/shared/create-question-validator";
 import { useEffect, useState } from "react";
-import { v4 } from "uuid";
 import type { IconProp } from "@fortawesome/fontawesome-svg-core";
-export function DeletePoll(props: { id: number, email: string }) {
+export function DeletePoll(props: { id: number }) {
   const deleteMutation = api.question.deleteQuestion.useMutation();
   return (
     <button
-      className="ml-2 items-center text-2xl font-bold text-accent hover:cursor-crosshair"
+      className="text-accent ml-2 items-center text-2xl font-bold hover:cursor-crosshair"
       onClick={() => {
         deleteMutation.mutate({
           id: props.id,
-          email: props.email
         });
       }}
     >
@@ -32,8 +32,19 @@ export function DeletePoll(props: { id: number, email: string }) {
   );
 }
 function getRandomPlaceHolder(): string {
-  const placeholders = ["Yes","No","I don't know","Maybe","Maybe yes", "Maybe no","Gaming","Programming","Answer","Option"]
-  return placeholders[Math.floor(Math.random()*placeholders.length)]!;
+  const placeholders = [
+    "Yes",
+    "No",
+    "I don't know",
+    "Maybe",
+    "Maybe yes",
+    "Maybe no",
+    "Gaming",
+    "Programming",
+    "Answer",
+    "Option",
+  ];
+  return placeholders[Math.floor(Math.random() * placeholders.length)]!;
 }
 export function CopyUrl(props: { id: number }) {
   const CopyUrl = async (event: React.SyntheticEvent) => {
@@ -47,7 +58,7 @@ export function CopyUrl(props: { id: number }) {
     </button>
   );
 }
-export function FormComponent(props: { email: string }) {
+export function FormComponent() {
   const router = useRouter();
   const createMutation = api.question.createQuestion.useMutation({
     async onSuccess(data) {
@@ -75,14 +86,14 @@ export function FormComponent(props: { email: string }) {
     name: "options",
     control,
   });
-  const [random,setRandom] = useState([] as string[]);
+  const [random, setRandom] = useState([] as string[]);
   useEffect(() => {
     let r = [];
-    for (let i = 0;i<10;i++) {
-      r.push(getRandomPlaceHolder())
+    for (let i = 0; i < 10; i++) {
+      r.push(getRandomPlaceHolder());
     }
     setRandom(r);
-  },[])
+  }, []);
   watch("question");
   watch("options");
   return (
@@ -90,14 +101,15 @@ export function FormComponent(props: { email: string }) {
       onSubmit={handleSubmit((data) => {
         createMutation.mutate({
           question: data.question,
-          email: `${props.email}`,
           options: data.options,
         });
       })}
       className="w-80"
     >
       <label className="grid pb-2 text-left">
-        <span className="mb-2 text-primary font-semibold text-2xl">Question</span>
+        <span className="text-primary mb-2 text-2xl font-semibold">
+          Question
+        </span>
         <Input
           {...register("question")}
           type="text"
@@ -106,20 +118,22 @@ export function FormComponent(props: { email: string }) {
         />
       </label>
       <label className="grid pb-2 text-left">
-        <span className="mb-2 text-primary font-semibold text-2xl ">Options</span>
+        <span className="text-primary mb-2 text-2xl font-semibold">
+          Options
+        </span>
         {fields.map((field, index) => {
           return (
             <div key={field.id}>
               <section className="flex pt-1" key={field.id}>
                 <Input
-                className="h-12 text-5xl font-bold"
-                placeholder={random[random.length % index]}
-                {...register(`options.${index}.text`, {
-                  required: true,
-                })}
+                  className="h-12 text-5xl font-bold"
+                  placeholder={random[random.length % index]}
+                  {...register(`options.${index}.text`, {
+                    required: true,
+                  })}
                 />
                 <button
-                  className="pl-2 font-extrabold text-2xl text-accent"
+                  className="text-accent pl-2 text-2xl font-extrabold"
                   type="button"
                   onClick={() => remove(index)}
                 >
@@ -135,14 +149,19 @@ export function FormComponent(props: { email: string }) {
           id=""
           type="button"
           onClick={() => append({ text: "" })}
-          className="text-2xl font-semibold text-accent"
+          className="text-accent text-2xl font-semibold"
         >
           Add option
         </button>
       </div>
-      {errors.options && <p id="error">{`${errors.options?.message == undefined ? "" : errors.options.message}`}</p>}
+      {errors.options && (
+        <p id="error">{`${errors.options?.message == undefined ? "" : errors.options.message}`}</p>
+      )}
       {errors.question && <p id="error">{`${errors.question?.message}`}</p>}
-      <button type="submit" className="text-ring hover:cursor-pointer hover:text-primary transition-all font-bold text-2xl">
+      <button
+        type="submit"
+        className="text-ring hover:text-primary text-2xl font-bold transition-all hover:cursor-pointer"
+      >
         Create question
       </button>
     </form>
@@ -151,9 +170,8 @@ export function FormComponent(props: { email: string }) {
 function VoteOn(props: {
   questionId: number;
   option: { text: string; index: number };
-  token: string;
 }) {
-  const { questionId, option, token } = props;
+  const { questionId, option } = props;
   const voteOnMutation = api.question.voteOn.useMutation({
     onSuccess: () => {
       window.location.reload();
@@ -166,10 +184,9 @@ function VoteOn(props: {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           questionId,
           option: option.index,
-          token,
         });
       }}
-      className="text-2xl font-semibold text-primary"
+      className="text-primary text-2xl font-semibold"
     >
       {option.text}
     </button>
@@ -177,23 +194,12 @@ function VoteOn(props: {
 }
 
 export const QuestionPageContent: React.FC<{
-  email: string;
   id: number;
-}> = ({ email, id }) => {
-  const [token, setToken] = useState<string>("");
-  useEffect(() => {
-    if (!localStorage.getItem("voterToken")) {
-      localStorage.setItem("voterToken", v4());
-    }
-    setToken(localStorage.getItem("voterToken")!);
-  }, []);
+}> = ({ id }) => {
+  const { isLoaded, isSignedIn } = useUser();
   const { isLoading, data } = api.question.getById.useQuery({
-    email,
-    token,
     id,
   });
-  let isOwner = false;
-  let totalVotes = 0;
   if (isLoading) {
     return <div className="flex text-center">Loading...</div>;
   }
@@ -201,20 +207,20 @@ export const QuestionPageContent: React.FC<{
     return <div>Question not found</div>;
   }
   interface Choice {
+    choice: number;
     count: number;
   }
-  const getTotalVotes = (votes: Choice[]) => {
-    votes?.map((choice: { count: number }) => {
-      totalVotes += Number(choice.count);
-    });
-  };
+  const votes = (data.votes ?? []) as Choice[];
+  const totalVotes = votes.reduce((sum, vote) => sum + Number(vote.count), 0);
+  const getVoteCount = (choice: number) =>
+    Number(votes.find((vote) => vote.choice === choice)?.count ?? 0);
   const getPercent = (voteCount: number) => {
     if (voteCount !== undefined && totalVotes > 0)
       return `${((voteCount / totalVotes) * 100).toFixed()}%`;
     else if (voteCount == undefined) return `0%`;
+    return "0%";
   };
-  if (data && data != undefined) getTotalVotes(data.votes as Choice[]);
-  if (email === data.question?.ownerEmail) isOwner = true;
+  const isOwner = data.isOwner;
   return (
     <>
       <main className="mx-auto flex w-screen flex-col items-center justify-center text-center text-xl text-white">
@@ -224,12 +230,34 @@ export const QuestionPageContent: React.FC<{
             {(data.question?.options as { text: string }[])?.map(
               (option, index) => {
                 if (isOwner || data.vote != undefined) {
+                  const voteCount = getVoteCount(index);
                   return (
                     <div className="" key={index}>
-                      <p className="text-left text-primary font-semibold">
-                        {getPercent(data?.votes?.[index]?.count ?? 0)} {` `}
-                        {option.text} - {data?.votes?.[index]?.count ?? 0} {` `}
+                      <p className="text-primary text-left font-semibold">
+                        {getPercent(voteCount)} {` `}
+                        {option.text} - {voteCount} {` `}
                       </p>
+                    </div>
+                  );
+                }
+                if (!isLoaded) {
+                  return (
+                    <div className="" key={index}>
+                      <p className="text-primary text-2xl font-semibold">
+                        Loading...
+                      </p>
+                    </div>
+                  );
+                }
+                if (!isSignedIn) {
+                  return (
+                    <div className="" key={index}>
+                      <Link
+                        href="/sign-in"
+                        className="text-primary text-2xl font-semibold"
+                      >
+                        Sign in to vote
+                      </Link>
                     </div>
                   );
                 }
@@ -238,7 +266,6 @@ export const QuestionPageContent: React.FC<{
                     <VoteOn
                       questionId={data?.question!.id}
                       option={{ index: index, text: option.text }}
-                      token={token}
                     />
                   </div>
                 );

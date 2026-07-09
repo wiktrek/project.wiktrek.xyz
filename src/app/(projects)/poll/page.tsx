@@ -3,17 +3,13 @@ import Link from "next/link";
 import React from "react";
 import { api as trpc } from "~/trpc/server";
 import { DeletePoll } from "~/app/_components/pollComponents";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { Toaster } from "~/app/_components/ui/sonner";
 import { ClerkUser } from "~/app/_components/clerk";
 const Page: NextPage = async () => {
   const { userId, redirectToSignIn } = await auth();
   if (!userId) return redirectToSignIn();
-  const user = await currentUser();
-  const email = user?.primaryEmailAddress?.emailAddress!;
-  const data = await trpc.question.getAllMY({
-    email: `${email}`,
-  });
+  const data = await trpc.question.getAllMY();
   if (!data) {
     return <p>Loading...</p>;
   }
@@ -31,14 +27,16 @@ const Page: NextPage = async () => {
                     {question.question}
                   </p>
                 </Link>
-                <DeletePoll id={question.id} email={email} />
+                <DeletePoll id={question.id} />
               </ul>
             </div>
           );
         })}
       </div>
       <Link href="/poll/create">
-        <button className="font-bold hover:cursor-pointer">Create new poll</button>
+        <button className="font-bold hover:cursor-pointer">
+          Create new poll
+        </button>
       </Link>
       <Toaster />
     </main>
