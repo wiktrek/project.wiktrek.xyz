@@ -287,7 +287,7 @@ export default function Page() {
                   <Textarea
                     aria-invalid={!!errors.instructions?.[index]?.step}
                     className={cn(
-                      "min-h-28 min-w-0 resize-y break-words whitespace-pre-wrap",
+                      "min-h-28 min-w-0 resize-y wrap-break-words whitespace-pre-wrap",
                       errors.instructions?.[index]?.step && invalidFieldClass,
                     )}
                     placeholder="Mix the dry ingredients..."

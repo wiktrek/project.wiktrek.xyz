@@ -6,9 +6,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { toast } from "sonner";
+import { Copy } from "lucide-react";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
 import { Toaster } from "./ui/sonner";
 import { api } from "~/trpc/react";
 import type { link, linkProfile } from "~/server/db/schema";
@@ -111,6 +121,21 @@ export function LinkDashboard({
     });
   };
 
+  const copyProfileUrl = async () => {
+    const url = `${window.location.origin}${publicUrl}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      toast("Profile URL copied");
+    } catch {
+      toast("Could not copy profile URL");
+    }
+  };
+
+  const setProfileDialogOpen = (open: boolean) => {
+    setEditing(open);
+    if (!open) profileForm.reset();
+  };
+
   return (
     <div className="bg-card w-full max-w-xl rounded-xl border p-6 shadow-sm">
       <div className="space-y-6">
@@ -131,83 +156,99 @@ export function LinkDashboard({
               {publicUrl}
             </a>
           </div>
-          {!editing && (
-            <Button variant="ghost" size="sm" onClick={() => setEditing(true)}>
-              Edit profile
+          <div className="flex shrink-0 gap-2">
+            <Button variant="outline" size="sm" onClick={copyProfileUrl}>
+              <Copy />
+              Share profile
             </Button>
-          )}
+            <Dialog open={editing} onOpenChange={setProfileDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  Edit profile
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Edit profile</DialogTitle>
+                  <DialogDescription>
+                    Update how your public link profile appears.
+                  </DialogDescription>
+                </DialogHeader>
+                <form
+                  id="edit-link-profile"
+                  onSubmit={profileForm.handleSubmit(onProfileSubmit)}
+                  className="space-y-4"
+                >
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Display Name</label>
+                    <Input
+                      {...profileForm.register("displayName")}
+                      placeholder="Your name"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                      Username <span className="text-red-500">*</span>
+                    </label>
+                    <Input
+                      {...profileForm.register("username")}
+                      placeholder="username"
+                    />
+                    {profileForm.formState.errors.username && (
+                      <p className="text-xs text-red-500">
+                        {profileForm.formState.errors.username.message}
+                      </p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Bio</label>
+                    <Textarea
+                      {...profileForm.register("bio")}
+                      placeholder="Tell people about yourself..."
+                      rows={3}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Slug</label>
+                    <Input
+                      {...profileForm.register("slug")}
+                      placeholder="url-path"
+                    />
+                    <p className="text-muted-foreground text-xs">
+                      Current public URL: /link/
+                      {profile.slug ?? profile.username}
+                    </p>
+                    {profileForm.formState.errors.slug && (
+                      <p className="text-xs text-red-500">
+                        {profileForm.formState.errors.slug.message}
+                      </p>
+                    )}
+                  </div>
+                </form>
+                <DialogFooter>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setProfileDialogOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    form="edit-link-profile"
+                    size="sm"
+                    disabled={updateProfile.isPending}
+                  >
+                    {updateProfile.isPending ? "Saving..." : "Save"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
 
-        {editing ? (
-          <form
-            onSubmit={profileForm.handleSubmit(onProfileSubmit)}
-            className="space-y-4"
-          >
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Display Name</label>
-              <Input
-                {...profileForm.register("displayName")}
-                placeholder="Your name"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">
-                Username <span className="text-red-500">*</span>
-              </label>
-              <Input
-                {...profileForm.register("username")}
-                placeholder="username"
-              />
-              {profileForm.formState.errors.username && (
-                <p className="text-xs text-red-500">
-                  {profileForm.formState.errors.username.message}
-                </p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Bio</label>
-              <Textarea
-                {...profileForm.register("bio")}
-                placeholder="Tell people about yourself..."
-                rows={3}
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Slug</label>
-              <Input {...profileForm.register("slug")} placeholder="url-path" />
-              <p className="text-muted-foreground text-xs">
-                Current public URL: /link/{profile.slug ?? profile.username}
-              </p>
-              {profileForm.formState.errors.slug && (
-                <p className="text-xs text-red-500">
-                  {profileForm.formState.errors.slug.message}
-                </p>
-              )}
-            </div>
-            <div className="flex gap-2">
-              <Button
-                type="submit"
-                size="sm"
-                disabled={updateProfile.isPending}
-              >
-                {updateProfile.isPending ? "Saving..." : "Save"}
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setEditing(false);
-                  profileForm.reset();
-                }}
-              >
-                Cancel
-              </Button>
-            </div>
-          </form>
-        ) : (
-          profile.bio && (
-            <p className="text-muted-foreground text-sm">{profile.bio}</p>
-          )
+        {profile.bio && (
+          <p className="text-muted-foreground text-sm">{profile.bio}</p>
         )}
 
         <div className="border-t pt-6">

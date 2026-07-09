@@ -52,10 +52,12 @@ export default async function Page({
 
   return (
     <main className="min-h-screen bg-white p-2 text-black [@media(prefers-color-scheme:dark)]:bg-black [@media(prefers-color-scheme:dark)]:text-white">
-      <h1>{profile.displayName ?? profile.username}</h1>
-      <p>@{profile.username}</p>
+      <h1>
+        {profile.displayName ? `${profile.displayName} - ` : ""}
+        @{profile.username}
+      </h1>
       {profile.bio && <p>{profile.bio}</p>}
-
+      <br />
       <div>
         {activeLinks.length === 0 && <p>No links yet</p>}
         {activeLinks.map((l) => (
@@ -70,7 +72,7 @@ export default async function Page({
           </a>
         ))}
       </div>
-      <footer className="absolute bottom-2">
+      <footer className="absolute bottom-2 text-xs">
         <div>
           <a
             href="https://wiktrek.xyz"

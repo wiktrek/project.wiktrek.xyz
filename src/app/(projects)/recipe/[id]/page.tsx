@@ -67,8 +67,8 @@ export default async function Page({
           <ol className="list-decimal space-y-3 pl-5">
             {instructions.map((item, index) => (
               <li key={`${item.name}-${index}`} className="pl-1">
-                <p className="font-medium break-words">{item.name}</p>
-                <p className="text-muted-foreground text-sm break-words whitespace-pre-wrap">
+                <p className="font-medium wrap-break-words">{item.name}</p>
+                <p className="text-muted-foreground text-sm wrap-break-words whitespace-pre-wrap">
                   {item.step}
                 </p>
               </li>

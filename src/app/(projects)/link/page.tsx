@@ -21,7 +21,7 @@ export default async function Page() {
     <main className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-md flex-col items-center justify-center p-4">
       <div className="bg-card w-full rounded-xl border p-8 shadow-sm">
         <h1 className="mb-6 text-center text-2xl font-bold">
-          Create your Linktree
+          Create your new link page. All your links in one place clean simple
         </h1>
         <LinkProfileClient />
       </div>
