@@ -6,7 +6,8 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { initTRPC } from "@trpc/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
+import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
@@ -25,8 +26,22 @@ import { db } from "~/server/db";
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
+  const authContext = await auth();
+  let userPromise: ReturnType<typeof currentUser> | undefined;
+  const getCurrentUser = () => {
+    userPromise ??= currentUser();
+    return userPromise;
+  };
+
   return {
     db,
+    auth: authContext,
+    getCurrentUser,
+    getUserEmail: async () => {
+      if (!authContext.userId) return null;
+      const user = await getCurrentUser();
+      return user?.primaryEmailAddress?.emailAddress ?? null;
+    },
     ...opts,
   };
 };
@@ -81,3 +96,30 @@ export const createTRPCRouter = t.router;
  * are logged in.
  */
 export const publicProcedure = t.procedure;
+
+const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
+  if (!ctx.auth.userId) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  return next({
+    ctx: {
+      userId: ctx.auth.userId,
+    },
+  });
+});
+
+export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+
+export async function getRequiredUserEmail(
+  ctx: Pick<Awaited<ReturnType<typeof createTRPCContext>>, "getUserEmail">,
+) {
+  const email = await ctx.getUserEmail();
+  if (!email) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "A primary email address is required.",
+    });
+  }
+  return email;
+}

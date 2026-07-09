@@ -1,71 +1,105 @@
-import { email, z } from "zod";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 import {
-  publicProcedure as procedure,
+  publicProcedure,
+  protectedProcedure,
   createTRPCRouter as router,
+  getRequiredUserEmail,
 } from "../trpc";
 import { vote, pollQuestion } from "~/server/db/schema";
 
-import { eq, sql, and } from "drizzle-orm";
+import { eq, sql, and, asc } from "drizzle-orm";
 export const questionRouter = router({
-  getAllMY: procedure
-    .input(z.object({ email: z.string() }))
+  getAllMY: protectedProcedure.query(async ({ ctx }) => {
+    const email = await getRequiredUserEmail(ctx);
+    return await ctx.db.query.pollQuestion.findMany({
+      where: eq(pollQuestion.ownerEmail, email),
+    });
+  }),
+  getById: publicProcedure
+    .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
-      return await ctx.db.query.pollQuestion.findMany({
-        where: eq(pollQuestion.ownerEmail, input.email),
-      });
-    }),
-  getById: procedure
-    .input(z.object({ id: z.number(), token: z.string(), email: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const { id, token, email } = input;
+      const { id } = input;
       const question = await ctx.db.query.pollQuestion.findFirst({
         where: eq(pollQuestion.id, id),
       });
-      // it works
-      // const myVote = await ctx.db.select().from(vote).where(eq(vote.questionId, id)).where(eq(vote.voterToken, token)).limit(1)
-      const myVote = await ctx.db.query.vote.findFirst({
-        where: and(eq(vote.questionId, id), eq(vote.voterToken, token)),
-      });
+      const voterToken = ctx.auth.userId ? `user:${ctx.auth.userId}` : null;
+      const myVote = voterToken
+        ? await ctx.db.query.vote.findFirst({
+            where: and(
+              eq(vote.questionId, id),
+              eq(vote.voterToken, voterToken),
+            ),
+          })
+        : undefined;
+      const email = await ctx.getUserEmail();
+      const isOwner = email !== null && question?.ownerEmail === email;
 
       const rest = {
         question,
         vote: myVote,
-        isOwner: question?.ownerEmail === email,
+        isOwner,
       };
-      if (rest.vote ?? rest.isOwner) {
+      if (rest.vote || rest.isOwner) {
         const votes = await ctx.db
-          .select({ count: sql<number>`count(${vote.choice})` })
+          .select({
+            choice: vote.choice,
+            count: sql<number>`count(${vote.choice})`,
+          })
           .from(vote)
           .where(eq(vote.questionId, id))
-          .groupBy(vote.choice);
+          .groupBy(vote.choice)
+          .orderBy(asc(vote.choice));
 
         return { ...rest, votes };
       } else {
         return { ...rest, votes: undefined };
       }
     }),
-  voteOn: procedure
+  voteOn: protectedProcedure
     .input(
       z.object({
         questionId: z.number(),
-        option: z.number().min(0).max(10),
-        token: z.string(),
+        option: z.number().int().min(0),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { questionId, option, token } = input;
+      const { questionId, option } = input;
+      const question = await ctx.db.query.pollQuestion.findFirst({
+        where: eq(pollQuestion.id, questionId),
+      });
+      if (!question) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Poll not found" });
+      }
+
+      const options = question.options as { text: string }[];
+      if (!options[option]) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Invalid vote option",
+        });
+      }
+
+      const voterToken = `user:${ctx.userId}`;
+      const existingVote = await ctx.db.query.vote.findFirst({
+        where: and(
+          eq(vote.questionId, questionId),
+          eq(vote.voterToken, voterToken),
+        ),
+      });
+      if (existingVote) return false;
+
       const createdVote = await ctx.db.insert(vote).values({
         questionId: questionId,
         choice: option,
-        voterToken: token,
+        voterToken,
       });
       return createdVote;
     }),
-  createQuestion: procedure
+  createQuestion: protectedProcedure
     .input(
       z.object({
         question: z.string(),
-        email: z.string(),
         options: z
           .array(z.object({ text: z.string().min(1).max(200) }))
           .min(2)
@@ -73,7 +107,8 @@ export const questionRouter = router({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { question, email, options } = input;
+      const { question, options } = input;
+      const email = await getRequiredUserEmail(ctx);
       const createdQuestion = await ctx.db
         .insert(pollQuestion)
         .values({
@@ -85,18 +120,20 @@ export const questionRouter = router({
         .returning({ insertedId: pollQuestion.id });
       return createdQuestion;
     }),
-  deleteQuestion: procedure
+  deleteQuestion: protectedProcedure
     .input(
       z.object({
         id: z.number(),
-        email: z.string()
       }),
     )
-    .mutation(({ ctx, input }) => {
-      const { id,email } = input;
-      const deletedQuestion = ctx.db
+    .mutation(async ({ ctx, input }) => {
+      const { id } = input;
+      const email = await getRequiredUserEmail(ctx);
+      const deletedQuestion = await ctx.db
         .delete(pollQuestion)
-        .where(and(eq(pollQuestion.id, id), eq(pollQuestion.ownerEmail, email)));
+        .where(
+          and(eq(pollQuestion.id, id), eq(pollQuestion.ownerEmail, email)),
+        );
       return deletedQuestion;
     }),
 });

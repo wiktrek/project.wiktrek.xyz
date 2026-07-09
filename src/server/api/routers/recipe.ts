@@ -1,67 +1,64 @@
 import { z } from "zod";
 import {
-  publicProcedure as procedure,
+  publicProcedure,
+  protectedProcedure,
   createTRPCRouter as router,
+  getRequiredUserEmail,
 } from "../trpc";
 import { recipe, like } from "~/server/db/schema";
+import { recipeValidator } from "~/shared/recipe-validator";
 /* 
   recipe router
 */
-import { eq, and } from "drizzle-orm";
-const recipeSchema = z.object({
-  name: z.string(),
-  description: z.string(),
-  email: z.string(),
-  recipe: z.number(),
-  instructions: z
-    .array(
-      z.object({
-        name: z.string().min(1).max(200),
-        step: z.string().min(1).max(200),
-      }),
-    )
-    .min(1)
-    .max(200),
-  ingredients: z
-    .array(
-      z.object({ ingredient: z.string().min(1).max(200), amount: z.number() }),
-    )
-    .min(2)
-    .max(200),
-});
-export type recipeType = z.infer<typeof recipeSchema>;
+import { eq, and, desc } from "drizzle-orm";
+
+export type recipeType = z.infer<typeof recipeValidator>;
 export const recipeRouter = router({
-  getAllMY: procedure
-    .input(z.object({ email: z.string() }))
-    .query(async ({ ctx, input }) => {
-      return await ctx.db.query.recipe.findMany({
-        where: eq(recipe.owner, input.email),
-      });
-    }),
-  getById: procedure
+  getAll: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.db.query.recipe.findMany({
+      orderBy: [desc(recipe.rating)],
+    });
+  }),
+  getAllMY: protectedProcedure.query(async ({ ctx }) => {
+    const email = await getRequiredUserEmail(ctx);
+    return await ctx.db.query.recipe.findMany({
+      where: eq(recipe.owner, email),
+    });
+  }),
+  getById: publicProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
       return await ctx.db.query.recipe.findFirst({
         where: eq(recipe.id, input.id),
       });
     }),
-  createRecipe: procedure.input(recipeSchema).mutation(({ ctx, input }) => {
-    const createdRecipe = ctx.db.insert(recipe).values({
-      name: input.name,
-      rating: 0,
-      description: input.description,
-      ingredients: input.ingredients,
-      instructions: input.instructions,
-      owner: input.email,
-    });
-    return createdRecipe;
-  }),
-  like: procedure
-    .input(z.object({ id: z.number(), email: z.string(), up: z.boolean() }))
+  createRecipe: protectedProcedure
+    .input(recipeValidator)
     .mutation(async ({ ctx, input }) => {
-      const { up, email, id } = input;
+      const email = await getRequiredUserEmail(ctx);
+      const [createdRecipe] = await ctx.db
+        .insert(recipe)
+        .values({
+          name: input.name,
+          rating: 0,
+          description: input.description,
+          imageUrl: input.imageUrl || null,
+          ingredients: input.ingredients,
+          instructions: input.instructions,
+          owner: email,
+        })
+        .returning();
+      if (!createdRecipe) {
+        throw new Error("Failed to create recipe");
+      }
+      return createdRecipe;
+    }),
+  like: protectedProcedure
+    .input(z.object({ id: z.number(), up: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      const { up, id } = input;
+      const email = await getRequiredUserEmail(ctx);
       const amount: number = up ? 1 : -1;
-      console.log(amount, up);
       const recipeData = await ctx.db.query.recipe.findFirst({
         where: eq(recipe.id, id),
       });
@@ -69,41 +66,37 @@ export const recipeRouter = router({
         return false;
       }
       const likeData = await ctx.db.query.like.findFirst({
-        where: and(eq(like.owner, email)),
+        where: and(eq(like.owner, email), eq(like.recipeId, id)),
       });
-      if (likeData?.up == (up ? true : false)) return false;
+      if (likeData?.up === up) return false;
 
       if (!likeData) {
-        const createdLike = await ctx.db.insert(like).values({
+        await ctx.db.insert(like).values({
           owner: email,
           recipeId: id,
-          up: up ? true : false,
+          up,
         });
-        const editedRecipe = await ctx.db
-          .update(recipe)
-          .set({
-            rating: recipeData.rating + amount,
-          })
-          .where(eq(recipe.id, id));
-        console.log(editedRecipe, createdLike);
-        return true;
-      } else {
-        const createdLike = await ctx.db
-          .update(like)
-          .set({
-            owner: email,
-            recipeId: id,
-            up: up ? true : false,
-          })
-          .where(and(eq(like.owner, email), eq(like.up, up ? true : false)));
-
         await ctx.db
           .update(recipe)
           .set({
             rating: recipeData.rating + amount,
           })
           .where(eq(recipe.id, id));
-        console.log(createdLike);
+        return true;
+      } else {
+        await ctx.db
+          .update(like)
+          .set({
+            up,
+          })
+          .where(eq(like.id, likeData.id));
+
+        await ctx.db
+          .update(recipe)
+          .set({
+            rating: recipeData.rating + amount * 2,
+          })
+          .where(eq(recipe.id, id));
         return true;
       }
     }),

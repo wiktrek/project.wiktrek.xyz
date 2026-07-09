@@ -55,6 +55,7 @@ export const recipe = pgTable(
     rating: integer("rating").notNull(),
     name: varchar("name", { length: 255 }).notNull(),
     description: varchar("description", { length: 255 }),
+    imageUrl: varchar("imageUrl", { length: 2048 }),
     ingredients: json("ingredients").notNull(),
     owner: varchar("owner", { length: 255 }).notNull(),
     instructions: json("instructions").notNull(),

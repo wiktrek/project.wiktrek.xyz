@@ -1,21 +1,25 @@
 import { z } from "zod";
 import {
-  publicProcedure as procedure,
+  publicProcedure,
+  protectedProcedure,
   createTRPCRouter as router,
+  getRequiredUserEmail,
 } from "../trpc";
 import { message } from "~/server/db/schema";
 import { eq, sql, desc } from "drizzle-orm";
 
 export const messageRouter = router({
-  getMessages: procedure.query(async ({ ctx }) => {
-    return (await ctx.db.query.message.findMany({
-      orderBy: [desc(message.createdAt)]
-    }));
+  getMessages: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.db.query.message.findMany({
+      orderBy: [desc(message.createdAt)],
+    });
   }),
-  createMessage: procedure
-    .input(z.object({ text: z.string().max(64), author: z.string().max(16) }))
+  createMessage: protectedProcedure
+    .input(z.object({ text: z.string().max(64) }))
     .mutation(async ({ ctx, input }) => {
-      const { author, text } = input;
+      const email = await getRequiredUserEmail(ctx);
+      const author = (email.split("@")[0] || "user").slice(0, 16);
+      const { text } = input;
       await ctx.db.insert(message).values({
         author: author,
         text: text,

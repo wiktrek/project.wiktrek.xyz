@@ -1,19 +1,30 @@
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
+import { api } from "~/trpc/server";
 import { LinkProfileClient } from "~/app/_components/linkComponent";
+import { LinkDashboard } from "~/app/_components/linkDashboard";
 
 export default async function Page() {
   const { userId, redirectToSignIn } = await auth();
   if (!userId) return redirectToSignIn();
 
-  const user = await currentUser();
-  if (!user) {
-    return <p>Loading...</p>;
+  const data = await api.link.getMyProfile();
+
+  if (data) {
+    return (
+      <main className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-2xl flex-col items-center justify-center p-4">
+        <LinkDashboard profile={data.profile} links={data.links} />
+      </main>
+    );
   }
 
   return (
-    <main className="flex justify-center text-center, items-center flex-col">
-      <h1>Create custom profile</h1>
-      <LinkProfileClient userId={user.id} />
+    <main className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-md flex-col items-center justify-center p-4">
+      <div className="bg-card w-full rounded-xl border p-8 shadow-sm">
+        <h1 className="mb-6 text-center text-2xl font-bold">
+          Create your Linktree
+        </h1>
+        <LinkProfileClient />
+      </div>
     </main>
   );
 }
