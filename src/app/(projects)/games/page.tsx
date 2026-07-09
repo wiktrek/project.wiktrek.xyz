@@ -28,6 +28,15 @@ export default function Page() {
           </Link>
           : a normal calculator
         </li>
+        <li className="text-xl font-medium">
+          <Link
+            href="/games/blocks"
+            className="text-primary hover:underline"
+          >
+            blocks
+          </Link>
+          : block blast clone
+        </li>
       </ul>
     </main>
   );
