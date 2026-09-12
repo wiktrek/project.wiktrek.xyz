@@ -40,6 +40,30 @@ const projects: Project[] = [
     url: "/url"
   },
   {
+    name: "Recipes",
+    description: "Create and browse recipes",
+    tags: ["next.js","neondb",'clerk',"drizzle","react","tailwind css"],
+    url: "/recipe"
+  },
+  {
+    name: "Linktree clone",
+    description: "Minimalistic linktree clone with your own profile page",
+    tags: ["next.js","neondb",'clerk',"drizzle","react","tailwind css"],
+    url: "/link"
+  },
+  {
+    name: "Todo board",
+    description: "Todo board with custom stages",
+    tags: ["next.js","neondb",'clerk',"drizzle","react","tailwind css"],
+    url: "/todo"
+  },
+  {
+    name: "Games",
+    description: "Browser games: clicker, aim trainer and block blast",
+    tags: ["react", "tailwind css"],
+    url: "/games"
+  },
+  {
     name: "Chat",
     description: "Simple chat app",
     tags: ["next.js","neondb","golang","drizzle","react","tailwind css"],
@@ -74,14 +98,11 @@ export function Projects() {
   return (
     <section
       id="projects"
-      className="w-screen px-6 md:px-10 py-20 md:py-28 flex justify-center bg-transparent"
+      className="w-full px-6 md:px-10 py-16 md:py-24 flex justify-center bg-transparent"
     >
       <div className="w-full max-w-6xl">
         <div className="flex flex-col items-start gap-2 mb-10">
           <h2 className="text-3xl md:text-4xl font-semibold text-neutral-50">My projects</h2>
-          <p className="max-w-2xl text-sm md:text-base text-neutral-300">
-            Here are some of my projects
-          </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {projects.map((project) => (
