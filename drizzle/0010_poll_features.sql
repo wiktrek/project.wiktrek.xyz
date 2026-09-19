@@ -1,0 +1,3 @@
+ALTER TABLE "PollQuestion" ADD COLUMN IF NOT EXISTS "questionType" varchar(20) NOT NULL DEFAULT 'single';
+ALTER TABLE "PollQuestion" ADD COLUMN IF NOT EXISTS "viewCount" integer NOT NULL DEFAULT 0;
+ALTER TABLE "Vote" ADD COLUMN IF NOT EXISTS "answers" json NOT NULL DEFAULT '[]';

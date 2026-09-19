@@ -8,7 +8,7 @@ import {
 } from "../trpc";
 import { vote, pollQuestion } from "~/server/db/schema";
 
-import { eq, sql, and, asc } from "drizzle-orm";
+import { eq, sql, and } from "drizzle-orm";
 export const questionRouter = router({
   getAllMY: protectedProcedure.query(async ({ ctx }) => {
     const email = await getRequiredUserEmail(ctx);
@@ -41,26 +41,30 @@ export const questionRouter = router({
         isOwner,
       };
       if (rest.vote || rest.isOwner) {
-        const votes = await ctx.db
-          .select({
-            choice: vote.choice,
-            count: sql<number>`count(${vote.choice})`,
-          })
-          .from(vote)
-          .where(eq(vote.questionId, id))
-          .groupBy(vote.choice)
-          .orderBy(asc(vote.choice));
-
+        const votes = await ctx.db.query.vote.findMany({
+          where: eq(vote.questionId, id),
+          columns: { choice: true, answers: true, createdAt: true },
+        });
         return { ...rest, votes };
       } else {
         return { ...rest, votes: undefined };
       }
+    }),
+  recordView: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .update(pollQuestion)
+        .set({ viewCount: sql`${pollQuestion.viewCount} + 1` })
+        .where(eq(pollQuestion.id, input.id));
+      return { success: true };
     }),
   voteOn: protectedProcedure
     .input(
       z.object({
         questionId: z.number(),
         option: z.number().int().min(0),
+        answers: z.array(z.number().int().min(0)).min(1).optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -71,9 +75,19 @@ export const questionRouter = router({
       if (!question) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Poll not found" });
       }
+      if (question.end || (question.endsAt && question.endsAt <= new Date())) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "This poll is closed" });
+      }
 
       const options = question.options as { text: string }[];
-      if (!options[option]) {
+      const answers = input.answers ?? [option];
+      if ((question.questionType === "single" || question.questionType === "rating") && answers.length !== 1) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Choose exactly one answer" });
+      }
+      if (question.questionType === "ranking" && new Set(answers).size !== answers.length) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Ranking answers must be unique" });
+      }
+      if (!options[option] || answers.some((answer) => !options[answer])) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "Invalid vote option",
@@ -93,6 +107,7 @@ export const questionRouter = router({
         questionId: questionId,
         choice: option,
         voterToken,
+        answers,
       });
       return createdVote;
     }),
@@ -104,10 +119,12 @@ export const questionRouter = router({
           .array(z.object({ text: z.string().min(1).max(200) }))
           .min(2)
           .max(200),
+        questionType: z.enum(["single", "multiple", "ranking", "rating"]).default("single"),
+        endsAt: z.coerce.date().nullable().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { question, options } = input;
+      const { question, options, questionType, endsAt } = input;
       const email = await getRequiredUserEmail(ctx);
       const createdQuestion = await ctx.db
         .insert(pollQuestion)
@@ -116,6 +133,8 @@ export const questionRouter = router({
           ownerEmail: email,
           end: false,
           options: options,
+          questionType,
+          endsAt,
         })
         .returning({ insertedId: pollQuestion.id });
       return createdQuestion;

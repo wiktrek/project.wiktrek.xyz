@@ -14,7 +14,11 @@ const QuestionCreator: React.FC = async () => {
     <>
       <main className="mx-auto flex w-screen flex-col items-center justify-center text-center text-xl text-white">
         <ClerkUser />
-        <FormComponent />
+        <div className="w-full max-w-2xl px-4 py-12 sm:py-20">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Poll studio</p>
+          <h1 className="mb-10 text-left text-4xl font-semibold tracking-tight">Ask better questions.</h1>
+          <FormComponent />
+        </div>
         <Toaster />
       </main>
     </>

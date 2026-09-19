@@ -5,6 +5,8 @@ export const createQuestionValidator = z.object({
     .array(z.object({ text: z.string().min(1).max(200) }))
     .min(2)
     .max(200),
+  questionType: z.enum(["single", "multiple", "ranking", "rating"]),
+  endsAt: z.string().optional(),
 });
 
 export type CreateQuestionInputType = z.infer<typeof createQuestionValidator>;

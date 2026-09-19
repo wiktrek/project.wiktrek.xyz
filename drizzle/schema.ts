@@ -38,8 +38,12 @@ export const pollQuestion = pgTable(
     endsAt: timestamp("endsAt", { mode: "date", withTimezone: true }),
     question: varchar("question", { length: 5000 }).notNull(),
     options: json("options").notNull(),
+    questionType: varchar("questionType", { length: 20 })
+      .notNull()
+      .default("single"),
     ownerEmail: varchar("ownerEmail", { length: 255 }).notNull(),
     end: boolean("end").notNull(),
+    viewCount: integer("viewCount").notNull().default(0),
   },
   (table) => {
     return {
@@ -56,6 +60,13 @@ export const recipe = pgTable(
     name: varchar("name", { length: 255 }).notNull(),
     description: varchar("description", { length: 255 }),
     imageUrl: varchar("imageUrl", { length: 2048 }),
+    prepTimeMinutes: integer("prepTimeMinutes").notNull().default(0),
+    cookTimeMinutes: integer("cookTimeMinutes").notNull().default(0),
+    servings: integer("servings").notNull().default(1),
+    difficulty: varchar("difficulty", { length: 32 }).notNull().default("Easy"),
+    cuisine: varchar("cuisine", { length: 64 }).notNull().default(""),
+    category: varchar("category", { length: 64 }).notNull().default(""),
+    dietaryTags: json("dietaryTags").$type<string[]>().notNull().default([]),
     ingredients: json("ingredients").notNull(),
     owner: varchar("owner", { length: 255 }).notNull(),
     instructions: json("instructions").notNull(),
@@ -98,6 +109,7 @@ export const vote = pgTable(
     questionId: integer("questionId").notNull(),
     voterToken: varchar("voterToken", { length: 255 }).notNull(),
     choice: integer("choice").notNull(),
+    answers: json("answers").$type<number[]>().notNull().default([]),
   },
   (table) => {
     return {
