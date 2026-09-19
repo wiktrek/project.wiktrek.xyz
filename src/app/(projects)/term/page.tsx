@@ -1,20 +1,10 @@
 "use client";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { type SetStateAction, useState } from "react";
+import { useState } from "react";
 const Home: NextPage = () => {
   const [input, setInput] = useState("");
   const [response, setResponse] = useState(["Try 'help'"]);
-  function handleChange(event: { target: { value: SetStateAction<string> } }) {
-    response.map(() => {
-      amount++;
-      return amount;
-    });
-    if (amount > 10) setResponse(["Try 'help'"]);
-    setInput(event.target.value);
-  }
-
-  let amount = 0;
   const commands = [
     "help",
     "clear",
@@ -30,7 +20,7 @@ const Home: NextPage = () => {
   function checkCommand() {
     if (!commands.includes(input)) {
       setInput("");
-      setResponse([...response, `Command not found: ${input}. Try 'help'`]);
+      setResponse((current) => [...current.slice(-9), `Command not found: ${input}. Try 'help'`]);
       return;
     }
     if (input === "clear") {
@@ -38,7 +28,7 @@ const Home: NextPage = () => {
       setInput("");
       return;
     }
-    setResponse([...response, input]);
+    setResponse((current) => [...current.slice(-9), input]);
     setInput("");
   }
   const cmd = [
@@ -124,7 +114,7 @@ const Home: NextPage = () => {
           <input
             type="text"
             value={input}
-            onChange={handleChange}
+            onChange={(event) => setInput(event.target.value)}
             className="border-none bg-transparent focus:outline-none focus:ring-0"
             onKeyDown={(e) => {
               if (e.key === "Enter") {

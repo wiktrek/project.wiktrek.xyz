@@ -12,6 +12,8 @@ import type { db as Database } from "~/server/db";
 
 export const doneRetention = z.enum(["1d", "1w", "1m", "1y", "never"]);
 export type DoneRetention = z.infer<typeof doneRetention>;
+export const todoPriority = z.enum(["low", "medium", "high"]);
+export type TodoPriority = z.infer<typeof todoPriority>;
 
 const RETENTION_DAYS: Record<Exclude<DoneRetention, "never">, number> = {
   "1d": 1,
@@ -130,6 +132,7 @@ export const todoRouter = router({
         title: z.string().min(1).max(500),
         stageId: z.number(),
         tags: z.array(z.string().max(50)).max(10),
+        priority: todoPriority.default("medium"),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -149,6 +152,7 @@ export const todoRouter = router({
           stageId: input.stageId,
           completedAt: stage.isDone ? new Date() : null,
           tags: input.tags,
+          priority: input.priority,
           order: (last?.order ?? -1) + 1,
         })
         .returning();
@@ -198,6 +202,7 @@ export const todoRouter = router({
         description: z.string().max(5000).optional(),
         date: z.date().optional(),
         tags: z.array(z.string().max(50)).max(10).optional(),
+        priority: todoPriority.optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -211,6 +216,7 @@ export const todoRouter = router({
           }),
           ...(input.date !== undefined && { date: input.date }),
           ...(input.tags !== undefined && { tags: input.tags }),
+          ...(input.priority !== undefined && { priority: input.priority }),
         })
         .where(and(eq(todo.id, input.id), eq(todo.owner, userId)));
       return true;

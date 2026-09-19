@@ -1,37 +1,27 @@
 "use client";
 import type { NextPage } from "next";
 import Head from "next/head";
-import React from "react";
 import { useState } from "react";
 
+type Choice = "rock" | "paper" | "scissors";
+const choices: Choice[] = ["rock", "paper", "scissors"];
+
 const Home: NextPage = () => {
-  const [rpc, setRpc] = useState("");
-  const [rpc2, setRpc2] = useState("");
+  const [rpc, setRpc] = useState<Choice | "">("");
+  const [rpc2, setRpc2] = useState<Choice | "">("");
   const [result, setResult] = useState("");
   const [pick, setPick] = useState("");
-  async function checkwin(e: React.SyntheticEvent) {
-    const random = (Math.random() * (3 - 1) + 1).toFixed();
-    setRpc(e.currentTarget.innerHTML);
-    if (random === "1") setRpc2("rock");
-    if (random === "2") setRpc2("paper");
-    if (random === "3") setRpc2("scissors");
-    setPick(rpc2);
-    if (rpc) {
-      if (rpc === rpc2) return setResult("Tie");
-      if (rpc === "rock") {
-        if (rpc2 === "scissors") return setResult("You won");
-        if (rpc2 === "paper") return setResult("You lost");
-      }
-
-      if (rpc === "scissors") {
-        if (rpc2 === "paper") return setResult("You won");
-        if (rpc2 === "rock") return setResult("You lost");
-      }
-      if (rpc === "paper") {
-        if (rpc2 === "rock") return setResult("You won");
-        if (rpc2 === "scissors") return setResult("You lost");
-      }
-    }
+  function checkwin(choice: Choice) {
+    const computerChoice = choices[Math.floor(Math.random() * choices.length)]!;
+    setRpc(choice);
+    setRpc2(computerChoice);
+    setPick(computerChoice);
+    if (choice === computerChoice) return setResult("Tie");
+    const wins =
+      (choice === "rock" && computerChoice === "scissors") ||
+      (choice === "paper" && computerChoice === "rock") ||
+      (choice === "scissors" && computerChoice === "paper");
+    setResult(wins ? "You won" : "You lost");
   }
 
   return (
@@ -42,13 +32,13 @@ const Home: NextPage = () => {
       </Head>
       <div className="mx-auto flex w-screen flex-col items-center justify-center text-center text-xl">
         <div className="">
-          <button className="h-8 w-16 rounded bg-slate-500" onClick={checkwin}>
+          <button className="h-8 w-16 rounded bg-slate-500" onClick={() => checkwin("rock")}>
             rock
           </button>
-          <button className="h-8 w-16 rounded bg-slate-500" onClick={checkwin}>
+          <button className="h-8 w-16 rounded bg-slate-500" onClick={() => checkwin("paper")}>
             paper
           </button>
-          <button className="h-8 w-16 rounded bg-slate-500" onClick={checkwin}>
+          <button className="h-8 w-16 rounded bg-slate-500" onClick={() => checkwin("scissors")}>
             scissors
           </button>
         </div>

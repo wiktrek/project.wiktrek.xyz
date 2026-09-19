@@ -16,14 +16,16 @@ import { Textarea } from "~/app/_components/ui/textarea";
 import {
   formatTodoDate,
   todoRetentionOptions,
+  todoPriorityOptions,
 } from "~/app/_components/lib/todo";
-import type { DoneRetention } from "~/server/api/routers/todo";
+import type { DoneRetention, TodoPriority } from "~/server/api/routers/todo";
 
 export type TodoDetail = {
   id: number | null;
   title: string;
   description: string;
   date: string;
+  priority: TodoPriority;
 };
 
 export function SettingsDialog({
@@ -109,6 +111,25 @@ export function DetailDialog({
               value={detail.date}
               onChange={(e) => setDetail({ ...detail, date: e.target.value })}
             />
+          </label>
+          <label className="space-y-1.5 text-sm font-medium">
+            <span>Priority</span>
+            <select
+              value={detail.priority}
+              onChange={(e) =>
+                setDetail({
+                  ...detail,
+                  priority: e.target.value as TodoPriority,
+                })
+              }
+              className="bg-background w-full rounded-md border px-3 py-2"
+            >
+              {todoPriorityOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </label>
           <label className="space-y-1.5 text-sm font-medium">
             <span>Description</span>

@@ -8,10 +8,16 @@ const Page: NextPage = () => {
   const [result, setResult] = useState([] as string[][]);
   const [textarea, setTextarea] = useState("");
   const [size, setSize] = useState(2);
+  const [error, setError] = useState("");
   function Randomize() {
     const teammates = textarea
       .split("\n")
       .filter((teammate) => teammate.trim().length !== 0);
+    if (size < 1 || size > teammates.length) {
+      setError(`Team amount must be between 1 and ${teammates.length}.`);
+      return;
+    }
+    setError("");
     shuffle(teammates);
     setResult([]);
     setResult(split_into_chunks(teammates, size));
@@ -39,6 +45,7 @@ const Page: NextPage = () => {
         <button className="text-2xl font-semibold" onClick={Randomize}>
           Randomize!
         </button>
+        {error && <p className="text-red-400" role="alert">{error}</p>}
         <ResultComponent result={result} />
       </main>
     </>
@@ -64,19 +71,9 @@ const ResultComponent = ({ result }: { result: string[][] }) => {
 };
 export default Page;
 function split_into_chunks(array: string[], amount: number): string[][] {
-  console.log(array);
-  const d = Math.ceil(array.length / amount); // amount of teammates in a team
-  const split_arr: string[][] = [];
-  for (let i = 0;i<amount;i++) {
-    for (let j =0;j<d;j++) {
-      if (j == 0) {
-        split_arr.push([array[i*d+j]!])
-      } else {
-        split_arr[i]!.push(array[i*d+j]!);
-      }
-    }
-  }
-  return split_arr;
+  const teams = Array.from({ length: amount }, () => [] as string[]);
+  array.forEach((member, index) => teams[index % amount]!.push(member));
+  return teams;
 }
 function shuffle(array: string[]) {
   let currentIndex = array.length;

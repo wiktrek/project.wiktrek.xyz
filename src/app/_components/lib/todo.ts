@@ -1,4 +1,6 @@
-import type { DoneRetention } from "~/server/api/routers/todo";
+import type { DoneRetention, TodoPriority } from "~/server/api/routers/todo";
+
+export type { TodoPriority };
 
 export const todoStageColors: Record<string, string> = {
   orange: "bg-orange-500/25 text-orange-700 dark:text-orange-300",
@@ -17,6 +19,18 @@ export const todoRetentionOptions: { value: DoneRetention; label: string }[] = [
   { value: "1y", label: "1 year" },
   { value: "never", label: "Never" },
 ];
+
+export const todoPriorityOptions: { value: TodoPriority; label: string }[] = [
+  { value: "low", label: "Low" },
+  { value: "medium", label: "Medium" },
+  { value: "high", label: "High" },
+];
+
+export const todoPriorityStyles: Record<TodoPriority, string> = {
+  low: "text-sky-300",
+  medium: "text-amber-300",
+  high: "text-rose-300",
+};
 
 export function parseTodoDraft(draft: string) {
   const tags: string[] = [];

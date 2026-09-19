@@ -212,6 +212,7 @@ export const todo = pgTable(
       .notNull()
       .default(sql`now()`),
     status: varchar("status", { length: 20 }).notNull().default("todo"),
+    priority: varchar("priority", { length: 10 }).notNull().default("medium"),
     stageId: integer("stageId"),
     completedAt: timestamp("completedAt", {
       mode: "date",

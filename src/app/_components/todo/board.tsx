@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type KeyboardEvent } from "react";
-import { GripVertical, Plus, Trash2, X } from "lucide-react";
+import { GripVertical, Plus, Search, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { Toaster } from "~/app/_components/ui/sonner";
 import { cn } from "~/app/_components/lib/utils";
@@ -10,6 +10,7 @@ import {
   sortTodoItems,
   toDateInputValue,
   todoStageColors,
+  todoPriorityStyles,
 } from "~/app/_components/lib/todo";
 import { DetailDialog, SettingsDialog, type TodoDetail } from "./dialogs";
 import { api } from "~/trpc/react";
@@ -33,6 +34,7 @@ const emptyDetail: TodoDetail = {
   title: "",
   description: "",
   date: "",
+  priority: "medium",
 };
 
 function stageOrderForDrag(stages: Stage[], drag: StageDrag) {
@@ -68,6 +70,8 @@ export function TodoBoard({
   const [detail, setDetail] = useState<TodoDetail>(emptyDetail);
   const [menu, setMenu] = useState<TodoMenu>(null);
   const [newStage, setNewStage] = useState({ open: false, name: "" });
+  const [search, setSearch] = useState("");
+  const [priorityFilter, setPriorityFilter] = useState("all");
 
   const onError = (error: { message: string }) => toast(error.message);
   const createTodo = api.todo.create.useMutation({
@@ -92,12 +96,38 @@ export function TodoBoard({
   const orderedStages = sortTodoItems(stages);
   const previewStages = stageOrderForDrag(orderedStages, stageDrag);
   const stageItems = (stageId: number) =>
+    sortTodoItems(
+      items.filter(
+        (item) =>
+          item.stageId === stageId &&
+          item.title.toLowerCase().includes(search.toLowerCase()) &&
+          (priorityFilter === "all" || item.priority === priorityFilter),
+      ),
+    );
+
+  const allStageItems = (stageId: number) =>
     sortTodoItems(items.filter((item) => item.stageId === stageId));
+
+  function moveCardToStage(id: number, targetStageId: number) {
+    const dragged = items.find((item) => item.id === id);
+    if (!dragged || dragged.stageId === targetStageId) return;
+    const previous = items;
+    const targetItems = allStageItems(targetStageId);
+    const reordered = [...targetItems, { ...dragged, stageId: targetStageId }];
+    setItems((current) => [
+      ...current.filter((item) => item.id !== id && item.stageId !== targetStageId),
+      ...reordered.map((item, order) => ({ ...item, order })),
+    ]);
+    moveTodo.mutate(
+      { id, stageId: targetStageId, orderedIds: reordered.map((item) => item.id) },
+      { onError: (error) => { setItems(previous); onError(error); } },
+    );
+  }
 
   function createTodoFromDraft(stageId: number, draft: string) {
     const { title, tags } = parseTodoDraft(draft);
     if (!title) return false;
-    createTodo.mutate({ title, stageId, tags });
+    createTodo.mutate({ title, stageId, tags, priority: "medium" });
     return true;
   }
 
@@ -120,11 +150,12 @@ export function TodoBoard({
       ),
       ...reordered.map((item, order) => ({ ...item, order })),
     ]);
+    const previous = items;
     moveTodo.mutate({
       id: cardDrag.id,
       stageId,
       orderedIds: reordered.map((item) => item.id),
-    });
+    }, { onError: (error) => { setItems(previous); onError(error); } });
   }
 
   function dropStage() {
@@ -134,7 +165,10 @@ export function TodoBoard({
     );
 
     setStages(next);
-    moveStage.mutate({ orderedIds: next.map((stage) => stage.id) });
+    const previous = stages;
+    moveStage.mutate({ orderedIds: next.map((stage) => stage.id) }, {
+      onError: (error) => { setStages(previous); onError(error); },
+    });
   }
 
   function saveDetail() {
@@ -149,18 +183,25 @@ export function TodoBoard({
     const description = detail.description.trim();
     setItems((prev) =>
       prev.map((item) =>
-        item.id === detail.id ? { ...item, title, description, date } : item,
+        item.id === detail.id
+          ? { ...item, title, description, date, priority: detail.priority }
+          : item,
       ),
     );
-    updateTodo.mutate({ id: detail.id, title, description, date });
+    const previous = items;
+    updateTodo.mutate(
+      { id: detail.id, title, description, date, priority: detail.priority },
+      { onError: (error) => { setItems(previous); onError(error); } },
+    );
     setDetail(emptyDetail);
   }
 
   function deleteTodoById(id: number) {
     setMenu(null);
+    const previous = items;
     setItems((prev) => prev.filter((item) => item.id !== id));
     if (detail.id === id) setDetail(emptyDetail);
-    deleteTodo.mutate({ id });
+    deleteTodo.mutate({ id }, { onError: (error) => { setItems(previous); onError(error); } });
   }
 
   function submitNewStage() {
@@ -172,39 +213,71 @@ export function TodoBoard({
 
   return (
     <div onClick={() => setMenu(null)}>
-      <div className="mb-2 flex justify-end">
+      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-1 flex-col gap-2 sm:flex-row">
+          <label className="relative flex-1">
+            <Search className="text-muted-foreground absolute top-2.5 left-3 h-4 w-4" />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search todos"
+              className="bg-card w-full rounded-md border py-2 pr-3 pl-9 text-sm"
+            />
+          </label>
+          <select
+            value={priorityFilter}
+            onChange={(e) => setPriorityFilter(e.target.value)}
+            className="bg-card rounded-md border px-3 py-2 text-sm"
+            aria-label="Filter by priority"
+          >
+            <option value="all">All priorities</option>
+            <option value="high">High priority</option>
+            <option value="medium">Medium priority</option>
+            <option value="low">Low priority</option>
+          </select>
+        </div>
         <SettingsDialog
           retention={retention}
           onChange={(doneRetention) => {
+            const previous = retention;
             setRetention(doneRetention);
-            updateSettings.mutate({ doneRetention });
+            updateSettings.mutate({ doneRetention }, {
+              onError: (error) => { setRetention(previous); onError(error); },
+            });
           }}
         />
       </div>
 
-      <div className="flex flex-wrap items-start gap-4 pb-4">
+      <div className="flex max-w-full flex-nowrap items-start gap-4 overflow-x-auto pb-4">
         {previewStages.map((stage, index) => (
           <div key={stage.id} className="flex items-stretch gap-2">
             <StageColumn
               stage={stage}
               index={index}
               cards={stageItems(stage.id)}
+              stages={orderedStages}
               cardDrag={cardDrag}
               stageDragId={stageDrag.id}
               onAddTodo={createTodoFromDraft}
               onRenameStage={(name) => {
+                const previous = stages;
                 setStages((prev) =>
                   prev.map((item) =>
                     item.id === stage.id ? { ...item, name } : item,
                   ),
                 );
-                renameStage.mutate({ id: stage.id, name });
+                renameStage.mutate({ id: stage.id, name }, {
+                  onError: (error) => { setStages(previous); onError(error); },
+                });
               }}
               onDeleteStage={() => {
+                const previous = stages;
                 setStages((prev) =>
                   prev.filter((item) => item.id !== stage.id),
                 );
-                deleteStage.mutate({ id: stage.id });
+                deleteStage.mutate({ id: stage.id }, {
+                  onError: (error) => { setStages(previous); onError(error); },
+                });
               }}
               onOpenTodo={(card) => {
                 setMenu(null);
@@ -213,10 +286,12 @@ export function TodoBoard({
                   title: card.title,
                   description: card.description ?? "",
                   date: toDateInputValue(card.date),
+                  priority: card.priority as TodoDetail["priority"],
                 });
               }}
               onTodoMenu={(card, x, y) => setMenu({ id: card.id, x, y })}
               onDeleteTodo={deleteTodoById}
+              onMoveTodo={moveCardToStage}
               onCardDragStart={(id) => {
                 setMenu(null);
                 setCardDrag({ id, over: null });
@@ -306,6 +381,7 @@ function StageColumn({
   stage,
   index,
   cards,
+  stages,
   cardDrag,
   stageDragId,
   onAddTodo,
@@ -314,6 +390,7 @@ function StageColumn({
   onOpenTodo,
   onTodoMenu,
   onDeleteTodo,
+  onMoveTodo,
   onCardDragStart,
   onCardDragOver,
   onCardDrop,
@@ -326,6 +403,7 @@ function StageColumn({
   stage: Stage;
   index: number;
   cards: Todo[];
+  stages: Stage[];
   cardDrag: CardDrag;
   stageDragId: number | null;
   onAddTodo: (stageId: number, draft: string) => boolean;
@@ -334,6 +412,7 @@ function StageColumn({
   onOpenTodo: (card: Todo) => void;
   onTodoMenu: (card: Todo, x: number, y: number) => void;
   onDeleteTodo: (id: number) => void;
+  onMoveTodo: (id: number, stageId: number) => void;
   onCardDragStart: (id: number) => void;
   onCardDragOver: (stageId: number, index: number) => void;
   onCardDrop: (stageId: number) => void;
@@ -446,6 +525,8 @@ function StageColumn({
           onOpen={onOpenTodo}
           onMenu={onTodoMenu}
           onDelete={onDeleteTodo}
+          stages={stages}
+          onMove={onMoveTodo}
           onDragStart={onCardDragStart}
           onDragOver={onCardDragOver}
           onDragEnd={onCardDragEnd}
@@ -491,6 +572,8 @@ function TodoCard({
   onOpen,
   onMenu,
   onDelete,
+  stages,
+  onMove,
   onDragStart,
   onDragOver,
   onDragEnd,
@@ -502,6 +585,8 @@ function TodoCard({
   onOpen: (card: Todo) => void;
   onMenu: (card: Todo, x: number, y: number) => void;
   onDelete: (id: number) => void;
+  stages: Stage[];
+  onMove: (id: number, stageId: number) => void;
   onDragStart: (id: number) => void;
   onDragOver: (stageId: number, index: number) => void;
   onDragEnd: () => void;
@@ -553,7 +638,12 @@ function TodoCard({
         )}
       >
         <div className="flex items-start justify-between gap-2">
-          <p className="text-sm font-medium">{card.title}</p>
+          <div className="min-w-0">
+            <p className="text-sm font-medium">{card.title}</p>
+            <span className={cn("text-[11px] font-medium uppercase", todoPriorityStyles[card.priority as keyof typeof todoPriorityStyles])}>
+              {card.priority}
+            </span>
+          </div>
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -566,6 +656,17 @@ function TodoCard({
             <X className="h-4 w-4" />
           </button>
         </div>
+        <select
+          value={card.stageId ?? ""}
+          onClick={(e) => e.stopPropagation()}
+          onChange={(e) => onMove(card.id, Number(e.target.value))}
+          className="bg-background text-muted-foreground mt-2 w-full rounded border px-2 py-1 text-xs md:hidden"
+          aria-label={`Move ${card.title}`}
+        >
+          {stages.map((option) => (
+            <option key={option.id} value={option.id}>{option.name}</option>
+          ))}
+        </select>
       </div>
     </div>
   );

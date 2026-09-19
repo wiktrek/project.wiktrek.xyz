@@ -29,6 +29,7 @@ const Home: NextPage = () => {
     setScreen2("");
     setScreen3("");
     setX("");
+    setCheck(false);
   }
   function clearone() {
     if (check === false) {
@@ -41,31 +42,38 @@ const Home: NextPage = () => {
     const a = parseFloat(screen);
     const b = parseFloat(screen2);
     const c = x;
-    if (c === "x") {
-      setScreen(`${(a * b).toString()}`);
+    if (!Number.isFinite(a) || !Number.isFinite(b)) {
+      setScreen("Error");
       setScreen2("");
       setScreen3("");
       setCheck(false);
+      return;
     }
-    if (c === "-") {
-      setScreen(`${(a - b).toString()}`);
+    let value: number;
+    if (c === "x") value = a * b;
+    else if (c === "-") value = a - b;
+    else if (c === "+") value = a + b;
+    else if (c === "/") {
+      if (b === 0) {
+        setScreen("Error");
+        setScreen2("");
+        setScreen3("");
+        setCheck(false);
+        return;
+      }
+      value = a / b;
+    } else return;
+    if (!Number.isFinite(value)) {
+      setScreen("Error");
       setScreen2("");
       setScreen3("");
       setCheck(false);
+      return;
     }
-    if (c === "+") {
-      setScreen(`${(a + b).toString()}`);
-      setScreen2("");
-      setScreen3("");
-      setCheck(false);
-    }
-    if (c === "/") {
-      setScreen(`${(a / b).toString()}`);
-      setScreen2("");
-      setScreen3("");
-      setCheck(false);
-    }
-    if (screen === NaN.toString()) return setScreen("Error");
+    setScreen(`${value}`);
+    setScreen2("");
+    setScreen3("");
+    setCheck(false);
   }
   return (
     <>
