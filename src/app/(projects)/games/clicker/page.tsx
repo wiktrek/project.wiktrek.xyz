@@ -16,28 +16,33 @@ function storeMoney(items: Item[]): number {
 }
 
 export default function Page() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [store, setStore] = useState(readLocalStorage()[0] ?? getStore());
-  const [money, setMoney] = useState(readLocalStorage()[1] ?? 0);
+  const [store, setStore] = useState<Item[]>(getStore);
+  const [money, setMoney] = useState(0);
   const [cooldown, setCooldown] = useState(false);
-  function readLocalStorage(): [Item[], number] {
-    if (typeof window !== "undefined") {
-      const items = JSON.parse(localStorage.getItem("items")!) as Item[];
-      const money = JSON.parse(localStorage.getItem("money")!) as number;
-      return [items, money];
-    } else {
-      return [getStore(), 0];
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    const savedItems = localStorage.getItem("items");
+    const savedMoney = localStorage.getItem("money");
+
+    if (savedItems) {
+      setStore(JSON.parse(savedItems) as Item[]);
     }
-  }
+    if (savedMoney) {
+      setMoney(JSON.parse(savedMoney) as number);
+    }
+    setHydrated(true);
+  }, []);
+
   function saveLocalStorage(items: Item[], money: number) {
     console.log("saved!");
-    if (typeof window !== "undefined") {
-      localStorage.setItem("items", JSON.stringify(items));
-      localStorage.setItem("money", money.toString());
-    }
+    localStorage.setItem("items", JSON.stringify(items));
+    localStorage.setItem("money", money.toString());
   }
 
   useEffect(() => {
+    if (!hydrated) return;
+
     const interval = setInterval(() => {
       const newMoney = storeMoney(store);
       console.log(newMoney);
@@ -47,7 +52,7 @@ export default function Page() {
 
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [store]);
+  }, [store, hydrated]);
   return (
     <main>
       <section className="items-center justify-center text-center">
