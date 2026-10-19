@@ -5,6 +5,8 @@ const bookmarks = [
   { name: "Clicker", url: "/games/clicker" },
   { name: "Aim", url: "/games/aim" },
   { name: "Blocks", url: "/games/blocks" },
+  { name: "Snake", url: "/games/snake" },
+  { name: "Minesweeper", url: "/games/minesweeper" },
   { name: "Game of Life", url: "/games/gol" },
   { name: "Typing", url: "/games/typing" },
   { name: "Wordle", url: "/wordle" },

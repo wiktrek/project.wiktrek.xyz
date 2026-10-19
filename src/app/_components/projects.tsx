@@ -59,7 +59,7 @@ const projects: Project[] = [
   },
   {
     name: "Games",
-    description: "Browser games: clicker, aim trainer and block blast",
+    description: "Browser games: block blast, snake, minesweeper, aim trainer, typing test, clicker and game of life",
     tags: ["react", "tailwind css"],
     url: "/games"
   },

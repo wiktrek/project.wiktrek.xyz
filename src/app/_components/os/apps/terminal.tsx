@@ -130,7 +130,7 @@ export function Terminal() {
       onClick={() => inputRef.current?.focus()}
     >
       {lines.map((line, i) => (
-        <pre key={i} className="break-words whitespace-pre-wrap">
+        <pre key={i} className="wrap-break-word whitespace-pre-wrap">
           {line.prompt && <span className="text-text-600">{line.prompt} </span>}
           {line.text}
         </pre>
