@@ -3,10 +3,12 @@ import { clerkMiddleware } from "@clerk/nextjs/server";
 export default clerkMiddleware();
 
 export const config = {
+  // Only run on routes that call auth() on the server (directly or through the
+  // tRPC context). Static pages like / and /games skip the proxy entirely.
+  // Add a route here if it starts calling auth().
   matcher: [
-    // Skip Next.js internals and static files.
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    // Always run for API routes. tRPC paths contain dots.
     "/(api|trpc)(.*)",
+    "/(poll|url|link|todo|recipe|go|sign-in|sign-up)",
+    "/(poll|url|link|todo|recipe|go|sign-in|sign-up)/(.*)",
   ],
 };

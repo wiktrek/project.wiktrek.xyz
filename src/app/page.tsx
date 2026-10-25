@@ -1,6 +1,5 @@
 import type { NextPage } from "next";
 import Link from "next/link";
-import { UserButton } from "@clerk/nextjs";
 import { Projects } from "~/app/_components/projects";
 
 const Home: NextPage = () => {
@@ -23,7 +22,6 @@ const Home: NextPage = () => {
           >
             wiktrek.xyz
           </a>
-          <UserButton />
         </nav>
       </header>
 
