@@ -1,70 +1,145 @@
-import Draggable from "react-draggable";
-import { closeApp, runApp } from "../../lib/os";
-import { useEffect, useRef, useState } from "react";
-import type { Ref, RefObject } from "react";
-interface App {
-  name: string;
-  icon: string;
+import {
+  Bomb,
+  BookOpen,
+  Calculator as CalculatorIcon,
+  Gamepad2,
+  Globe,
+  Grid3x3,
+  Info,
+  Paintbrush,
+  Settings as SettingsIcon,
+  StickyNote,
+  Terminal as TerminalIcon,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import type { ComponentType } from "react";
+import { About } from "./about";
+import { BlogApp } from "./blog";
+import { Browser } from "./browser";
+import { Calculator } from "./calculator";
+import { Minesweeper } from "./minesweeper";
+import { Notes } from "./notes";
+import { Paint } from "./paint";
+import { Settings } from "./settings";
+import { Snake } from "./snake";
+import { Terminal } from "./terminal";
+import { TicTacToe } from "./ttt";
+
+export interface AppDefinition {
   id: string;
+  name: string;
+  icon: LucideIcon;
+  component: ComponentType;
+  w: number;
+  h: number;
 }
-const apps: App[] = [
+
+export const apps: AppDefinition[] = [
   {
-    name: "Blog",
-    icon: "Blog Posts",
-    id: "blog",
+    id: "terminal",
+    name: "Terminal",
+    icon: TerminalIcon,
+    component: Terminal,
+    w: 620,
+    h: 400,
   },
   {
-    name: "TicTacToe",
-    icon: "TTT",
+    id: "browser",
+    name: "Browser",
+    icon: Globe,
+    component: Browser,
+    w: 860,
+    h: 560,
+  },
+  {
+    id: "notes",
+    name: "Notes",
+    icon: StickyNote,
+    component: Notes,
+    w: 420,
+    h: 420,
+  },
+  {
+    id: "calculator",
+    name: "Calculator",
+    icon: CalculatorIcon,
+    component: Calculator,
+    w: 280,
+    h: 440,
+  },
+  {
+    id: "paint",
+    name: "Paint",
+    icon: Paintbrush,
+    component: Paint,
+    w: 640,
+    h: 480,
+  },
+  {
+    id: "blog",
+    name: "Blog",
+    icon: BookOpen,
+    component: BlogApp,
+    w: 520,
+    h: 460,
+  },
+  {
+    id: "snake",
+    name: "Snake",
+    icon: Gamepad2,
+    component: Snake,
+    w: 420,
+    h: 500,
+  },
+  {
+    id: "minesweeper",
+    name: "Minesweeper",
+    icon: Bomb,
+    component: Minesweeper,
+    w: 360,
+    h: 470,
+  },
+  {
     id: "tictactoe",
+    name: "Tic Tac Toe",
+    icon: Grid3x3,
+    component: TicTacToe,
+    w: 320,
+    h: 400,
+  },
+  {
+    id: "settings",
+    name: "Settings",
+    icon: SettingsIcon,
+    component: Settings,
+    w: 480,
+    h: 380,
+  },
+  {
+    id: "about",
+    name: "About",
+    icon: Info,
+    component: About,
+    w: 520,
+    h: 320,
   },
 ];
 
-export function Apps() {
-  return (
-    <>
-      <ul>
-        {apps.map((app) => (
-          <li key={app.id} className="flex cursor-pointer items-center p-4">
-            <div
-              className="flex flex-col items-center justify-center"
-              onClick={() => closeApp(app.id)}
-            >
-              <p className="text-wrap rounded bg-background-950 p-4 text-xl font-extrabold">
-                {app.icon}
-              </p>
-              <p className="ml-4text-xl">{app.name}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </>
-  );
-}
-export function AppComponent({
-  children,
-  id,
+export const appsById = Object.fromEntries(apps.map((a) => [a.id, a]));
+
+export function AppIcon({
+  app,
+  className = "h-10 w-10",
 }: {
-  children: React.ReactNode;
-  id: string;
+  app: AppDefinition;
+  className?: string;
 }) {
-  const nodeRef = useRef<HTMLElement>(null);
+  const Icon = app.icon;
   return (
-    <div id={id} className="hidden">
-      <Draggable nodeRef={nodeRef as RefObject<HTMLElement>} bounds={{ left: 50, top: -220, right: 1100, bottom: 280}} defaultPosition={{x: 100,y:100}}>
-        <div
-          className="absolute h-96 w-120 cursor-move rounded-xl bg-background-800 p-4 font-bold text-white"
-          ref={nodeRef as Ref<HTMLDivElement>}
-        >
-          {children}
-          <button
-            className="absolute right-2 top-2 text-3xl text-red-500"
-            onClick={() => runApp(id)}
-          >
-            X
-          </button>
-        </div>
-      </Draggable>
+    <div
+      className={`text-text-200 flex items-center justify-center rounded-md border border-white/10 bg-white/[0.03] ${className}`}
+    >
+      <Icon className="h-1/2 w-1/2" strokeWidth={1.5} />
     </div>
   );
 }

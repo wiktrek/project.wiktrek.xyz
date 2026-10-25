@@ -43,3 +43,9 @@ yarn-error.log*
 *.tsbuildinfo
 # clerk
 /.clerk/
+.agents
+.claude
+skills-lock.json
+
+AGENTS.MD
+CLAUDE.MD

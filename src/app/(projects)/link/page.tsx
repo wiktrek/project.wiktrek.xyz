@@ -9,22 +9,19 @@ export default async function Page() {
 
   const data = await api.link.getMyProfile();
 
-  if (data) {
-    return (
-      <main className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-2xl flex-col items-center justify-center p-4">
-        <LinkDashboard profile={data.profile} links={data.links} />
-      </main>
-    );
-  }
-
   return (
-    <main className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-md flex-col items-center justify-center p-4">
-      <div className="bg-card w-full rounded-xl border p-8 shadow-sm">
-        <h1 className="mb-6 text-center text-2xl font-bold">
-          Create your new link page. All your links in one place clean simple
-        </h1>
-        <LinkProfileClient />
-      </div>
+    <main className="mx-auto w-full max-w-md px-4 py-16">
+      {data ? (
+        <LinkDashboard profile={data.profile} links={data.links} />
+      ) : (
+        <>
+          <h1 className="text-xl font-semibold">Create your link page</h1>
+          <p className="text-muted-foreground mt-1 mb-8 text-sm">
+            All your links in one place.
+          </p>
+          <LinkProfileClient />
+        </>
+      )}
     </main>
   );
 }
