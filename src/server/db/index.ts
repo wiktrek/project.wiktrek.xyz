@@ -12,7 +12,9 @@ const globalForDb = globalThis as unknown as {
   conn: postgres.Sql | undefined;
 };
 
-const conn = globalForDb.conn ?? postgres(env.DATABASE_URL);
+// Close idle connections so serverless instances don't hold them open.
+const conn =
+  globalForDb.conn ?? postgres(env.DATABASE_URL, { idle_timeout: 20 });
 if (env.NODE_ENV !== "production") globalForDb.conn = conn;
 
 export const db = drizzle(conn, { schema });

@@ -1,7 +1,12 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+} from "lucide-react";
 import { cn } from "~/app/_components/lib/utils";
 import {
   GameButton,
@@ -30,7 +35,12 @@ const VECTORS: Record<Dir, Point> = {
   left: { x: -1, y: 0 },
   right: { x: 1, y: 0 },
 };
-const OPPOSITE: Record<Dir, Dir> = { up: "down", down: "up", left: "right", right: "left" };
+const OPPOSITE: Record<Dir, Dir> = {
+  up: "down",
+  down: "up",
+  left: "right",
+  right: "left",
+};
 const KEYS: Record<string, Dir> = {
   ArrowUp: "up",
   ArrowDown: "down",
@@ -75,7 +85,13 @@ export default function Page() {
     lastTick: 0,
     phase: "idle" as Phase,
     score: 0,
-    particles: [] as { x: number; y: number; vx: number; vy: number; born: number }[],
+    particles: [] as {
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      born: number;
+    }[],
     deathAt: 0,
   });
 
@@ -236,7 +252,11 @@ export default function Page() {
       // head with eyes looking where it's going
       const head = points[0]!;
       const v = VECTORS[g.dir];
-      ctx.fillStyle = flash ? "#e3c1c1" : g.phase === "over" ? "#a3a3a3" : "#7fb38d";
+      ctx.fillStyle = flash
+        ? "#e3c1c1"
+        : g.phase === "over"
+          ? "#a3a3a3"
+          : "#7fb38d";
       ctx.beginPath();
       ctx.arc(head.x, head.y, CELL * 0.42, 0, Math.PI * 2);
       ctx.fill();
@@ -250,7 +270,13 @@ export default function Page() {
         ctx.fill();
         ctx.fillStyle = "#111";
         ctx.beginPath();
-        ctx.arc(ex + v.x * CELL * 0.04, ey + v.y * CELL * 0.04, CELL * 0.055, 0, Math.PI * 2);
+        ctx.arc(
+          ex + v.x * CELL * 0.04,
+          ey + v.y * CELL * 0.04,
+          CELL * 0.055,
+          0,
+          Math.PI * 2,
+        );
         ctx.fill();
       }
 
@@ -298,7 +324,8 @@ export default function Page() {
 
   // pause when the tab is hidden so you don't come back to a dead snake
   useEffect(() => {
-    const onHide = () => document.hidden && game.current.phase === "playing" && togglePause();
+    const onHide = () =>
+      document.hidden && game.current.phase === "playing" && togglePause();
     document.addEventListener("visibilitychange", onHide);
     return () => document.removeEventListener("visibilitychange", onHide);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -327,7 +354,9 @@ export default function Page() {
         <canvas
           ref={canvasRef}
           className="block aspect-square w-full touch-none rounded-lg border border-white/10"
-          onPointerDown={(e) => (swipe.current = { x: e.clientX, y: e.clientY })}
+          onPointerDown={(e) =>
+            (swipe.current = { x: e.clientX, y: e.clientY })
+          }
           onPointerUp={(e) => {
             const s = swipe.current;
             swipe.current = null;
@@ -335,7 +364,15 @@ export default function Page() {
             const dx = e.clientX - s.x;
             const dy = e.clientY - s.y;
             if (Math.max(Math.abs(dx), Math.abs(dy)) < 20) return;
-            turn(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : dy > 0 ? "down" : "up");
+            turn(
+              Math.abs(dx) > Math.abs(dy)
+                ? dx > 0
+                  ? "right"
+                  : "left"
+                : dy > 0
+                  ? "down"
+                  : "up",
+            );
           }}
         />
         <AnimatePresence>
@@ -349,17 +386,29 @@ export default function Page() {
             >
               {phase === "over" && newBest && <NewBest />}
               {phase === "over" && (
-                <p className={cn(mono, "text-6xl tabular-nums text-neutral-50")}>{score}</p>
+                <p
+                  className={cn(mono, "text-6xl text-neutral-50 tabular-nums")}
+                >
+                  {score}
+                </p>
               )}
-              {phase === "paused" && <p className="text-xl font-semibold text-neutral-50">Paused</p>}
+              {phase === "paused" && (
+                <p className="text-xl font-semibold text-neutral-50">Paused</p>
+              )}
               <GameButton
                 variant="solid"
                 onClick={phase === "paused" ? togglePause : start}
               >
-                {phase === "idle" ? "Start" : phase === "paused" ? "Resume" : "Play again"}
+                {phase === "idle"
+                  ? "Start"
+                  : phase === "paused"
+                    ? "Resume"
+                    : "Play again"}
               </GameButton>
               <p className="text-xs text-neutral-500">
-                {phase === "paused" ? "or press space" : "or press any arrow key"}
+                {phase === "paused"
+                  ? "or press space"
+                  : "or press any arrow key"}
               </p>
             </motion.div>
           )}

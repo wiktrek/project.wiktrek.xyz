@@ -1,12 +1,12 @@
 "use client";
 import { useState } from "react";
 const Rng = () => {
-  const [min,setMin] = useState(0);
-  const [max,setMax] = useState(10);
-  const [amount,setAmount] = useState(1);
-  const [output,setOutput] = useState([] as number[])
-  function random(min: number,max:number): number{
-    return Math.floor(Math.random() * (max - min) + min)
+  const [min, setMin] = useState(0);
+  const [max, setMax] = useState(10);
+  const [amount, setAmount] = useState(1);
+  const [output, setOutput] = useState([] as number[]);
+  function random(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min) + min);
   }
   const [error, setError] = useState("");
   function generateRandom(count: number) {
@@ -23,19 +23,39 @@ const Rng = () => {
     setOutput(values);
   }
   return (
-    <main className="flex flex-col w-screen justify-center items-center">
-      <div className="flex flex-col w-80">
+    <main className="flex w-screen flex-col items-center justify-center">
+      <div className="flex w-80 flex-col">
         <label className="text-xl">min</label>
-          <input type="number" value={min} onChange={(e) => setMin(Number(e.target.value))} />
+        <input
+          type="number"
+          value={min}
+          onChange={(e) => setMin(Number(e.target.value))}
+        />
         <label className="text-xl">max</label>
-          <input type="number" value={max} onChange={(e) => setMax(Number(e.target.value))} />  
+        <input
+          type="number"
+          value={max}
+          onChange={(e) => setMax(Number(e.target.value))}
+        />
         <label className="text-xl">amount</label>
-        <input type="number" value={amount} onChange={(e) => setAmount(Number(e.target.value))} ></input>
+        <input
+          type="number"
+          value={amount}
+          onChange={(e) => setAmount(Number(e.target.value))}
+        ></input>
         <button onClick={() => generateRandom(amount)}>Generate</button>
-        {error && <p className="text-red-400" role="alert">{error}</p>}
-        <div>{output.map((o,i) => <p key={`${i}.${o}`}>{o}</p>)}</div>
+        {error && (
+          <p className="text-red-400" role="alert">
+            {error}
+          </p>
+        )}
+        <div>
+          {output.map((o, i) => (
+            <p key={`${i}.${o}`}>{o}</p>
+          ))}
+        </div>
       </div>
     </main>
-  )
-}
+  );
+};
 export default Rng;

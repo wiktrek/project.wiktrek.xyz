@@ -18,7 +18,13 @@ const TARGET = 56;
 
 type Phase = "idle" | "playing" | "done";
 type Target = { id: number; x: number; y: number; born: number };
-type Effect = { id: number; x: number; y: number; hit: boolean; label?: string };
+type Effect = {
+  id: number;
+  x: number;
+  y: number;
+  hit: boolean;
+  label?: string;
+};
 
 let nextId = 0;
 
@@ -117,9 +123,7 @@ export default function Page() {
       title="Aim"
       subtitle={`Hit as many targets as you can in ${DURATION} seconds.`}
       actions={
-        phase === "playing" && (
-          <GameButton onClick={start}>Restart</GameButton>
-        )
+        phase === "playing" && <GameButton onClick={start}>Restart</GameButton>
       }
     >
       <Stats>
@@ -132,7 +136,7 @@ export default function Page() {
       <div
         ref={arenaRef}
         onPointerDown={onArenaDown}
-        className="relative h-[min(60vh,520px)] min-h-72 w-full touch-none select-none overflow-hidden rounded-lg border border-white/10 bg-neutral-950"
+        className="relative h-[min(60vh,520px)] min-h-72 w-full touch-none overflow-hidden rounded-lg border border-white/10 bg-neutral-950 select-none"
         style={{
           cursor: phase === "playing" ? "crosshair" : "default",
           backgroundImage:
@@ -143,7 +147,7 @@ export default function Page() {
         {/* timer bar */}
         <div className="absolute inset-x-0 top-0 h-0.5 bg-white/5">
           <div
-            className="h-full bg-primary transition-[width] duration-75 ease-linear"
+            className="bg-primary h-full transition-[width] duration-75 ease-linear"
             style={{ width: `${(timeLeft / DURATION) * 100}%` }}
           />
         </div>
@@ -151,7 +155,7 @@ export default function Page() {
           <span
             className={cn(
               mono,
-              "pointer-events-none absolute right-4 top-3 text-sm tabular-nums text-neutral-500",
+              "pointer-events-none absolute top-3 right-4 text-sm text-neutral-500 tabular-nums",
             )}
           >
             {timeLeft.toFixed(1)}s
@@ -159,23 +163,23 @@ export default function Page() {
         )}
 
         {target && (
-            <motion.button
-              key={target.id}
-              aria-label="target"
-              onPointerDown={onTargetDown}
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: "spring", stiffness: 600, damping: 26 }}
-              className="absolute rounded-full"
-              style={{
-                left: target.x - TARGET / 2,
-                top: target.y - TARGET / 2,
-                width: TARGET,
-                height: TARGET,
-                background:
-                  "radial-gradient(circle, #f5efef 0 14%, #c98b8b 15% 36%, #f5efef 37% 56%, #c98b8b 57% 100%)",
-              }}
-            />
+          <motion.button
+            key={target.id}
+            aria-label="target"
+            onPointerDown={onTargetDown}
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 600, damping: 26 }}
+            className="absolute rounded-full"
+            style={{
+              left: target.x - TARGET / 2,
+              top: target.y - TARGET / 2,
+              width: TARGET,
+              height: TARGET,
+              background:
+                "radial-gradient(circle, #f5efef 0 14%, #c98b8b 15% 36%, #f5efef 37% 56%, #c98b8b 57% 100%)",
+            }}
+          />
         )}
 
         {effects.map((fx) =>
@@ -189,7 +193,7 @@ export default function Page() {
                 initial={{ scale: 0.4, opacity: 0.8 }}
                 animate={{ scale: 2.2, opacity: 0 }}
                 transition={{ duration: 0.45, ease: "easeOut" }}
-                className="absolute -left-7 -top-7 h-14 w-14 rounded-full border border-primary"
+                className="border-primary absolute -top-7 -left-7 h-14 w-14 rounded-full border"
               />
               <motion.span
                 initial={{ y: -10, opacity: 1 }}
@@ -197,7 +201,7 @@ export default function Page() {
                 transition={{ duration: 0.6, ease: "easeOut" }}
                 className={cn(
                   mono,
-                  "absolute -translate-x-1/2 whitespace-nowrap text-xs tabular-nums text-neutral-300",
+                  "absolute -translate-x-1/2 text-xs whitespace-nowrap text-neutral-300 tabular-nums",
                 )}
               >
                 {fx.label}
@@ -209,7 +213,7 @@ export default function Page() {
               initial={{ scale: 0.5, opacity: 1 }}
               animate={{ scale: 1, opacity: 0 }}
               transition={{ duration: 0.4 }}
-              className="pointer-events-none absolute -ml-3 -mt-3 flex h-6 w-6 items-center justify-center text-lg text-neutral-600"
+              className="pointer-events-none absolute -mt-3 -ml-3 flex h-6 w-6 items-center justify-center text-lg text-neutral-600"
               style={{ left: fx.x, top: fx.y }}
             >
               ×
@@ -226,14 +230,19 @@ export default function Page() {
               className={overlay}
             >
               {phase === "idle" ? (
-                <p className="max-w-xs text-pretty text-sm text-neutral-400">
-                  Targets appear one at a time. Missed clicks count against
-                  your accuracy.
+                <p className="max-w-xs text-sm text-pretty text-neutral-400">
+                  Targets appear one at a time. Missed clicks count against your
+                  accuracy.
                 </p>
               ) : (
                 <>
                   {newBest && <NewBest />}
-                  <p className={cn(mono, "text-6xl tabular-nums text-neutral-50")}>
+                  <p
+                    className={cn(
+                      mono,
+                      "text-6xl text-neutral-50 tabular-nums",
+                    )}
+                  >
                     {hits}
                   </p>
                   <p className="text-sm text-neutral-400">

@@ -32,13 +32,22 @@ const Home: NextPage = () => {
       </Head>
       <div className="mx-auto flex w-screen flex-col items-center justify-center text-center text-xl">
         <div className="">
-          <button className="h-8 w-16 rounded bg-slate-500" onClick={() => checkwin("rock")}>
+          <button
+            className="h-8 w-16 rounded bg-slate-500"
+            onClick={() => checkwin("rock")}
+          >
             rock
           </button>
-          <button className="h-8 w-16 rounded bg-slate-500" onClick={() => checkwin("paper")}>
+          <button
+            className="h-8 w-16 rounded bg-slate-500"
+            onClick={() => checkwin("paper")}
+          >
             paper
           </button>
-          <button className="h-8 w-16 rounded bg-slate-500" onClick={() => checkwin("scissors")}>
+          <button
+            className="h-8 w-16 rounded bg-slate-500"
+            onClick={() => checkwin("scissors")}
+          >
             scissors
           </button>
         </div>

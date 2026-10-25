@@ -19,7 +19,8 @@ export function useBest(key: string, lower = false) {
       const prev = bestRef.current;
       // a zero score isn't worth celebrating
       if (!lower && score <= 0) return false;
-      if (prev !== null && (lower ? score >= prev : score <= prev)) return false;
+      if (prev !== null && (lower ? score >= prev : score <= prev))
+        return false;
       bestRef.current = score;
       localStorage.setItem(storageKey, String(score));
       setBest(score);

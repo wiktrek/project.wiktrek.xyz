@@ -14,12 +14,48 @@ interface Item {
 }
 
 const ITEMS: Item[] = [
-  { id: "cursor", name: "Script", note: "a bash loop", price: 10, perSecond: 0.5 },
-  { id: "cook", name: "Cron job", note: "runs every minute", price: 100, perSecond: 3 },
-  { id: "engineer", name: "Worker", note: "pulls from a queue", price: 1_000, perSecond: 15 },
-  { id: "factory", name: "Rack", note: "42U of workers", price: 12_000, perSecond: 80 },
-  { id: "lab", name: "Cluster", note: "autoscaling, mostly", price: 130_000, perSecond: 450 },
-  { id: "portal", name: "Region", note: "now in eu-west", price: 1_400_000, perSecond: 2_600 },
+  {
+    id: "cursor",
+    name: "Script",
+    note: "a bash loop",
+    price: 10,
+    perSecond: 0.5,
+  },
+  {
+    id: "cook",
+    name: "Cron job",
+    note: "runs every minute",
+    price: 100,
+    perSecond: 3,
+  },
+  {
+    id: "engineer",
+    name: "Worker",
+    note: "pulls from a queue",
+    price: 1_000,
+    perSecond: 15,
+  },
+  {
+    id: "factory",
+    name: "Rack",
+    note: "42U of workers",
+    price: 12_000,
+    perSecond: 80,
+  },
+  {
+    id: "lab",
+    name: "Cluster",
+    note: "autoscaling, mostly",
+    price: 130_000,
+    perSecond: 450,
+  },
+  {
+    id: "portal",
+    name: "Region",
+    note: "now in eu-west",
+    price: 1_400_000,
+    perSecond: 2_600,
+  },
 ];
 
 const SAVE_KEY = "clicker:v2";
@@ -76,7 +112,10 @@ function load(): { money: number; owned: Owned } {
   const oldItems = localStorage.getItem("items");
   const owned: Owned = {};
   if (oldItems) {
-    for (const i of JSON.parse(oldItems) as { name: string; quantity: number }[])
+    for (const i of JSON.parse(oldItems) as {
+      name: string;
+      quantity: number;
+    }[])
       owned[i.name] = i.quantity;
   }
   return { money: Number(localStorage.getItem("money") ?? 0) || 0, owned };
@@ -96,7 +135,9 @@ export default function Page() {
   );
   const [pressed, setPressed] = useState(false);
   const state = useRef({ money: 0, owned: {} as Owned });
-  state.current = { money, owned };
+  useEffect(() => {
+    state.current = { money, owned };
+  }, [money, owned]);
   // earnings in the current second, flushed into the throughput strip
   const thisSecond = useRef(0);
 
@@ -190,12 +231,12 @@ export default function Page() {
             <p
               className={cn(
                 mono,
-                "text-5xl tabular-nums tracking-tight text-neutral-50 sm:text-6xl",
+                "text-5xl tracking-tight text-neutral-50 tabular-nums sm:text-6xl",
               )}
             >
               {format(money)}
             </p>
-            <p className={cn(mono, "text-sm tabular-nums text-neutral-400")}>
+            <p className={cn(mono, "text-sm text-neutral-400 tabular-nums")}>
               <span className="text-primary">+{formatRate(perSecond)}</span>{" "}
               ops/s automated
             </p>
@@ -213,14 +254,16 @@ export default function Page() {
                     "flex-1 rounded-t-[1px] transition-[height] duration-300",
                     i === HISTORY - 1 ? "bg-primary" : "bg-white/15",
                   )}
-                  style={{ height: `${n > 0 ? Math.max(4, (n / peak) * 100) : 0}%` }}
+                  style={{
+                    height: `${n > 0 ? Math.max(4, (n / peak) * 100) : 0}%`,
+                  }}
                 />
               ))}
             </div>
             <figcaption
               className={cn(
                 mono,
-                "flex justify-between text-xs tabular-nums text-neutral-500",
+                "flex justify-between text-xs text-neutral-500 tabular-nums",
               )}
             >
               <span>throughput, last {HISTORY}s</span>
@@ -239,20 +282,25 @@ export default function Page() {
               transition={{ type: "spring", stiffness: 900, damping: 30 }}
               aria-label={`run job, +${clickValue} ops`}
               className={cn(
-                "group relative flex h-32 w-full touch-manipulation select-none flex-col justify-between rounded-xl border border-white/10 bg-neutral-900 p-4 text-left",
+                "group relative flex h-32 w-full touch-manipulation flex-col justify-between rounded-xl border border-white/10 bg-neutral-900 p-4 text-left select-none",
                 "shadow-[0_6px_0_0_rgb(38,38,38)] transition-colors hover:border-white/20 active:shadow-[0_1px_0_0_rgb(38,38,38)]",
-                "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary",
+                "focus-visible:outline-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4",
                 pressed && "shadow-[0_1px_0_0_rgb(38,38,38)]",
               )}
             >
-              <span className={cn(mono, "flex justify-between text-xs text-neutral-500")}>
+              <span
+                className={cn(
+                  mono,
+                  "flex justify-between text-xs text-neutral-500",
+                )}
+              >
                 <span>run</span>
                 <span className="hidden sm:inline">space / enter</span>
               </span>
               <span
                 className={cn(
                   mono,
-                  "text-3xl tabular-nums text-neutral-100 transition-colors group-active:text-primary",
+                  "group-active:text-primary text-3xl text-neutral-100 tabular-nums transition-colors",
                 )}
               >
                 +{format(clickValue)}
@@ -267,7 +315,7 @@ export default function Page() {
                   transition={{ duration: 0.6, ease: "easeOut" }}
                   className={cn(
                     mono,
-                    "pointer-events-none absolute -top-2 -translate-x-1/2 text-sm text-primary",
+                    "text-primary pointer-events-none absolute -top-2 -translate-x-1/2 text-sm",
                   )}
                   style={{ left: `${p.x * 100}%` }}
                 >
@@ -309,7 +357,7 @@ export default function Page() {
                     className={cn(
                       "flex w-full flex-col gap-3 rounded-lg border p-3 text-left transition-colors",
                       affordable
-                        ? "border-white/15 hover:border-primary/60 active:bg-white/[0.03]"
+                        ? "hover:border-primary/60 border-white/15 active:bg-white/[0.03]"
                         : "cursor-not-allowed border-white/[0.06]",
                     )}
                   >
@@ -329,12 +377,23 @@ export default function Page() {
                             : `${item.note} · +${formatRate(item.perSecond)}/s`}
                         </span>
                       </div>
-                      <div className={cn(mono, "flex flex-col items-end text-sm tabular-nums")}>
-                        <span className={affordable ? "text-primary" : "text-neutral-500"}>
+                      <div
+                        className={cn(
+                          mono,
+                          "flex flex-col items-end text-sm tabular-nums",
+                        )}
+                      >
+                        <span
+                          className={
+                            affordable ? "text-primary" : "text-neutral-500"
+                          }
+                        >
                           {format(q.cost)}
                         </span>
                         {q.count > 1 && (
-                          <span className="text-xs text-neutral-500">×{q.count}</span>
+                          <span className="text-xs text-neutral-500">
+                            ×{q.count}
+                          </span>
                         )}
                       </div>
                     </div>
@@ -355,7 +414,7 @@ export default function Page() {
                       <span
                         className={cn(
                           mono,
-                          "w-10 text-right text-xs tabular-nums text-neutral-500",
+                          "w-10 text-right text-xs text-neutral-500 tabular-nums",
                         )}
                       >
                         {count}

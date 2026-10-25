@@ -9,10 +9,42 @@ const ROWS = 40;
 // patterns as [row, col] offsets
 const PRESETS: Record<string, [number, number][]> = {
   "glider gun": [
-    [4, 0], [4, 1], [5, 0], [5, 1], [4, 10], [5, 10], [6, 10], [3, 11], [7, 11],
-    [2, 12], [8, 12], [2, 13], [8, 13], [5, 14], [3, 15], [7, 15], [4, 16], [5, 16],
-    [6, 16], [5, 17], [2, 20], [3, 20], [4, 20], [2, 21], [3, 21], [4, 21], [1, 22],
-    [5, 22], [0, 24], [1, 24], [5, 24], [6, 24], [2, 34], [3, 34], [2, 35], [3, 35],
+    [4, 0],
+    [4, 1],
+    [5, 0],
+    [5, 1],
+    [4, 10],
+    [5, 10],
+    [6, 10],
+    [3, 11],
+    [7, 11],
+    [2, 12],
+    [8, 12],
+    [2, 13],
+    [8, 13],
+    [5, 14],
+    [3, 15],
+    [7, 15],
+    [4, 16],
+    [5, 16],
+    [6, 16],
+    [5, 17],
+    [2, 20],
+    [3, 20],
+    [4, 20],
+    [2, 21],
+    [3, 21],
+    [4, 21],
+    [1, 22],
+    [5, 22],
+    [0, 24],
+    [1, 24],
+    [5, 24],
+    [6, 24],
+    [2, 34],
+    [3, 34],
+    [2, 35],
+    [3, 35],
   ],
   pulsar: [2, 3, 4, 8, 9, 10].flatMap((c) =>
     [0, 5, 7, 12].flatMap((r): [number, number][] => [
@@ -20,11 +52,25 @@ const PRESETS: Record<string, [number, number][]> = {
       [c, r],
     ]),
   ),
-  "r-pentomino": [[0, 1], [0, 2], [1, 0], [1, 1], [2, 1]],
+  "r-pentomino": [
+    [0, 1],
+    [0, 2],
+    [1, 0],
+    [1, 1],
+    [2, 1],
+  ],
   spaceships: [0, 10, 20].flatMap((o): [number, number][] =>
-    [[0, 1], [0, 4], [1, 0], [2, 0], [2, 4], [3, 0], [3, 1], [3, 2], [3, 3]].map(
-      ([r, c]) => [r! + o, c!],
-    ),
+    [
+      [0, 1],
+      [0, 4],
+      [1, 0],
+      [2, 0],
+      [2, 4],
+      [3, 0],
+      [3, 1],
+      [3, 2],
+      [3, 3],
+    ].map(([r, c]) => [r! + o, c!]),
   ),
 };
 
@@ -37,7 +83,8 @@ function step(cells: Uint8Array) {
         for (let dc = -1; dc <= 1; dc++) {
           if (!dr && !dc) continue;
           // the board wraps around at the edges
-          n += cells[((r + dr + ROWS) % ROWS) * COLS + ((c + dc + COLS) % COLS)]!;
+          n +=
+            cells[((r + dr + ROWS) % ROWS) * COLS + ((c + dc + COLS) % COLS)]!;
         }
       const alive = cells[r * COLS + c];
       next[r * COLS + c] = n === 3 || (alive && n === 2) ? 1 : 0;
@@ -179,7 +226,10 @@ export default function Page() {
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement)
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLSelectElement
+      )
         return;
       if (e.key === " ") {
         e.preventDefault();
@@ -232,22 +282,22 @@ export default function Page() {
       </Stats>
 
       <div className="flex w-full flex-wrap items-center gap-2">
-        <GameButton variant="solid" onClick={() => setRunning(!running)} className="w-24">
+        <GameButton
+          variant="solid"
+          onClick={() => setRunning(!running)}
+          className="w-24"
+        >
           {running ? "Pause" : "Play"}
         </GameButton>
         <GameButton onClick={advance} disabled={running}>
           Step
         </GameButton>
-        <GameButton onClick={randomize}>
-          Random
-        </GameButton>
-        <GameButton onClick={clear}>
-          Clear
-        </GameButton>
+        <GameButton onClick={randomize}>Random</GameButton>
+        <GameButton onClick={clear}>Clear</GameButton>
         <select
           value=""
           onChange={(e) => e.target.value && preset(e.target.value)}
-          className="rounded-md border border-white/10 bg-transparent px-3 py-1.5 text-sm text-neutral-200 outline-none hover:border-white/25 focus-visible:border-primary"
+          className="focus-visible:border-primary rounded-md border border-white/10 bg-transparent px-3 py-1.5 text-sm text-neutral-200 outline-none hover:border-white/25"
         >
           <option value="" disabled>
             Presets…
@@ -266,9 +316,11 @@ export default function Page() {
             max={40}
             value={speed}
             onChange={(e) => setSpeed(Number(e.target.value))}
-            className="w-28 accent-primary"
+            className="accent-primary w-28"
           />
-          <span className={cn(mono, "w-12 tabular-nums text-neutral-200")}>{speed}/s</span>
+          <span className={cn(mono, "w-12 text-neutral-200 tabular-nums")}>
+            {speed}/s
+          </span>
         </label>
       </div>
 
@@ -285,7 +337,6 @@ export default function Page() {
           onPointerLeave={() => (sim.current.hover = -1)}
         />
       </div>
-
     </GameShell>
   );
 }

@@ -53,8 +53,8 @@ export default async function Page({
   return (
     <main className="min-h-screen bg-white p-2 text-black [@media(prefers-color-scheme:dark)]:bg-black [@media(prefers-color-scheme:dark)]:text-white">
       <h1>
-        {profile.displayName ? `${profile.displayName} - ` : ""}
-        @{profile.username}
+        {profile.displayName ? `${profile.displayName} - ` : ""}@
+        {profile.username}
       </h1>
       {profile.bio && <p>{profile.bio}</p>}
       <br />

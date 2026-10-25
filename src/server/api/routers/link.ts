@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { revalidateTag, unstable_cache } from "next/cache";
 import {
   publicProcedure,
   protectedProcedure,
@@ -6,6 +7,7 @@ import {
 } from "../trpc";
 import { link, linkProfile } from "~/server/db/schema";
 import { eq, desc, asc, and } from "drizzle-orm";
+import { db } from "~/server/db";
 
 const httpUrlSchema = z
   .string()
@@ -19,6 +21,28 @@ const httpUrlSchema = z
     { message: "URL must start with http:// or https://" },
   );
 
+const getPublicProfileCached = unstable_cache(
+  async (slug: string) => {
+    const profile = await db
+      .select()
+      .from(linkProfile)
+      .where(and(eq(linkProfile.slug, slug), eq(linkProfile.isPublic, true)))
+      .limit(1)
+      .execute();
+
+    if (!profile[0]) return null;
+
+    const links = await db.query.link.findMany({
+      where: and(eq(link.profileId, profile[0].id), eq(link.isActive, true)),
+      orderBy: [asc(link.order)],
+    });
+
+    return { profile: profile[0], links };
+  },
+  ["public-link-profile"],
+  { revalidate: 60, tags: ["public-link-profiles"] },
+);
+
 export const linkRouter = router({
   getProfile: publicProcedure
     .input(
@@ -27,23 +51,7 @@ export const linkRouter = router({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const profile = await ctx.db
-        .select()
-        .from(linkProfile)
-        .where(
-          and(eq(linkProfile.slug, input.slug), eq(linkProfile.isPublic, true)),
-        )
-        .limit(1)
-        .execute();
-
-      if (!profile[0]) return null;
-
-      const links = await ctx.db.query.link.findMany({
-        where: and(eq(link.profileId, profile[0].id), eq(link.isActive, true)),
-        orderBy: [asc(link.order)],
-      });
-
-      return { profile: profile[0], links };
+      return getPublicProfileCached(input.slug);
     }),
 
   getMyProfile: protectedProcedure.query(async ({ ctx }) => {
@@ -142,6 +150,8 @@ export const linkRouter = router({
         .values(profileData)
         .returning();
 
+      revalidateTag("public-link-profiles", "max");
+
       return createdProfile[0] ?? null;
     }),
 
@@ -188,6 +198,8 @@ export const linkRouter = router({
         .where(eq(linkProfile.userId, ctx.userId))
         .returning();
 
+      revalidateTag("public-link-profiles", "max");
+
       return updated[0] ?? null;
     }),
 
@@ -228,6 +240,8 @@ export const linkRouter = router({
         })
         .returning();
 
+      revalidateTag("public-link-profiles", "max");
+
       return created[0] ?? null;
     }),
 
@@ -264,6 +278,8 @@ export const linkRouter = router({
         .where(and(eq(link.id, linkId), eq(link.profileId, profile[0].id)))
         .returning();
 
+      revalidateTag("public-link-profiles", "max");
+
       return updated[0] ?? null;
     }),
 
@@ -289,6 +305,8 @@ export const linkRouter = router({
           and(eq(link.id, input.linkId), eq(link.profileId, profile[0].id)),
         )
         .execute();
+
+      revalidateTag("public-link-profiles", "max");
 
       return { success: true };
     }),

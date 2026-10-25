@@ -5,7 +5,6 @@ export default async function Page({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const { slug } = await params;
   const data = await trpc.short.getSlug({
     slug,

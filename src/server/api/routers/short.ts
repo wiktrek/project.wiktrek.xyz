@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { after } from "next/server";
 import { TRPCError } from "@trpc/server";
 import {
   publicProcedure,
@@ -7,7 +8,7 @@ import {
   getRequiredUserEmail,
 } from "../trpc";
 import { shortLink } from "~/server/db/schema";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 
 const slugSchema = z
   .string()
@@ -31,10 +32,15 @@ const httpUrlSchema = z
 function isSafeDestination(value: string) {
   const url = new URL(value);
   const hostname = url.hostname.toLowerCase();
-  return !url.username && !url.password &&
-    hostname !== "localhost" && hostname !== "127.0.0.1" &&
-    hostname !== "0.0.0.0" && !hostname.endsWith(".local") &&
-    !/^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[0-1])\.)/.test(hostname);
+  return (
+    !url.username &&
+    !url.password &&
+    hostname !== "localhost" &&
+    hostname !== "127.0.0.1" &&
+    hostname !== "0.0.0.0" &&
+    !hostname.endsWith(".local") &&
+    !/^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[0-1])\.)/.test(hostname)
+  );
 }
 
 export const shortRouter = router({
@@ -44,12 +50,26 @@ export const shortRouter = router({
       const s = await ctx.db.query.shortLink.findFirst({
         where: eq(shortLink.slug, input.slug),
       });
+      if (s) {
+        // Record the click after the response is sent so the redirect
+        // doesn't wait on the write.
+        after(() =>
+          ctx.db
+            .update(shortLink)
+            .set({
+              clickCount: sql`${shortLink.clickCount} + 1`,
+              lastClickedAt: new Date(),
+            })
+            .where(eq(shortLink.id, s.id)),
+        );
+      }
       return { s };
     }),
   getAllLinks: protectedProcedure.query(async ({ ctx }) => {
     const email = await getRequiredUserEmail(ctx);
     const links = await ctx.db.query.shortLink.findMany({
       where: eq(shortLink.owner, email),
+      orderBy: (link, { desc }) => [desc(link.createdAt)],
     });
     return links;
   }),
@@ -68,9 +88,20 @@ export const shortRouter = router({
     .mutation(async ({ ctx, input }) => {
       const email = await getRequiredUserEmail(ctx);
       const { slug, url } = input;
-      if (!isSafeDestination(url)) throw new TRPCError({ code: "BAD_REQUEST", message: "That destination is not allowed" });
-      const recentLinks = await ctx.db.query.shortLink.findMany({ where: eq(shortLink.owner, email), limit: 20 });
-      if (recentLinks.length >= 20) throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: "Link creation limit reached" });
+      if (!isSafeDestination(url))
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "That destination is not allowed",
+        });
+      const recentLinks = await ctx.db.query.shortLink.findMany({
+        where: eq(shortLink.owner, email),
+        limit: 20,
+      });
+      if (recentLinks.length >= 20)
+        throw new TRPCError({
+          code: "TOO_MANY_REQUESTS",
+          message: "Link creation limit reached",
+        });
       const createdSlug = await ctx.db
         .insert(shortLink)
         .values({ owner: email, slug: slug, url: url });
@@ -80,7 +111,15 @@ export const shortRouter = router({
     .input(z.object({ slug: slugSchema, url: httpUrlSchema }))
     .mutation(async ({ ctx, input }) => {
       const email = await getRequiredUserEmail(ctx);
-      if (!isSafeDestination(input.url)) throw new TRPCError({ code: "BAD_REQUEST", message: "That destination is not allowed" });
-      return ctx.db.update(shortLink).set({ url: input.url }).where(and(eq(shortLink.slug, input.slug), eq(shortLink.owner, email))).returning();
+      if (!isSafeDestination(input.url))
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "That destination is not allowed",
+        });
+      return ctx.db
+        .update(shortLink)
+        .set({ url: input.url })
+        .where(and(eq(shortLink.slug, input.slug), eq(shortLink.owner, email)))
+        .returning();
     }),
 });

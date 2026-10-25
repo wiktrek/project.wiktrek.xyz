@@ -5,7 +5,7 @@ import { Projects } from "~/app/_components/projects";
 
 const Home: NextPage = () => {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="bg-background text-foreground min-h-screen">
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6 md:px-10">
         <Link href="/" className="text-lg font-semibold text-neutral-50">
           projects.wiktrek.xyz

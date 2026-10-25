@@ -29,7 +29,6 @@ export function Paint() {
     canvas.width = 1600;
     canvas.height = Math.round((1600 * rect.height) / rect.width) || 1000;
     clear();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function clear() {

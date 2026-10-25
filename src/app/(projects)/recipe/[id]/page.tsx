@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { RecipeLikeButton } from "~/app/_components/recipeLikeButton";
 import { api } from "~/trpc/server";
-import type { recipeInputType } from "~/shared/recipe-validator";
 
 export default async function Page({
   params,
@@ -21,8 +20,7 @@ export default async function Page({
     notFound();
   }
 
-  const ingredients = data.ingredients as recipeInputType["ingredients"];
-  const instructions = data.instructions as recipeInputType["instructions"];
+  const { ingredients, instructions } = data;
 
   return (
     <main className="mx-auto max-w-2xl p-4">
@@ -41,6 +39,33 @@ export default async function Page({
               <p className="text-muted-foreground">{data.description}</p>
             )}
             <p className="text-sm font-medium">Rating: {data.rating}</p>
+            <div className="text-muted-foreground flex flex-wrap gap-2 text-sm">
+              <span>
+                {data.prepTimeMinutes + data.cookTimeMinutes} min total
+              </span>
+              <span>•</span>
+              <span>{data.servings} servings</span>
+              <span>•</span>
+              <span>{data.difficulty}</span>
+              {data.cuisine && (
+                <>
+                  <span>•</span>
+                  <span>{data.cuisine}</span>
+                </>
+              )}
+            </div>
+            <div className="flex flex-wrap gap-2 text-xs">
+              {data.category && (
+                <span className="rounded-full border px-2 py-1">
+                  {data.category}
+                </span>
+              )}
+              {data.dietaryTags.map((tag) => (
+                <span key={tag} className="rounded-full border px-2 py-1">
+                  {tag}
+                </span>
+              ))}
+            </div>
           </div>
           <RecipeLikeButton recipeId={data.id} />
         </div>
@@ -54,7 +79,7 @@ export default async function Page({
                 className="rounded-lg border px-4 py-3"
               >
                 <span className="font-medium">
-                  {item.amount} {"amountType" in item ? item.amountType : ""}
+                  {item.amount} {item.amountType}
                 </span>{" "}
                 {item.ingredient}
               </li>
@@ -67,8 +92,8 @@ export default async function Page({
           <ol className="list-decimal space-y-3 pl-5">
             {instructions.map((item, index) => (
               <li key={`${item.name}-${index}`} className="pl-1">
-                <p className="font-medium wrap-break-words">{item.name}</p>
-                <p className="text-muted-foreground text-sm wrap-break-words whitespace-pre-wrap">
+                <p className="wrap-break-words font-medium">{item.name}</p>
+                <p className="text-muted-foreground wrap-break-words text-sm whitespace-pre-wrap">
                   {item.step}
                 </p>
               </li>

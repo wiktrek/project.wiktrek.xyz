@@ -78,7 +78,7 @@ const projects: ProjectType[] = [
 ];
 const Home: NextPage = () => {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="bg-background text-foreground min-h-screen">
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6 md:px-10">
         <Link href="/" className="text-lg font-semibold text-neutral-50">
           projects.wiktrek.xyz
@@ -141,7 +141,7 @@ const Home: NextPage = () => {
 };
 function Project({ project }: { project: ProjectType }) {
   const className =
-    "group relative block overflow-hidden rounded-xl border border-white/10 bg-neutral-900/70 p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] backdrop-blur transition hover:-translate-y-1 hover:border-white/20 hover:shadow-[0_16px_32px_rgba(0,0,0,0.35)] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400";
+    "group relative block overflow-hidden rounded-xl border border-white/10 bg-neutral-900/70 p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] backdrop-blur transition hover:-translate-y-1 hover:border-white/20 hover:shadow-[0_16px_32px_rgba(0,0,0,0.35)] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40";
   const content = (
     <>
       <div className="flex items-center justify-between gap-4">
@@ -153,7 +153,7 @@ function Project({ project }: { project: ProjectType }) {
         {project.description}
       </p>
       <div className="mt-5 flex flex-wrap gap-2">
-        <span className="rounded-full border border-amber-300/40 bg-amber-400/10 px-2.5 py-1 text-[11px] uppercase tracking-[0.2em] text-amber-200">
+        <span className="rounded-full border border-neutral-500/40 bg-neutral-500/10 px-2.5 py-1 text-[11px] tracking-[0.2em] text-neutral-200 uppercase">
           {project.type === "project.wiktrek.xyz" ? "this site" : "external"}
         </span>
       </div>

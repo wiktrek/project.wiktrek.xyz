@@ -68,15 +68,43 @@
     {
       "idx": 9,
       "version": "7",
-      "when": 1789747200000,
-      "tag": "0011_todo_priority",
+      "when": 1789747199000,
+      "tag": "0009_recipe_metadata",
       "breakpoints": true
     },
     {
       "idx": 10,
       "version": "7",
+      "when": 1789747200000,
+      "tag": "0011_todo_priority",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
       "when": 1790100000000,
       "tag": "0010_poll_features",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1790899200000,
+      "tag": "0012_performance_indexes",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1790952240161,
+      "tag": "0013_todo_date_optional",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1790952240162,
+      "tag": "0014_short_link_stats",
       "breakpoints": true
     }
   ]

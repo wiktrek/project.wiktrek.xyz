@@ -12,6 +12,7 @@ export const messageRouter = router({
   getMessages: publicProcedure.query(async ({ ctx }) => {
     return await ctx.db.query.message.findMany({
       orderBy: [desc(message.createdAt)],
+      limit: 101,
     });
   }),
   createMessage: protectedProcedure

@@ -105,7 +105,12 @@ export function DetailDialog({
             />
           </label>
           <label className="space-y-1.5 text-sm font-medium">
-            <span>Date</span>
+            <span>
+              Date{" "}
+              <span className="text-muted-foreground font-normal">
+                (optional)
+              </span>
+            </span>
             <Input
               type="datetime-local"
               value={detail.date}

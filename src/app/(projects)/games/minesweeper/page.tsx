@@ -62,13 +62,20 @@ function neighbors(i: number, rows: number, cols: number) {
       if (!dr && !dc) continue;
       const rr = r + dr;
       const cc = c + dc;
-      if (rr >= 0 && rr < rows && cc >= 0 && cc < cols) out.push(rr * cols + cc);
+      if (rr >= 0 && rr < rows && cc >= 0 && cc < cols)
+        out.push(rr * cols + cc);
     }
   return out;
 }
 
 // mines are placed after the first click, keeping it and its neighbors clear
-function layMines(board: Cell[], safe: number, rows: number, cols: number, mines: number) {
+function layMines(
+  board: Cell[],
+  safe: number,
+  rows: number,
+  cols: number,
+  mines: number,
+) {
   const forbidden = new Set([safe, ...neighbors(safe, rows, cols)]);
   const spots = board.map((_, i) => i).filter((i) => !forbidden.has(i));
   for (let n = 0; n < mines && spots.length; n++) {
@@ -76,7 +83,9 @@ function layMines(board: Cell[], safe: number, rows: number, cols: number, mines
     board[pick]!.mine = true;
   }
   board.forEach((cell, i) => {
-    cell.adjacent = neighbors(i, rows, cols).filter((n) => board[n]!.mine).length;
+    cell.adjacent = neighbors(i, rows, cols).filter(
+      (n) => board[n]!.mine,
+    ).length;
   });
 }
 
@@ -104,7 +113,8 @@ export default function Page() {
   useEffect(() => {
     if (status !== "playing") return;
     const interval = setInterval(
-      () => setTime(Math.floor((performance.now() - startedAt.current) / 100) / 10),
+      () =>
+        setTime(Math.floor((performance.now() - startedAt.current) / 100) / 10),
       100,
     );
     return () => clearInterval(interval);
@@ -130,7 +140,8 @@ export default function Page() {
     return hitMine;
   }
 
-  function finish(cells: Cell[], i: number, hitMine: boolean) {
+  // `now` is the click's event.timeStamp, on the same clock as performance.now()
+  function finish(cells: Cell[], i: number, hitMine: boolean, now: number) {
     if (hitMine) {
       // reveal every mine, exploding outward from the one you hit
       const or = Math.floor(i / cols);
@@ -138,7 +149,8 @@ export default function Page() {
       cells.forEach((cell, j) => {
         if (cell.mine && !cell.flag) {
           cell.open = true;
-          cell.delay = Math.hypot(Math.floor(j / cols) - or, (j % cols) - oc) * 40;
+          cell.delay =
+            Math.hypot(Math.floor(j / cols) - or, (j % cols) - oc) * 40;
         }
       });
       setStatus("lost");
@@ -147,13 +159,13 @@ export default function Page() {
     if (cells.every((c) => c.mine || c.open)) {
       cells.forEach((c) => c.mine && (c.flag = true));
       setStatus("won");
-      const final = Math.round((performance.now() - startedAt.current) / 100) / 10;
+      const final = Math.round((now - startedAt.current) / 100) / 10;
       setTime(final);
       setNewBest(submitBest(final));
     }
   }
 
-  function reveal(i: number) {
+  function reveal(i: number, now: number) {
     if (status === "won" || status === "lost") return;
     const cells = board.map((c) => ({ ...c }));
     const cell = cells[i]!;
@@ -162,7 +174,7 @@ export default function Page() {
     if (status === "ready") {
       layMines(cells, i, rows, cols, mines);
       setStatus("playing");
-      startedAt.current = performance.now();
+      startedAt.current = now;
     }
 
     let targets = [i];
@@ -175,7 +187,7 @@ export default function Page() {
     }
     const hitMine = open(targets, cells, i);
     setBoard(cells);
-    finish(cells, i, hitMine);
+    finish(cells, i, hitMine, now);
   }
 
   function toggleFlag(i: number) {
@@ -202,17 +214,18 @@ export default function Page() {
     if (longPress.current) clearTimeout(longPress.current.timer);
   }
 
-  function onClick(i: number) {
+  function onClick(i: number, now: number) {
     cancelLongPress();
     if (longPress.current?.fired) {
       longPress.current = null;
       return;
     }
     if (flagMode && !board[i]!.open) toggleFlag(i);
-    else reveal(i);
+    else reveal(i, now);
   }
 
-  const cellSize = level === "easy" ? "w-9 h-9 sm:w-10 sm:h-10" : "w-7 h-7 sm:w-8 sm:h-8";
+  const cellSize =
+    level === "easy" ? "w-9 h-9 sm:w-10 sm:h-10" : "w-7 h-7 sm:w-8 sm:h-8";
 
   return (
     <GameShell
@@ -254,7 +267,7 @@ export default function Page() {
             {board.map((cell, i) => (
               <button
                 key={`${level}-${i}`}
-                onClick={() => onClick(i)}
+                onClick={(e) => onClick(i, e.timeStamp)}
                 onContextMenu={(e) => {
                   e.preventDefault();
                   toggleFlag(i);
@@ -266,7 +279,7 @@ export default function Page() {
                 className={cn(
                   cellSize,
                   mono,
-                  "relative flex touch-manipulation select-none items-center justify-center rounded-[3px] text-sm font-medium transition-colors sm:text-base",
+                  "relative flex touch-manipulation items-center justify-center rounded-[3px] text-sm font-medium transition-colors select-none sm:text-base",
                   cell.open
                     ? cell.mine
                       ? "bg-red-400/70"
@@ -281,7 +294,9 @@ export default function Page() {
                     transition={{ delay: cell.delay / 1000, duration: 0.15 }}
                     className={cn(
                       "absolute inset-0 flex items-center justify-center rounded-[3px]",
-                      cell.mine ? "bg-red-400/80" : NUMBER_COLORS[cell.adjacent],
+                      cell.mine
+                        ? "bg-red-400/80"
+                        : NUMBER_COLORS[cell.adjacent],
                     )}
                   >
                     {cell.mine ? (
@@ -323,7 +338,12 @@ export default function Page() {
                   {status === "won" ? "Cleared" : "Boom"}
                 </p>
                 {status === "won" && (
-                  <p className={cn(mono, "text-sm tabular-nums text-neutral-400")}>
+                  <p
+                    className={cn(
+                      mono,
+                      "text-sm text-neutral-400 tabular-nums",
+                    )}
+                  >
                     {time.toFixed(1)}s
                   </p>
                 )}

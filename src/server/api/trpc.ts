@@ -39,6 +39,11 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
     getCurrentUser,
     getUserEmail: async () => {
       if (!authContext.userId) return null;
+      // Read the email from the session token when the custom claim is
+      // configured in Clerk, avoiding a Clerk API round-trip per request.
+      const claimEmail = (authContext.sessionClaims as { email?: unknown })
+        ?.email;
+      if (typeof claimEmail === "string" && claimEmail) return claimEmail;
       const user = await getCurrentUser();
       return user?.primaryEmailAddress?.emailAddress ?? null;
     },

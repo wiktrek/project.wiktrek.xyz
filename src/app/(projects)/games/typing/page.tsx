@@ -137,7 +137,16 @@ export default function TypingGame() {
 
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     // editing mid-word would break the diffing, so the caret stays at the end
-    if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].includes(e.key)) {
+    if (
+      [
+        "ArrowLeft",
+        "ArrowRight",
+        "ArrowUp",
+        "ArrowDown",
+        "Home",
+        "End",
+      ].includes(e.key)
+    ) {
       e.preventDefault();
       return;
     }
@@ -202,7 +211,7 @@ export default function TypingGame() {
           className="flex w-full flex-col items-start gap-3 py-6"
         >
           {newBest && <NewBest />}
-          <p className={cn(mono, "text-7xl tabular-nums text-neutral-50")}>
+          <p className={cn(mono, "text-7xl text-neutral-50 tabular-nums")}>
             {wpm}
             <span className="ml-3 text-xl text-neutral-500">wpm</span>
           </p>
@@ -287,7 +296,8 @@ function Word({
       ref={ref}
       className={cn(
         "relative whitespace-nowrap",
-        wrong && "underline decoration-red-400/60 decoration-1 underline-offset-[6px]",
+        wrong &&
+          "underline decoration-red-400/60 decoration-1 underline-offset-[6px]",
       )}
     >
       {word.split("").map((ch, i) => (
@@ -325,7 +335,7 @@ function Caret() {
     <motion.span
       layoutId="caret"
       transition={{ type: "spring", stiffness: 900, damping: 50 }}
-      className="absolute -left-px bottom-1.5 top-1.5 w-0.5 bg-primary"
+      className="bg-primary absolute top-1.5 bottom-1.5 -left-px w-0.5"
     />
   );
 }

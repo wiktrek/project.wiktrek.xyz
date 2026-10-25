@@ -23,9 +23,7 @@ function format(n: number) {
   if (!Number.isFinite(n)) return "Error";
   // avoid 0.1 + 0.2 = 0.30000000000000004
   const rounded = Number.parseFloat(n.toPrecision(12));
-  return Math.abs(rounded) >= 1e12
-    ? rounded.toExponential(6)
-    : String(rounded);
+  return Math.abs(rounded) >= 1e12 ? rounded.toExponential(6) : String(rounded);
 }
 
 export default function Calculator() {
@@ -84,7 +82,9 @@ export default function Calculator() {
 
   function backspace() {
     if (fresh || error) return;
-    setDisplay(display.length > 1 && display !== "-0" ? display.slice(0, -1) : "0");
+    setDisplay(
+      display.length > 1 && display !== "-0" ? display.slice(0, -1) : "0",
+    );
   }
 
   function negate() {
@@ -130,29 +130,62 @@ export default function Calculator() {
     active?: boolean;
     wide?: boolean;
   }[] = [
-    { label: prev !== null || display !== "0" ? "C" : "AC", onClick: clear, kind: "fn" },
+    {
+      label: prev !== null || display !== "0" ? "C" : "AC",
+      onClick: clear,
+      kind: "fn",
+    },
     { label: "±", onClick: negate, kind: "fn" },
     { label: "%", onClick: percent, kind: "fn" },
-    { label: "÷", onClick: () => operator("÷"), kind: "op", active: op === "÷" && fresh },
+    {
+      label: "÷",
+      onClick: () => operator("÷"),
+      kind: "op",
+      active: op === "÷" && fresh,
+    },
     ...["7", "8", "9"].map((d) => ({ label: d, onClick: () => digit(d) })),
-    { label: "×", onClick: () => operator("×"), kind: "op", active: op === "×" && fresh },
+    {
+      label: "×",
+      onClick: () => operator("×"),
+      kind: "op",
+      active: op === "×" && fresh,
+    },
     ...["4", "5", "6"].map((d) => ({ label: d, onClick: () => digit(d) })),
-    { label: "−", onClick: () => operator("−"), kind: "op", active: op === "−" && fresh },
+    {
+      label: "−",
+      onClick: () => operator("−"),
+      kind: "op",
+      active: op === "−" && fresh,
+    },
     ...["1", "2", "3"].map((d) => ({ label: d, onClick: () => digit(d) })),
-    { label: "+", onClick: () => operator("+"), kind: "op", active: op === "+" && fresh },
+    {
+      label: "+",
+      onClick: () => operator("+"),
+      kind: "op",
+      active: op === "+" && fresh,
+    },
     { label: "0", onClick: () => digit("0"), wide: true },
     { label: ".", onClick: () => digit(".") },
     { label: "=", onClick: equals, kind: "eq" },
   ];
 
   const size =
-    display.length > 11 ? "text-3xl" : display.length > 8 ? "text-4xl" : "text-5xl";
+    display.length > 11
+      ? "text-3xl"
+      : display.length > 8
+        ? "text-4xl"
+        : "text-5xl";
 
   return (
     <GameShell title="Calculator" subtitle="Keyboard works too.">
       <div className="w-full max-w-xs rounded-xl border border-white/10 bg-neutral-900 p-3">
         <div className="mb-3 flex h-28 flex-col items-end justify-end gap-1 overflow-hidden px-3 py-2">
-          <span className={cn(mono, "h-5 truncate text-sm tabular-nums text-neutral-500")}>
+          <span
+            className={cn(
+              mono,
+              "h-5 truncate text-sm text-neutral-500 tabular-nums",
+            )}
+          >
             {history || (prev !== null && op ? `${format(prev)} ${op}` : "")}
           </span>
           <div className="flex w-full items-center justify-end gap-2">
@@ -166,7 +199,7 @@ export default function Calculator() {
             <span
               className={cn(
                 mono,
-                "truncate tabular-nums tracking-tight text-neutral-50",
+                "truncate tracking-tight text-neutral-50 tabular-nums",
                 size,
                 error && "text-red-400",
               )}
@@ -184,13 +217,16 @@ export default function Calculator() {
                 mono,
                 "h-14 rounded-lg text-xl transition-colors duration-100 active:translate-y-px",
                 key.wide && "col-span-2",
-                !key.kind && "bg-white/[0.05] text-neutral-100 hover:bg-white/[0.09]",
-                key.kind === "fn" && "text-neutral-400 hover:bg-white/[0.05] hover:text-neutral-100",
+                !key.kind &&
+                  "bg-white/[0.05] text-neutral-100 hover:bg-white/[0.09]",
+                key.kind === "fn" &&
+                  "text-neutral-400 hover:bg-white/[0.05] hover:text-neutral-100",
                 key.kind === "op" &&
                   (key.active
                     ? "bg-primary text-primary-foreground"
                     : "text-primary hover:bg-white/[0.05]"),
-                key.kind === "eq" && "bg-primary text-primary-foreground hover:bg-primary-200",
+                key.kind === "eq" &&
+                  "bg-primary text-primary-foreground hover:bg-primary-200",
               )}
             >
               {key.label}

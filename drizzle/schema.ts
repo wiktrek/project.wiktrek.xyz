@@ -6,8 +6,9 @@ import {
   serial,
   varchar,
   timestamp,
-  json,
   boolean,
+  doublePrecision,
+  primaryKey,
   pgTable,
 } from "drizzle-orm/pg-core";
 import { sql, relations } from "drizzle-orm";
@@ -23,6 +24,10 @@ export const like = pgTable(
   (table) => {
     return {
       ownerIdx: index("Like_owner_idx").on(table.owner),
+      ownerRecipeIdx: index("Like_owner_recipe_idx").on(
+        table.owner,
+        table.recipeId,
+      ),
     };
   },
 );
@@ -37,7 +42,6 @@ export const pollQuestion = pgTable(
     }).default(sql`now()`),
     endsAt: timestamp("endsAt", { mode: "date", withTimezone: true }),
     question: varchar("question", { length: 5000 }).notNull(),
-    options: json("options").notNull(),
     questionType: varchar("questionType", { length: 20 })
       .notNull()
       .default("single"),
@@ -66,14 +70,23 @@ export const recipe = pgTable(
     difficulty: varchar("difficulty", { length: 32 }).notNull().default("Easy"),
     cuisine: varchar("cuisine", { length: 64 }).notNull().default(""),
     category: varchar("category", { length: 64 }).notNull().default(""),
-    dietaryTags: json("dietaryTags").$type<string[]>().notNull().default([]),
-    ingredients: json("ingredients").notNull(),
     owner: varchar("owner", { length: 255 }).notNull(),
-    instructions: json("instructions").notNull(),
   },
   (table) => {
     return {
       ownerIdx: index("Recipe_owner_idx").on(table.owner),
+      categoryRatingIdx: index("Recipe_category_rating_idx").on(
+        table.category,
+        table.rating,
+      ),
+      difficultyRatingIdx: index("Recipe_difficulty_rating_idx").on(
+        table.difficulty,
+        table.rating,
+      ),
+      ownerRatingIdx: index("Recipe_owner_rating_idx").on(
+        table.owner,
+        table.rating,
+      ),
     };
   },
 );
@@ -89,10 +102,16 @@ export const shortLink = pgTable(
     owner: varchar("owner", { length: 191 }).notNull(),
     url: varchar("url", { length: 255 }).notNull(),
     slug: varchar("slug", { length: 191 }).notNull(),
+    clickCount: integer("clickCount").notNull().default(0),
+    lastClickedAt: timestamp("lastClickedAt", {
+      mode: "date",
+      withTimezone: true,
+    }),
   },
   (table) => {
     return {
       slugIdx: index("ShortLink_slug_idx").on(table.slug),
+      ownerIdx: index("ShortLink_owner_idx").on(table.owner),
       shortLinkSlugKey: unique("ShortLink_slug_key").on(table.slug),
     };
   },
@@ -106,18 +125,21 @@ export const vote = pgTable(
       mode: "date",
       withTimezone: true,
     }).default(sql`now()`),
-    questionId: integer("questionId").notNull(),
+    questionId: integer("questionId")
+      .notNull()
+      .references(() => pollQuestion.id, { onDelete: "cascade" }),
     voterToken: varchar("voterToken", { length: 255 }).notNull(),
     choice: integer("choice").notNull(),
-    answers: json("answers").$type<number[]>().notNull().default([]),
   },
   (table) => {
     return {
       questionIdIdx: index("Vote_questionId_idx").on(table.questionId),
       voterTokenIdx: index("Vote_voterToken_idx").on(table.voterToken),
+      // Columns in table order; drizzle-kit reads them that way, and a
+      // different order makes every push drop and re-add the constraint.
       voteVoterTokenQuestionIdKey: unique("Vote_voterToken_questionId_key").on(
-        table.voterToken,
         table.questionId,
+        table.voterToken,
       ),
     };
   },
@@ -135,7 +157,7 @@ export const message = pgTable(
   },
   (table) => {
     return {
-      MessageIdx: index("Message_idx").on(table.id),
+      createdAtIdx: index("Message_createdAt_idx").on(table.createdAt),
     };
   },
 );
@@ -220,9 +242,7 @@ export const todo = pgTable(
     date: timestamp("date", {
       mode: "date",
       withTimezone: true,
-    })
-      .notNull()
-      .default(sql`now()`),
+    }),
     status: varchar("status", { length: 20 }).notNull().default("todo"),
     priority: varchar("priority", { length: 10 }).notNull().default("medium"),
     stageId: integer("stageId"),
@@ -230,7 +250,6 @@ export const todo = pgTable(
       mode: "date",
       withTimezone: true,
     }),
-    tags: json("tags").$type<string[]>().notNull().default([]),
     order: integer("order").notNull().default(0),
   },
   (table) => {
@@ -243,6 +262,11 @@ export const todo = pgTable(
       ownerStageIdx: index("Todo_owner_stage_idx").on(
         table.owner,
         table.stageId,
+      ),
+      ownerStageOrderIdx: index("Todo_owner_stage_order_idx").on(
+        table.owner,
+        table.stageId,
+        table.order,
       ),
     };
   },
@@ -265,6 +289,10 @@ export const todoStage = pgTable(
   (table) => {
     return {
       ownerIdx: index("TodoStage_owner_idx").on(table.owner),
+      ownerOrderIdx: index("TodoStage_owner_order_idx").on(
+        table.owner,
+        table.order,
+      ),
     };
   },
 );
@@ -284,6 +312,196 @@ export const todoSettings = pgTable(
     };
   },
 );
+
+export const pollOption = pgTable(
+  "PollOption",
+  {
+    id: serial("id").primaryKey(),
+    questionId: integer("questionId")
+      .notNull()
+      .references(() => pollQuestion.id, { onDelete: "cascade" }),
+    position: integer("position").notNull(),
+    text: varchar("text", { length: 200 }).notNull(),
+  },
+  (table) => {
+    return {
+      questionPositionKey: unique("PollOption_questionId_position_key").on(
+        table.questionId,
+        table.position,
+      ),
+    };
+  },
+);
+
+// One row per selected option; rank keeps the order for ranking polls.
+export const voteAnswer = pgTable(
+  "VoteAnswer",
+  {
+    voteId: integer("voteId")
+      .notNull()
+      .references(() => vote.id, { onDelete: "cascade" }),
+    optionId: integer("optionId")
+      .notNull()
+      .references(() => pollOption.id, { onDelete: "cascade" }),
+    rank: integer("rank").notNull(),
+  },
+  (table) => {
+    return {
+      pk: primaryKey({
+        name: "VoteAnswer_pkey",
+        columns: [table.voteId, table.rank],
+      }),
+      optionIdx: index("VoteAnswer_optionId_idx").on(table.optionId),
+    };
+  },
+);
+
+export const recipeIngredient = pgTable(
+  "RecipeIngredient",
+  {
+    id: serial("id").primaryKey(),
+    recipeId: integer("recipeId")
+      .notNull()
+      .references(() => recipe.id, { onDelete: "cascade" }),
+    position: integer("position").notNull(),
+    ingredient: varchar("ingredient", { length: 128 }).notNull(),
+    amount: doublePrecision("amount").notNull(),
+    amountType: varchar("amountType", { length: 32 }).notNull(),
+  },
+  (table) => {
+    return {
+      recipePositionKey: unique("RecipeIngredient_recipeId_position_key").on(
+        table.recipeId,
+        table.position,
+      ),
+    };
+  },
+);
+
+export const recipeInstruction = pgTable(
+  "RecipeInstruction",
+  {
+    id: serial("id").primaryKey(),
+    recipeId: integer("recipeId")
+      .notNull()
+      .references(() => recipe.id, { onDelete: "cascade" }),
+    position: integer("position").notNull(),
+    name: varchar("name", { length: 128 }).notNull(),
+    step: varchar("step", { length: 512 }).notNull(),
+  },
+  (table) => {
+    return {
+      recipePositionKey: unique("RecipeInstruction_recipeId_position_key").on(
+        table.recipeId,
+        table.position,
+      ),
+    };
+  },
+);
+
+export const recipeDietaryTag = pgTable(
+  "RecipeDietaryTag",
+  {
+    recipeId: integer("recipeId")
+      .notNull()
+      .references(() => recipe.id, { onDelete: "cascade" }),
+    tag: varchar("tag", { length: 32 }).notNull(),
+  },
+  (table) => {
+    return {
+      pk: primaryKey({
+        name: "RecipeDietaryTag_pkey",
+        columns: [table.recipeId, table.tag],
+      }),
+      tagIdx: index("RecipeDietaryTag_tag_idx").on(table.tag),
+    };
+  },
+);
+
+export const todoTag = pgTable(
+  "TodoTag",
+  {
+    todoId: integer("todoId")
+      .notNull()
+      .references(() => todo.id, { onDelete: "cascade" }),
+    tag: varchar("tag", { length: 50 }).notNull(),
+  },
+  (table) => {
+    return {
+      pk: primaryKey({
+        name: "TodoTag_pkey",
+        columns: [table.todoId, table.tag],
+      }),
+    };
+  },
+);
+
+export const pollQuestionRelations = relations(pollQuestion, ({ many }) => ({
+  options: many(pollOption),
+}));
+
+export const pollOptionRelations = relations(pollOption, ({ one }) => ({
+  question: one(pollQuestion, {
+    fields: [pollOption.questionId],
+    references: [pollQuestion.id],
+  }),
+}));
+
+export const voteRelations = relations(vote, ({ many }) => ({
+  answers: many(voteAnswer),
+}));
+
+export const voteAnswerRelations = relations(voteAnswer, ({ one }) => ({
+  vote: one(vote, { fields: [voteAnswer.voteId], references: [vote.id] }),
+  option: one(pollOption, {
+    fields: [voteAnswer.optionId],
+    references: [pollOption.id],
+  }),
+}));
+
+export const recipeRelations = relations(recipe, ({ many }) => ({
+  ingredients: many(recipeIngredient),
+  instructions: many(recipeInstruction),
+  dietaryTags: many(recipeDietaryTag),
+}));
+
+export const recipeIngredientRelations = relations(
+  recipeIngredient,
+  ({ one }) => ({
+    recipe: one(recipe, {
+      fields: [recipeIngredient.recipeId],
+      references: [recipe.id],
+    }),
+  }),
+);
+
+export const recipeInstructionRelations = relations(
+  recipeInstruction,
+  ({ one }) => ({
+    recipe: one(recipe, {
+      fields: [recipeInstruction.recipeId],
+      references: [recipe.id],
+    }),
+  }),
+);
+
+export const recipeDietaryTagRelations = relations(
+  recipeDietaryTag,
+  ({ one }) => ({
+    recipe: one(recipe, {
+      fields: [recipeDietaryTag.recipeId],
+      references: [recipe.id],
+    }),
+  }),
+);
+
+export const todoRelations = relations(todo, ({ many }) => ({
+  tags: many(todoTag),
+}));
+
+export const todoTagRelations = relations(todoTag, ({ one }) => ({
+  todo: one(todo, { fields: [todoTag.todoId], references: [todo.id] }),
+}));
 
 export const linkProfileRelations = relations(linkProfile, ({ many }) => ({
   links: many(link),

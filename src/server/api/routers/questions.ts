@@ -6,9 +6,14 @@ import {
   createTRPCRouter as router,
   getRequiredUserEmail,
 } from "../trpc";
-import { vote, pollQuestion } from "~/server/db/schema";
+import { vote, voteAnswer, pollQuestion, pollOption } from "~/server/db/schema";
 
-import { eq, sql, and } from "drizzle-orm";
+import { eq, sql, and, asc } from "drizzle-orm";
+
+const orderedOptions = {
+  columns: { id: true, text: true },
+  orderBy: asc(pollOption.position),
+} as const;
 export const questionRouter = router({
   getAllMY: protectedProcedure.query(async ({ ctx }) => {
     const email = await getRequiredUserEmail(ctx);
@@ -20,32 +25,55 @@ export const questionRouter = router({
     .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
       const { id } = input;
-      const question = await ctx.db.query.pollQuestion.findFirst({
-        where: eq(pollQuestion.id, id),
-      });
       const voterToken = ctx.auth.userId ? `user:${ctx.auth.userId}` : null;
-      const myVote = voterToken
-        ? await ctx.db.query.vote.findFirst({
-            where: and(
-              eq(vote.questionId, id),
-              eq(vote.voterToken, voterToken),
-            ),
-          })
-        : undefined;
-      const email = await ctx.getUserEmail();
+      const [question, myVote, email] = await Promise.all([
+        ctx.db.query.pollQuestion.findFirst({
+          where: eq(pollQuestion.id, id),
+          with: { options: orderedOptions },
+        }),
+        voterToken
+          ? ctx.db.query.vote.findFirst({
+              where: and(
+                eq(vote.questionId, id),
+                eq(vote.voterToken, voterToken),
+              ),
+            })
+          : Promise.resolve(undefined),
+        ctx.getUserEmail(),
+      ]);
       const isOwner = email !== null && question?.ownerEmail === email;
 
       const rest = {
-        question,
+        question: question && {
+          ...question,
+          options: question.options.map(({ text }) => ({ text })),
+        },
         vote: myVote,
         isOwner,
       };
       if (rest.vote || rest.isOwner) {
+        const position = new Map(
+          question?.options.map((option, index) => [option.id, index]),
+        );
         const votes = await ctx.db.query.vote.findMany({
           where: eq(vote.questionId, id),
-          columns: { choice: true, answers: true, createdAt: true },
+          columns: { choice: true, createdAt: true },
+          with: {
+            answers: {
+              columns: { optionId: true },
+              orderBy: [asc(voteAnswer.rank)],
+            },
+          },
         });
-        return { ...rest, votes };
+        return {
+          ...rest,
+          votes: votes.map((item) => ({
+            ...item,
+            answers: item.answers.map(
+              (answer) => position.get(answer.optionId) ?? -1,
+            ),
+          })),
+        };
       } else {
         return { ...rest, votes: undefined };
       }
@@ -71,21 +99,38 @@ export const questionRouter = router({
       const { questionId, option } = input;
       const question = await ctx.db.query.pollQuestion.findFirst({
         where: eq(pollQuestion.id, questionId),
+        with: { options: orderedOptions },
       });
       if (!question) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Poll not found" });
       }
       if (question.end || (question.endsAt && question.endsAt <= new Date())) {
-        throw new TRPCError({ code: "BAD_REQUEST", message: "This poll is closed" });
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "This poll is closed",
+        });
       }
 
-      const options = question.options as { text: string }[];
+      const options = question.options;
       const answers = input.answers ?? [option];
-      if ((question.questionType === "single" || question.questionType === "rating") && answers.length !== 1) {
-        throw new TRPCError({ code: "BAD_REQUEST", message: "Choose exactly one answer" });
+      if (
+        (question.questionType === "single" ||
+          question.questionType === "rating") &&
+        answers.length !== 1
+      ) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Choose exactly one answer",
+        });
       }
-      if (question.questionType === "ranking" && new Set(answers).size !== answers.length) {
-        throw new TRPCError({ code: "BAD_REQUEST", message: "Ranking answers must be unique" });
+      if (
+        question.questionType === "ranking" &&
+        new Set(answers).size !== answers.length
+      ) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Ranking answers must be unique",
+        });
       }
       if (!options[option] || answers.some((answer) => !options[answer])) {
         throw new TRPCError({
@@ -103,13 +148,21 @@ export const questionRouter = router({
       });
       if (existingVote) return false;
 
-      const createdVote = await ctx.db.insert(vote).values({
-        questionId: questionId,
-        choice: option,
-        voterToken,
-        answers,
+      await ctx.db.transaction(async (tx) => {
+        const [createdVote] = await tx
+          .insert(vote)
+          .values({ questionId: questionId, choice: option, voterToken })
+          .returning({ id: vote.id });
+        if (!createdVote) throw new Error("Failed to record vote");
+        await tx.insert(voteAnswer).values(
+          answers.map((answer, rank) => ({
+            voteId: createdVote.id,
+            optionId: options[answer]!.id,
+            rank,
+          })),
+        );
       });
-      return createdVote;
+      return true;
     }),
   createQuestion: protectedProcedure
     .input(
@@ -119,25 +172,36 @@ export const questionRouter = router({
           .array(z.object({ text: z.string().min(1).max(200) }))
           .min(2)
           .max(200),
-        questionType: z.enum(["single", "multiple", "ranking", "rating"]).default("single"),
+        questionType: z
+          .enum(["single", "multiple", "ranking", "rating"])
+          .default("single"),
         endsAt: z.coerce.date().nullable().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       const { question, options, questionType, endsAt } = input;
       const email = await getRequiredUserEmail(ctx);
-      const createdQuestion = await ctx.db
-        .insert(pollQuestion)
-        .values({
-          question: question,
-          ownerEmail: email,
-          end: false,
-          options: options,
-          questionType,
-          endsAt,
-        })
-        .returning({ insertedId: pollQuestion.id });
-      return createdQuestion;
+      return ctx.db.transaction(async (tx) => {
+        const createdQuestion = await tx
+          .insert(pollQuestion)
+          .values({
+            question: question,
+            ownerEmail: email,
+            end: false,
+            questionType,
+            endsAt,
+          })
+          .returning({ insertedId: pollQuestion.id });
+        const questionId = createdQuestion[0]!.insertedId;
+        await tx.insert(pollOption).values(
+          options.map(({ text }, position) => ({
+            questionId,
+            position,
+            text,
+          })),
+        );
+        return createdQuestion;
+      });
     }),
   deleteQuestion: protectedProcedure
     .input(

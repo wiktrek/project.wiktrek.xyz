@@ -18,6 +18,13 @@ export const recipeValidator = z.object({
         .max(2048, "Image URL must be 2048 characters or fewer"),
     ])
     .optional(),
+  prepTimeMinutes: z.number().int().min(0).max(1440),
+  cookTimeMinutes: z.number().int().min(0).max(1440),
+  servings: z.number().int().positive().max(100),
+  difficulty: z.enum(["Easy", "Medium", "Hard"]),
+  cuisine: z.string().max(64),
+  category: z.string().min(1).max(64),
+  dietaryTags: z.array(z.string().max(32)).max(10),
   ingredients: z
     .array(
       z.object({

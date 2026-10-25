@@ -5,7 +5,7 @@ import { useUser } from "@clerk/nextjs";
 import { Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { cn } from "~/app/_components/lib/utils";
 import { Button } from "~/app/_components/ui/button";
 import { Input } from "~/app/_components/ui/input";
@@ -36,6 +36,22 @@ function isValidUrl(value?: string) {
 const invalidFieldClass =
   "border-red-500/70 focus-visible:border-red-500 focus-visible:ring-red-500/40";
 
+const categories = [
+  "Breakfast",
+  "Lunch",
+  "Dinner",
+  "Dessert",
+  "Snack",
+  "Quick meal",
+];
+const dietaryOptions = [
+  "Vegetarian",
+  "Vegan",
+  "Gluten-free",
+  "Dairy-free",
+  "Low-carb",
+];
+
 export default function Page() {
   const router = useRouter();
   const { isLoaded, isSignedIn, user } = useUser();
@@ -44,7 +60,6 @@ export default function Page() {
     register,
     handleSubmit,
     control,
-    watch,
     formState: { errors },
   } = useForm<recipeInputType>({
     resolver: zodResolver(recipeValidator),
@@ -52,6 +67,13 @@ export default function Page() {
       name: "",
       description: "",
       imageUrl: "",
+      prepTimeMinutes: 15,
+      cookTimeMinutes: 30,
+      servings: 4,
+      difficulty: "Easy",
+      cuisine: "",
+      category: "Dinner",
+      dietaryTags: [],
       ingredients: [{ ingredient: "", amount: 1, amountType: "" }],
       instructions: [{ name: "", step: "" }],
     },
@@ -84,7 +106,7 @@ export default function Page() {
       toast("Failed to create recipe");
     },
   });
-  const imageUrl = watch("imageUrl");
+  const imageUrl = useWatch({ control, name: "imageUrl" });
   const showImagePreview = isValidUrl(imageUrl);
   const zodFieldErrors = mutation.error?.data?.zodError?.fieldErrors;
   const mutationMessages = zodFieldErrors
@@ -167,6 +189,84 @@ export default function Page() {
                 className="aspect-video w-full rounded-lg object-cover"
               />
             )}
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Prep time (min)</label>
+              <Input
+                type="number"
+                min="0"
+                {...register("prepTimeMinutes", { valueAsNumber: true })}
+              />
+              <FieldError message={errors.prepTimeMinutes?.message} />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Cook time (min)</label>
+              <Input
+                type="number"
+                min="0"
+                {...register("cookTimeMinutes", { valueAsNumber: true })}
+              />
+              <FieldError message={errors.cookTimeMinutes?.message} />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Servings</label>
+              <Input
+                type="number"
+                min="1"
+                {...register("servings", { valueAsNumber: true })}
+              />
+              <FieldError message={errors.servings?.message} />
+            </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Difficulty</label>
+              <select
+                className="border-border/60 bg-muted/40 h-10 w-full rounded-lg border px-3 text-sm"
+                {...register("difficulty")}
+              >
+                <option>Easy</option>
+                <option>Medium</option>
+                <option>Hard</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Category</label>
+              <select
+                className="border-border/60 bg-muted/40 h-10 w-full rounded-lg border px-3 text-sm"
+                {...register("category")}
+              >
+                {categories.map((category) => (
+                  <option key={category}>{category}</option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Cuisine</label>
+              <Input
+                placeholder="Italian, Mexican..."
+                {...register("cuisine")}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Dietary labels</label>
+            <div className="flex flex-wrap gap-3">
+              {dietaryOptions.map((tag) => (
+                <label key={tag} className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    value={tag}
+                    {...register("dietaryTags")}
+                  />
+                  {tag}
+                </label>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -287,7 +387,7 @@ export default function Page() {
                   <Textarea
                     aria-invalid={!!errors.instructions?.[index]?.step}
                     className={cn(
-                      "min-h-28 min-w-0 resize-y wrap-break-words whitespace-pre-wrap",
+                      "wrap-break-words min-h-28 min-w-0 resize-y whitespace-pre-wrap",
                       errors.instructions?.[index]?.step && invalidFieldClass,
                     )}
                     placeholder="Mix the dry ingredients..."

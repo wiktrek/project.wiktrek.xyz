@@ -18,14 +18,14 @@ export function GameShell({
   className?: string;
 }) {
   return (
-    <main className="mx-auto flex w-full max-w-4xl flex-col gap-8 px-5 pb-24 pt-4 sm:px-8">
+    <main className="mx-auto flex w-full max-w-4xl flex-col gap-8 px-5 pt-4 pb-24 sm:px-8">
       <header className="flex flex-col gap-4 border-b border-white/10 pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div className="flex flex-col gap-2">
           <Link
             href="/games"
             className={cn(
               mono,
-              "w-fit text-xs text-neutral-500 transition-colors hover:text-primary",
+              "hover:text-primary w-fit text-xs text-neutral-500 transition-colors",
             )}
           >
             ← games
@@ -34,7 +34,7 @@ export function GameShell({
             {title}
           </h1>
           {subtitle && (
-            <p className="max-w-prose text-pretty text-sm text-neutral-400">
+            <p className="max-w-prose text-sm text-pretty text-neutral-400">
               {subtitle}
             </p>
           )}
@@ -100,9 +100,9 @@ export function GameButton({
     <button
       className={cn(
         "inline-flex items-center justify-center gap-2 rounded-md px-3.5 py-1.5 text-sm transition-colors active:translate-y-px disabled:pointer-events-none disabled:opacity-40",
-        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+        "focus-visible:outline-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2",
         variant === "solid"
-          ? "bg-primary font-medium text-primary-foreground hover:bg-primary-200"
+          ? "bg-primary text-primary-foreground hover:bg-primary-200 font-medium"
           : "border border-white/10 text-neutral-200 hover:border-white/25 hover:text-neutral-50",
         className,
       )}
@@ -146,7 +146,7 @@ export function Choice<T extends string | number>({
 }
 
 export function NewBest() {
-  return <p className={cn(mono, "text-xs text-primary")}>new best</p>;
+  return <p className={cn(mono, "text-primary text-xs")}>new best</p>;
 }
 
 /** Shared look for start, pause and game over screens drawn over a board. */

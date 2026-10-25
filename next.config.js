@@ -6,6 +6,10 @@ await import("./src/env.js");
 
 /** @type {import("next").NextConfig} */
 const config = {
+  experimental: {
+    // lucide-react is already optimized by default.
+    optimizePackageImports: ["@fortawesome/free-solid-svg-icons", "motion"],
+  },
 };
 
 export default config;

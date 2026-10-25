@@ -45,14 +45,14 @@ export default function Graveyard() {
         {deadProjects.map((project) => (
           <div
             key={project.name}
-            className="flex w-64 flex-col items-center rounded-t-full border border-slate-600 bg-slate-700 px-6 pb-8 pt-12 text-center"
+            className="flex w-64 flex-col items-center rounded-t-full border border-slate-600 bg-slate-700 px-6 pt-12 pb-8 text-center"
           >
             <p className="text-3xl">&#10013;</p>
             <p className="mt-2 text-xl font-bold">{project.name}</p>
             <p className="text-slate-300">
               {lifespan(project.dateStart, project.dateEnd)}
             </p>
-            <p className="mt-4 italic text-slate-400">
+            <p className="mt-4 text-slate-400 italic">
               &quot;{project.description}&quot;
             </p>
             <p className="mt-4 text-sm text-slate-500">R.I.P.</p>

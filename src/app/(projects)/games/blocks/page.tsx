@@ -27,33 +27,166 @@ type Shape = [number, number][];
 
 const SHAPES: Shape[] = [
   [[0, 0]],
-  [[0, 0], [0, 1]],
-  [[0, 0], [1, 0]],
-  [[0, 0], [0, 1], [0, 2]],
-  [[0, 0], [1, 0], [2, 0]],
-  [[0, 0], [0, 1], [0, 2], [0, 3]],
-  [[0, 0], [1, 0], [2, 0], [3, 0]],
-  [[0, 0], [0, 1], [0, 2], [0, 3], [0, 4]],
-  [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0]],
-  [[0, 0], [0, 1], [1, 0], [1, 1]],
-  [[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2]],
-  [[0, 0], [0, 1], [1, 0], [1, 1], [2, 0], [2, 1]],
-  [[0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1], [2, 2]],
-  [[0, 0], [1, 0], [1, 1]],
-  [[0, 0], [0, 1], [1, 1]],
-  [[0, 0], [0, 1], [1, 0]],
-  [[0, 1], [1, 0], [1, 1]],
-  [[0, 0], [1, 0], [2, 0], [2, 1]],
-  [[0, 1], [1, 1], [2, 0], [2, 1]],
-  [[0, 0], [0, 1], [0, 2], [1, 0]],
-  [[0, 0], [0, 1], [0, 2], [1, 2]],
-  [[0, 0], [0, 1], [0, 2], [1, 1]],
-  [[0, 1], [1, 0], [1, 1], [1, 2]],
-  [[0, 0], [0, 1], [1, 1], [1, 2]],
-  [[0, 1], [0, 2], [1, 0], [1, 1]],
-  [[0, 0], [1, 0], [2, 0], [0, 1], [0, 2]],
-  [[0, 0], [1, 1]],
-  [[0, 1], [1, 0]],
+  [
+    [0, 0],
+    [0, 1],
+  ],
+  [
+    [0, 0],
+    [1, 0],
+  ],
+  [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+  ],
+  [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+  ],
+  [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+    [0, 3],
+  ],
+  [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+    [3, 0],
+  ],
+  [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+    [0, 3],
+    [0, 4],
+  ],
+  [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+    [3, 0],
+    [4, 0],
+  ],
+  [
+    [0, 0],
+    [0, 1],
+    [1, 0],
+    [1, 1],
+  ],
+  [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+    [1, 0],
+    [1, 1],
+    [1, 2],
+  ],
+  [
+    [0, 0],
+    [0, 1],
+    [1, 0],
+    [1, 1],
+    [2, 0],
+    [2, 1],
+  ],
+  [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+    [1, 0],
+    [1, 1],
+    [1, 2],
+    [2, 0],
+    [2, 1],
+    [2, 2],
+  ],
+  [
+    [0, 0],
+    [1, 0],
+    [1, 1],
+  ],
+  [
+    [0, 0],
+    [0, 1],
+    [1, 1],
+  ],
+  [
+    [0, 0],
+    [0, 1],
+    [1, 0],
+  ],
+  [
+    [0, 1],
+    [1, 0],
+    [1, 1],
+  ],
+  [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+    [2, 1],
+  ],
+  [
+    [0, 1],
+    [1, 1],
+    [2, 0],
+    [2, 1],
+  ],
+  [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+    [1, 0],
+  ],
+  [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+    [1, 2],
+  ],
+  [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+    [1, 1],
+  ],
+  [
+    [0, 1],
+    [1, 0],
+    [1, 1],
+    [1, 2],
+  ],
+  [
+    [0, 0],
+    [0, 1],
+    [1, 1],
+    [1, 2],
+  ],
+  [
+    [0, 1],
+    [0, 2],
+    [1, 0],
+    [1, 1],
+  ],
+  [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+    [0, 1],
+    [0, 2],
+  ],
+  [
+    [0, 0],
+    [1, 1],
+  ],
+  [
+    [0, 1],
+    [1, 0],
+  ],
 ];
 
 // [base, highlight] pairs, slightly muted so the board doesn't look like candy
@@ -69,7 +202,14 @@ const COLORS: [string, string][] = [
 
 type Piece = { shape: number; color: number } | null;
 type Board = (number | null)[][];
-type Particle = { x: number; y: number; vx: number; vy: number; color: number; born: number };
+type Particle = {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  color: number;
+  born: number;
+};
 type Float = { text: string; x: number; y: number; born: number; big: boolean };
 type Clearing = { r: number; c: number; color: number; born: number };
 
@@ -87,7 +227,9 @@ function canPlace(board: Board, shape: Shape, row: number, col: number) {
   return shape.every(([r, c]) => {
     const rr = row + r;
     const cc = col + c;
-    return rr >= 0 && rr < SIZE && cc >= 0 && cc < SIZE && board[rr]![cc] === null;
+    return (
+      rr >= 0 && rr < SIZE && cc >= 0 && cc < SIZE && board[rr]![cc] === null
+    );
   });
 }
 
@@ -95,19 +237,23 @@ function fitsAnywhere(board: Board, piece: Piece) {
   if (!piece) return false;
   const shape = SHAPES[piece.shape]!;
   for (let r = 0; r < SIZE; r++)
-    for (let c = 0; c < SIZE; c++) if (canPlace(board, shape, r, c)) return true;
+    for (let c = 0; c < SIZE; c++)
+      if (canPlace(board, shape, r, c)) return true;
   return false;
 }
 
 /** rows and columns that would be full after placing the shape */
 function linesAfter(board: Board, shape: Shape, row: number, col: number) {
   const filled = (r: number, c: number) =>
-    board[r]![c] !== null || shape.some(([sr, sc]) => sr + row === r && sc + col === c);
+    board[r]![c] !== null ||
+    shape.some(([sr, sc]) => sr + row === r && sc + col === c);
   const rows: number[] = [];
   const cols: number[] = [];
   for (let i = 0; i < SIZE; i++) {
-    if (Array.from({ length: SIZE }, (_, c) => filled(i, c)).every(Boolean)) rows.push(i);
-    if (Array.from({ length: SIZE }, (_, r) => filled(r, i)).every(Boolean)) cols.push(i);
+    if (Array.from({ length: SIZE }, (_, c) => filled(i, c)).every(Boolean))
+      rows.push(i);
+    if (Array.from({ length: SIZE }, (_, r) => filled(r, i)).every(Boolean))
+      cols.push(i);
   }
   return { rows, cols };
 }
@@ -172,7 +318,13 @@ export default function Page() {
   const game = useRef({
     board: emptyBoard(),
     tray: [] as Piece[],
-    drag: null as { index: number; x: number; y: number; lift: number; born: number } | null,
+    drag: null as {
+      index: number;
+      x: number;
+      y: number;
+      lift: number;
+      born: number;
+    } | null,
     score: 0,
     combo: 0,
     // placements since the last clear; the combo breaks after 3
@@ -190,7 +342,12 @@ export default function Page() {
     else
       localStorage.setItem(
         SAVE_KEY,
-        JSON.stringify({ board: g.board, tray: g.tray, score: g.score, combo: g.combo }),
+        JSON.stringify({
+          board: g.board,
+          tray: g.tray,
+          score: g.score,
+          combo: g.combo,
+        }),
       );
   }
 
@@ -259,8 +416,10 @@ export default function Page() {
       g.combo++;
       g.sinceClear = 0;
       const cleared = new Set<string>();
-      for (const r of rows) for (let c = 0; c < SIZE; c++) cleared.add(`${r},${c}`);
-      for (const c of cols) for (let r = 0; r < SIZE; r++) cleared.add(`${r},${c}`);
+      for (const r of rows)
+        for (let c = 0; c < SIZE; c++) cleared.add(`${r},${c}`);
+      for (const c of cols)
+        for (let r = 0; r < SIZE; r++) cleared.add(`${r},${c}`);
       for (const key of cleared) {
         const [r, c] = key.split(",").map(Number) as [number, number];
         const color = g.board[r]![c]!;
@@ -325,7 +484,10 @@ export default function Page() {
 
       ctx.save();
       if (g.shake > 0.2) {
-        ctx.translate((Math.random() - 0.5) * g.shake, (Math.random() - 0.5) * g.shake);
+        ctx.translate(
+          (Math.random() - 0.5) * g.shake,
+          (Math.random() - 0.5) * g.shake,
+        );
         g.shake *= 0.85;
       }
 
@@ -339,13 +501,22 @@ export default function Page() {
       ctx.stroke();
 
       // preview of where the dragged piece lands and what it clears
-      let ghost: { shape: Shape; row: number; col: number; color: number } | null = null;
+      let ghost: {
+        shape: Shape;
+        row: number;
+        col: number;
+        color: number;
+      } | null = null;
       let hl = { rows: [] as number[], cols: [] as number[] };
       if (g.drag && !g.over) {
         const piece = g.tray[g.drag.index];
         if (piece) {
           const shape = SHAPES[piece.shape]!;
-          const { row, col } = dropCell(shape, g.drag.x, g.drag.y - g.drag.lift);
+          const { row, col } = dropCell(
+            shape,
+            g.drag.x,
+            g.drag.y - g.drag.lift,
+          );
           if (canPlace(g.board, shape, row, col)) {
             ghost = { shape, row, col, color: piece.color };
             hl = linesAfter(g.board, shape, row, col);
@@ -379,7 +550,13 @@ export default function Page() {
       if (ghost) {
         ctx.globalAlpha = 0.35;
         for (const [r, c] of ghost.shape)
-          drawBlock(ctx, PAD + (ghost.col + c) * CELL, PAD + (ghost.row + r) * CELL, CELL, ghost.color);
+          drawBlock(
+            ctx,
+            PAD + (ghost.col + c) * CELL,
+            PAD + (ghost.row + r) * CELL,
+            CELL,
+            ghost.color,
+          );
         ctx.globalAlpha = 1;
       }
 
@@ -389,10 +566,23 @@ export default function Page() {
         if (t >= 1) return false;
         const p = Math.max(0, t);
         ctx.globalAlpha = 1 - p;
-        drawBlock(ctx, PAD + cl.c * CELL, PAD + cl.r * CELL, CELL, cl.color, 1 + p * 0.35);
+        drawBlock(
+          ctx,
+          PAD + cl.c * CELL,
+          PAD + cl.r * CELL,
+          CELL,
+          cl.color,
+          1 + p * 0.35,
+        );
         ctx.fillStyle = `rgba(255,255,255,${(1 - p) * 0.6})`;
         ctx.beginPath();
-        ctx.roundRect(PAD + cl.c * CELL + 2, PAD + cl.r * CELL + 2, CELL - 4, CELL - 4, 8);
+        ctx.roundRect(
+          PAD + cl.c * CELL + 2,
+          PAD + cl.r * CELL + 2,
+          CELL - 4,
+          CELL - 4,
+          8,
+        );
         ctx.fill();
         ctx.globalAlpha = 1;
         return true;
@@ -421,7 +611,8 @@ export default function Page() {
         const ox = slotW * i + (slotW - cols * SMALL) / 2;
         const oy = TRAY_Y + (TRAY_H - rows * SMALL) / 2;
         ctx.globalAlpha = fitsAnywhere(g.board, piece) ? 1 : 0.25;
-        for (const [r, c] of shape) drawBlock(ctx, ox + c * SMALL, oy + r * SMALL, SMALL, piece.color);
+        for (const [r, c] of shape)
+          drawBlock(ctx, ox + c * SMALL, oy + r * SMALL, SMALL, piece.color);
         ctx.globalAlpha = 1;
       });
 
@@ -440,7 +631,13 @@ export default function Page() {
           ctx.fillStyle = "rgba(0,0,0,0.35)";
           for (const [r, c] of shape) {
             ctx.beginPath();
-            ctx.roundRect(left + c * size + 3, top + r * size + 10, size - 4, size - 4, 8);
+            ctx.roundRect(
+              left + c * size + 3,
+              top + r * size + 10,
+              size - 4,
+              size - 4,
+              8,
+            );
             ctx.fill();
           }
           for (const [r, c] of shape)
@@ -471,7 +668,6 @@ export default function Page() {
     };
     frame = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(frame);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // canvas is scaled with CSS, so map pointer coords back to game units
@@ -514,9 +710,7 @@ export default function Page() {
     <GameShell
       title="Blocks"
       subtitle="Drag pieces onto the board. Fill rows or columns to clear them."
-      actions={
-        <GameButton onClick={reset}>New game</GameButton>
-      }
+      actions={<GameButton onClick={reset}>New game</GameButton>}
     >
       <Stats className="max-w-[380px]">
         <Stat label="score" value={score} accent />
@@ -544,7 +738,9 @@ export default function Page() {
             >
               {newBest && <NewBest />}
               <p className="text-sm text-neutral-400">No moves left</p>
-              <p className={cn(mono, "text-6xl tabular-nums text-neutral-50")}>{score}</p>
+              <p className={cn(mono, "text-6xl text-neutral-50 tabular-nums")}>
+                {score}
+              </p>
               <GameButton variant="solid" onClick={reset} className="mt-2">
                 Play again
               </GameButton>

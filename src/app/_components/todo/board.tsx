@@ -1,7 +1,14 @@
 "use client";
 
-import { useState, type KeyboardEvent } from "react";
-import { GripVertical, Plus, Search, Trash2, X } from "lucide-react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import {
+  CalendarClock,
+  GripVertical,
+  Plus,
+  Search,
+  Trash2,
+  X,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Toaster } from "~/app/_components/ui/sonner";
 import { cn } from "~/app/_components/lib/utils";
@@ -72,6 +79,33 @@ export function TodoBoard({
   const [newStage, setNewStage] = useState({ open: false, name: "" });
   const [search, setSearch] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("all");
+  const [newTodoShortcut, setNewTodoShortcut] = useState(0);
+  const searchRef = useRef<HTMLInputElement>(null);
+  const orderedStages = sortTodoItems(stages);
+  const firstStageId = orderedStages[0]?.id;
+
+  useEffect(() => {
+    const onKeyDown = (event: globalThis.KeyboardEvent) => {
+      const target = event.target as HTMLElement;
+      const isTyping =
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable;
+
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      if (event.key === "/" && !isTyping) {
+        event.preventDefault();
+        searchRef.current?.focus();
+      }
+      if (event.key.toLowerCase() === "n" && !isTyping && firstStageId) {
+        event.preventDefault();
+        setNewTodoShortcut((value) => value + 1);
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [firstStageId]);
 
   const onError = (error: { message: string }) => toast(error.message);
   const createTodo = api.todo.create.useMutation({
@@ -93,7 +127,6 @@ export function TodoBoard({
     onError,
   });
 
-  const orderedStages = sortTodoItems(stages);
   const previewStages = stageOrderForDrag(orderedStages, stageDrag);
   const stageItems = (stageId: number) =>
     sortTodoItems(
@@ -115,12 +148,23 @@ export function TodoBoard({
     const targetItems = allStageItems(targetStageId);
     const reordered = [...targetItems, { ...dragged, stageId: targetStageId }];
     setItems((current) => [
-      ...current.filter((item) => item.id !== id && item.stageId !== targetStageId),
+      ...current.filter(
+        (item) => item.id !== id && item.stageId !== targetStageId,
+      ),
       ...reordered.map((item, order) => ({ ...item, order })),
     ]);
     moveTodo.mutate(
-      { id, stageId: targetStageId, orderedIds: reordered.map((item) => item.id) },
-      { onError: (error) => { setItems(previous); onError(error); } },
+      {
+        id,
+        stageId: targetStageId,
+        orderedIds: reordered.map((item) => item.id),
+      },
+      {
+        onError: (error) => {
+          setItems(previous);
+          onError(error);
+        },
+      },
     );
   }
 
@@ -151,11 +195,19 @@ export function TodoBoard({
       ...reordered.map((item, order) => ({ ...item, order })),
     ]);
     const previous = items;
-    moveTodo.mutate({
-      id: cardDrag.id,
-      stageId,
-      orderedIds: reordered.map((item) => item.id),
-    }, { onError: (error) => { setItems(previous); onError(error); } });
+    moveTodo.mutate(
+      {
+        id: cardDrag.id,
+        stageId,
+        orderedIds: reordered.map((item) => item.id),
+      },
+      {
+        onError: (error) => {
+          setItems(previous);
+          onError(error);
+        },
+      },
+    );
   }
 
   function dropStage() {
@@ -166,19 +218,24 @@ export function TodoBoard({
 
     setStages(next);
     const previous = stages;
-    moveStage.mutate({ orderedIds: next.map((stage) => stage.id) }, {
-      onError: (error) => { setStages(previous); onError(error); },
-    });
+    moveStage.mutate(
+      { orderedIds: next.map((stage) => stage.id) },
+      {
+        onError: (error) => {
+          setStages(previous);
+          onError(error);
+        },
+      },
+    );
   }
 
   function saveDetail() {
     if (detail.id === null) return;
     const title = detail.title.trim();
     if (!title) return toast("Title is required");
-    if (!detail.date) return toast("Date is required");
 
-    const date = new Date(detail.date);
-    if (Number.isNaN(date.getTime())) return toast("Date is invalid");
+    const date = detail.date ? new Date(detail.date) : null;
+    if (date && Number.isNaN(date.getTime())) return toast("Date is invalid");
 
     const description = detail.description.trim();
     setItems((prev) =>
@@ -191,7 +248,12 @@ export function TodoBoard({
     const previous = items;
     updateTodo.mutate(
       { id: detail.id, title, description, date, priority: detail.priority },
-      { onError: (error) => { setItems(previous); onError(error); } },
+      {
+        onError: (error) => {
+          setItems(previous);
+          onError(error);
+        },
+      },
     );
     setDetail(emptyDetail);
   }
@@ -201,7 +263,15 @@ export function TodoBoard({
     const previous = items;
     setItems((prev) => prev.filter((item) => item.id !== id));
     if (detail.id === id) setDetail(emptyDetail);
-    deleteTodo.mutate({ id }, { onError: (error) => { setItems(previous); onError(error); } });
+    deleteTodo.mutate(
+      { id },
+      {
+        onError: (error) => {
+          setItems(previous);
+          onError(error);
+        },
+      },
+    );
   }
 
   function submitNewStage() {
@@ -212,22 +282,26 @@ export function TodoBoard({
   }
 
   return (
-    <div onClick={() => setMenu(null)}>
-      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <div onClick={() => setMenu(null)} className="space-y-5">
+      <div className="flex flex-col gap-4 rounded-2xl border border-white/8 bg-white/[0.035] p-3 shadow-[0_16px_50px_-28px_rgba(0,0,0,0.8)] sm:flex-row sm:items-center sm:justify-between sm:p-4">
         <div className="flex flex-1 flex-col gap-2 sm:flex-row">
           <label className="relative flex-1">
-            <Search className="text-muted-foreground absolute top-2.5 left-3 h-4 w-4" />
+            <Search className="text-muted-foreground absolute top-3 left-3 h-4 w-4" />
             <input
+              ref={searchRef}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search todos"
-              className="bg-card w-full rounded-md border py-2 pr-3 pl-9 text-sm"
+              className="bg-background/70 focus:border-primary/60 focus:ring-primary/20 w-full rounded-xl border border-white/10 py-2.5 pr-3 pl-9 text-sm transition outline-none focus:ring-2"
             />
+            <span className="text-muted-foreground pointer-events-none absolute top-2.5 right-3 hidden rounded border border-white/10 px-1.5 py-0.5 text-[10px] sm:block">
+              /
+            </span>
           </label>
           <select
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value)}
-            className="bg-card rounded-md border px-3 py-2 text-sm"
+            className="bg-background/70 focus:border-primary/60 rounded-xl border border-white/10 px-3 py-2.5 text-sm transition outline-none"
             aria-label="Filter by priority"
           >
             <option value="all">All priorities</option>
@@ -241,14 +315,20 @@ export function TodoBoard({
           onChange={(doneRetention) => {
             const previous = retention;
             setRetention(doneRetention);
-            updateSettings.mutate({ doneRetention }, {
-              onError: (error) => { setRetention(previous); onError(error); },
-            });
+            updateSettings.mutate(
+              { doneRetention },
+              {
+                onError: (error) => {
+                  setRetention(previous);
+                  onError(error);
+                },
+              },
+            );
           }}
         />
       </div>
 
-      <div className="flex max-w-full flex-nowrap items-start gap-4 overflow-x-auto pb-4">
+      <div className="flex max-w-full flex-nowrap items-start gap-4 overflow-x-auto pb-5">
         {previewStages.map((stage, index) => (
           <div key={stage.id} className="flex items-stretch gap-2">
             <StageColumn
@@ -259,6 +339,7 @@ export function TodoBoard({
               cardDrag={cardDrag}
               stageDragId={stageDrag.id}
               onAddTodo={createTodoFromDraft}
+              openNewTodo={stage.id === firstStageId ? newTodoShortcut : 0}
               onRenameStage={(name) => {
                 const previous = stages;
                 setStages((prev) =>
@@ -266,18 +347,30 @@ export function TodoBoard({
                     item.id === stage.id ? { ...item, name } : item,
                   ),
                 );
-                renameStage.mutate({ id: stage.id, name }, {
-                  onError: (error) => { setStages(previous); onError(error); },
-                });
+                renameStage.mutate(
+                  { id: stage.id, name },
+                  {
+                    onError: (error) => {
+                      setStages(previous);
+                      onError(error);
+                    },
+                  },
+                );
               }}
               onDeleteStage={() => {
                 const previous = stages;
                 setStages((prev) =>
                   prev.filter((item) => item.id !== stage.id),
                 );
-                deleteStage.mutate({ id: stage.id }, {
-                  onError: (error) => { setStages(previous); onError(error); },
-                });
+                deleteStage.mutate(
+                  { id: stage.id },
+                  {
+                    onError: (error) => {
+                      setStages(previous);
+                      onError(error);
+                    },
+                  },
+                );
               }}
               onOpenTodo={(card) => {
                 setMenu(null);
@@ -323,7 +416,7 @@ export function TodoBoard({
           </div>
         ))}
 
-        <div className="w-56 shrink-0">
+        <div className="w-72 shrink-0">
           {newStage.open ? (
             <input
               autoFocus
@@ -342,7 +435,7 @@ export function TodoBoard({
           ) : (
             <button
               onClick={() => setNewStage({ open: true, name: "" })}
-              className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex w-full items-center gap-2 rounded-lg border border-dashed p-3 text-sm transition-colors"
+              className="text-muted-foreground hover:border-primary/60 hover:bg-accent/40 hover:text-accent-foreground flex w-full items-center gap-2 rounded-xl border border-dashed border-white/15 p-3 text-sm transition-colors"
             >
               <Plus className="h-4 w-4" /> Add stage
             </button>
@@ -385,6 +478,7 @@ function StageColumn({
   cardDrag,
   stageDragId,
   onAddTodo,
+  openNewTodo,
   onRenameStage,
   onDeleteStage,
   onOpenTodo,
@@ -407,6 +501,7 @@ function StageColumn({
   cardDrag: CardDrag;
   stageDragId: number | null;
   onAddTodo: (stageId: number, draft: string) => boolean;
+  openNewTodo: number;
   onRenameStage: (name: string) => void;
   onDeleteStage: () => void;
   onOpenTodo: (card: Todo) => void;
@@ -425,6 +520,10 @@ function StageColumn({
   const [todoDraft, setTodoDraft] = useState({ open: false, value: "" });
   const [stageDraft, setStageDraft] = useState({ open: false, value: "" });
 
+  useEffect(() => {
+    if (openNewTodo > 0) setTodoDraft({ open: true, value: "" });
+  }, [openNewTodo]);
+
   function submitTodo() {
     if (onAddTodo(stage.id, todoDraft.value)) {
       setTodoDraft({ open: false, value: "" });
@@ -440,7 +539,7 @@ function StageColumn({
   return (
     <div
       className={cn(
-        "bg-muted/40 flex w-72 shrink-0 flex-col gap-2 rounded-lg p-2",
+        "bg-muted/25 flex w-72 shrink-0 flex-col gap-2 rounded-2xl border border-white/8 p-2.5 shadow-[0_18px_40px_-30px_rgba(0,0,0,0.9)]",
         stageDragId === stage.id && "opacity-40",
       )}
       onDragOver={(e) => {
@@ -460,7 +559,7 @@ function StageColumn({
         else onCardDrop(stage.id);
       }}
     >
-      <div className="flex items-center gap-2 px-1 py-1">
+      <div className="flex items-center gap-2 px-1.5 py-1.5">
         {stageDraft.open ? (
           <input
             autoFocus
@@ -490,7 +589,7 @@ function StageColumn({
             onClick={() => setStageDraft({ open: true, value: stage.name })}
             title="Rename or drag stage"
             className={cn(
-              "flex cursor-grab items-center gap-1 rounded px-2 py-0.5 text-sm font-medium active:cursor-grabbing",
+              "flex cursor-grab items-center gap-1 rounded-lg px-2 py-1 text-sm font-medium active:cursor-grabbing",
               todoStageColors[stage.color] ?? todoStageColors.gray,
             )}
           >
@@ -533,6 +632,12 @@ function StageColumn({
         />
       ))}
 
+      {cards.length === 0 && cardDrag.id === null && (
+        <div className="text-muted-foreground/70 rounded-xl border border-dashed border-white/8 px-3 py-5 text-center text-xs">
+          Nothing here yet
+        </div>
+      )}
+
       {cardDrag.id !== null &&
         cardDrag.over?.stageId === stage.id &&
         cardDrag.over.index >= cards.length && (
@@ -555,7 +660,7 @@ function StageColumn({
       ) : (
         <button
           onClick={() => setTodoDraft({ open: true, value: "" })}
-          className="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-lg border border-transparent p-3 text-sm transition-colors"
+          className="text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground flex items-center gap-2 rounded-xl border border-transparent p-3 text-sm transition-colors"
         >
           <Plus className="h-4 w-4" /> New page
         </button>
@@ -633,16 +738,24 @@ function TodoCard({
           );
         }}
         className={cn(
-          "group bg-card hover:border-primary/50 cursor-grab rounded-lg border p-3 text-left shadow-sm transition-colors active:cursor-grabbing",
+          "group bg-card/80 hover:border-primary/50 hover:bg-card cursor-grab rounded-xl border border-white/8 p-3 text-left shadow-sm transition-colors active:cursor-grabbing",
           drag.id === card.id && "opacity-40",
         )}
       >
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
             <p className="text-sm font-medium">{card.title}</p>
-            <span className={cn("text-[11px] font-medium uppercase", todoPriorityStyles[card.priority as keyof typeof todoPriorityStyles])}>
+            <span
+              className={cn(
+                "text-[11px] font-medium uppercase",
+                todoPriorityStyles[
+                  card.priority as keyof typeof todoPriorityStyles
+                ],
+              )}
+            >
               {card.priority}
             </span>
+            <DueDateBadge date={card.date} />
           </div>
           <button
             onClick={(e) => {
@@ -664,10 +777,42 @@ function TodoCard({
           aria-label={`Move ${card.title}`}
         >
           {stages.map((option) => (
-            <option key={option.id} value={option.id}>{option.name}</option>
+            <option key={option.id} value={option.id}>
+              {option.name}
+            </option>
           ))}
         </select>
       </div>
     </div>
+  );
+}
+
+function DueDateBadge({ date }: { date: Date | string | null }) {
+  if (!date) return null;
+
+  const due = date instanceof Date ? date : new Date(date);
+  if (Number.isNaN(due.getTime())) return null;
+
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const dueDay = new Date(due.getFullYear(), due.getMonth(), due.getDate());
+  const isOverdue = due.getTime() < now.getTime();
+  const isToday = dueDay.getTime() === today.getTime();
+  const label = isToday
+    ? "Due today"
+    : due.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+
+  return (
+    <span
+      className={cn(
+        "mt-2 flex w-fit items-center gap-1 rounded-md px-1.5 py-1 text-[11px] font-medium",
+        isOverdue && "bg-rose-500/15 text-rose-300",
+        !isOverdue && isToday && "bg-amber-500/15 text-amber-300",
+        !isOverdue && !isToday && "text-muted-foreground bg-white/6",
+      )}
+    >
+      <CalendarClock className="h-3 w-3" />
+      {isOverdue && !isToday ? "Overdue" : label}
+    </span>
   );
 }

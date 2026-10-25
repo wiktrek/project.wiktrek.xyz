@@ -3,7 +3,7 @@ import {
   protectedProcedure as procedure,
   createTRPCRouter as router,
 } from "../trpc";
-import { todo, todoStage, todoSettings } from "~/server/db/schema";
+import { todo, todoTag, todoStage, todoSettings } from "~/server/db/schema";
 /*
   todo router
 */
@@ -39,6 +39,14 @@ const DEFAULT_STAGES = [
   { name: "Done", color: "green", legacyStatus: "done", isDone: true },
 ];
 
+type Tx = Parameters<Parameters<typeof Database.transaction>[0]>[0];
+
+async function insertTags(tx: Tx, todoId: number, tags: string[]) {
+  const unique = [...new Set(tags)];
+  if (unique.length === 0) return;
+  await tx.insert(todoTag).values(unique.map((tag) => ({ todoId, tag })));
+}
+
 async function getStage(db: typeof Database, userId: string, stageId: number) {
   const stage = await db.query.todoStage.findFirst({
     where: and(eq(todoStage.id, stageId), eq(todoStage.owner, userId)),
@@ -72,21 +80,23 @@ export const todoRouter = router({
           })),
         )
         .returning();
-      for (const [index, stage] of stages.entries()) {
-        await ctx.db
-          .update(todo)
-          .set({
-            stageId: stage.id,
-            ...(stage.isDone && { completedAt: new Date() }),
-          })
-          .where(
-            and(
-              eq(todo.owner, userId),
-              isNull(todo.stageId),
-              eq(todo.status, DEFAULT_STAGES[index]?.legacyStatus ?? ""),
+      await Promise.all(
+        stages.map((stage, index) =>
+          ctx.db
+            .update(todo)
+            .set({
+              stageId: stage.id,
+              ...(stage.isDone && { completedAt: new Date() }),
+            })
+            .where(
+              and(
+                eq(todo.owner, userId),
+                isNull(todo.stageId),
+                eq(todo.status, DEFAULT_STAGES[index]?.legacyStatus ?? ""),
+              ),
             ),
-          );
-      }
+        ),
+      );
     }
 
     let settings = await ctx.db.query.todoSettings.findFirst({
@@ -142,20 +152,22 @@ export const todoRouter = router({
         where: and(eq(todo.owner, userId), eq(todo.stageId, input.stageId)),
         orderBy: [desc(todo.order)],
       });
-      const [created] = await ctx.db
-        .insert(todo)
-        .values({
-          owner: userId,
-          title: input.title,
-          description: "",
-          date: new Date(),
-          stageId: input.stageId,
-          completedAt: stage.isDone ? new Date() : null,
-          tags: input.tags,
-          priority: input.priority,
-          order: (last?.order ?? -1) + 1,
-        })
-        .returning();
+      const created = await ctx.db.transaction(async (tx) => {
+        const [row] = await tx
+          .insert(todo)
+          .values({
+            owner: userId,
+            title: input.title,
+            description: "",
+            stageId: input.stageId,
+            completedAt: stage.isDone ? new Date() : null,
+            priority: input.priority,
+            order: (last?.order ?? -1) + 1,
+          })
+          .returning();
+        if (row) await insertTags(tx, row.id, input.tags);
+        return row;
+      });
       if (!created) {
         throw new Error("Failed to create todo");
       }
@@ -186,12 +198,14 @@ export const todoRouter = router({
           completedAt: stage.isDone ? (target.completedAt ?? new Date()) : null,
         })
         .where(and(eq(todo.id, input.id), eq(todo.owner, userId)));
-      for (const [index, id] of input.orderedIds.entries()) {
-        await ctx.db
-          .update(todo)
-          .set({ order: index })
-          .where(and(eq(todo.id, id), eq(todo.owner, userId)));
-      }
+      await Promise.all(
+        input.orderedIds.map((id, index) =>
+          ctx.db
+            .update(todo)
+            .set({ order: index })
+            .where(and(eq(todo.id, id), eq(todo.owner, userId))),
+        ),
+      );
       return true;
     }),
   update: procedure
@@ -200,25 +214,36 @@ export const todoRouter = router({
         id: z.number(),
         title: z.string().min(1).max(500).optional(),
         description: z.string().max(5000).optional(),
-        date: z.date().optional(),
+        date: z.date().nullable().optional(),
         tags: z.array(z.string().max(50)).max(10).optional(),
         priority: todoPriority.optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.userId;
-      await ctx.db
-        .update(todo)
-        .set({
-          ...(input.title !== undefined && { title: input.title }),
-          ...(input.description !== undefined && {
-            description: input.description,
-          }),
-          ...(input.date !== undefined && { date: input.date }),
-          ...(input.tags !== undefined && { tags: input.tags }),
-          ...(input.priority !== undefined && { priority: input.priority }),
-        })
-        .where(and(eq(todo.id, input.id), eq(todo.owner, userId)));
+      const { tags } = input;
+      const values = {
+        ...(input.title !== undefined && { title: input.title }),
+        ...(input.description !== undefined && {
+          description: input.description,
+        }),
+        ...(input.date !== undefined && { date: input.date }),
+        ...(input.priority !== undefined && { priority: input.priority }),
+      };
+      const owned = and(eq(todo.id, input.id), eq(todo.owner, userId));
+      await ctx.db.transaction(async (tx) => {
+        const [updated] =
+          Object.keys(values).length > 0
+            ? await tx
+                .update(todo)
+                .set(values)
+                .where(owned)
+                .returning({ id: todo.id })
+            : await tx.select({ id: todo.id }).from(todo).where(owned);
+        if (!updated || tags === undefined) return;
+        await tx.delete(todoTag).where(eq(todoTag.todoId, updated.id));
+        await insertTags(tx, updated.id, tags);
+      });
       return true;
     }),
   delete: procedure
@@ -288,12 +313,14 @@ export const todoRouter = router({
     .input(z.object({ orderedIds: z.array(z.number()) }))
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.userId;
-      for (const [index, id] of input.orderedIds.entries()) {
-        await ctx.db
-          .update(todoStage)
-          .set({ order: index })
-          .where(and(eq(todoStage.id, id), eq(todoStage.owner, userId)));
-      }
+      await Promise.all(
+        input.orderedIds.map((id, index) =>
+          ctx.db
+            .update(todoStage)
+            .set({ order: index })
+            .where(and(eq(todoStage.id, id), eq(todoStage.owner, userId))),
+        ),
+      );
       return true;
     }),
   updateSettings: procedure

@@ -20,7 +20,10 @@ const Home: NextPage = () => {
   function checkCommand() {
     if (!commands.includes(input)) {
       setInput("");
-      setResponse((current) => [...current.slice(-9), `Command not found: ${input}. Try 'help'`]);
+      setResponse((current) => [
+        ...current.slice(-9),
+        `Command not found: ${input}. Try 'help'`,
+      ]);
       return;
     }
     if (input === "clear") {
@@ -115,7 +118,7 @@ const Home: NextPage = () => {
             type="text"
             value={input}
             onChange={(event) => setInput(event.target.value)}
-            className="border-none bg-transparent focus:outline-none focus:ring-0"
+            className="border-none bg-transparent focus:ring-0 focus:outline-none"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 checkCommand();
